@@ -9,6 +9,7 @@ import { INIT_LOAD, RELOAD } from '../constants/AppConstants';
 import Header from './Header';
 import Footer from './Footer';
 import Messages from './Messages';
+import Chat from './chat/Index';
 
 class App extends Component {
   static contextTypes = {
@@ -75,6 +76,7 @@ class App extends Component {
               {this.props.children}
             </div>
           </div>}
+        {mediator.loggedInHero ? <Chat /> : null}
         <Footer />
         <Messages />
       </div>

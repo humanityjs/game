@@ -7,7 +7,7 @@ export default class extends React.Component {
         position: 'fixed',
         left: 0,
         bottom: 0,
-        height: 48,
+        height: 40,
         width: '100%',
         textAlign: 'center',
         background: '#212121',
@@ -18,7 +18,7 @@ export default class extends React.Component {
     return (
       <div style={this.getStyles().base}>
         <a
-          style={{ marginTop: 7 }}
+          style={{ marginTop: 4 }}
           className="uk-icon-hover uk-icon-github uk-icon-large"
           href="https://github.com/DragonLegend/game"
         />

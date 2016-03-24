@@ -190,6 +190,7 @@ export function fetch() {
           if (!hero.complects) hero.complects = [];
         }
 
+        mediator.id = hero.id;
         mediator.loggedInHero = true;
 
         resolve(hero);
