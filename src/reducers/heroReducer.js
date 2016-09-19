@@ -9,6 +9,7 @@ import {
   REMOVE_COMPLECT,
   APPLY_COMPLECT,
   MOVE_ON_ISLAND,
+  TOGGLE_IN_COMBAT,
 } from '../constants/AppConstants';
 import { assignToEmpty } from '../lib/utils';
 
@@ -26,6 +27,7 @@ export default (state = {}, action) => {
     case REMOVE_COMPLECT:
     case APPLY_COMPLECT:
     case MOVE_ON_ISLAND:
+    case TOGGLE_IN_COMBAT:
       return assignToEmpty(state, action.hero);
     default:
       return state;

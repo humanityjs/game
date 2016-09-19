@@ -10,9 +10,12 @@ import {
   REMOVE_COMPLECT,
   APPLY_COMPLECT,
   MOVE_ON_ISLAND,
+  TOGGLE_IN_COMBAT,
 } from '../constants/AppConstants';
 
 import mediator, { db } from '../mediator';
+
+import clone from 'clone';
 
 import {
   init as heroInit,
@@ -21,6 +24,8 @@ import {
 } from '../helpers/heroHelper';
 
 import uid from 'uid';
+
+// TODO: think of add hero or not
 
 function save(hero) {
   return db().child('heroes').child(hero.id).set(hero);
@@ -33,9 +38,18 @@ function undress(hero) {
   updateFeature(hero);
 }
 
+export function toggleInCombat(value) {
+  return (dispatch, getState) => {
+    // TODO: fix this clone process
+    const hero = clone(getState().hero);
+    hero.inCombat = value;
+    save(hero).then(() => dispatch({ type: TOGGLE_IN_COMBAT, hero }));
+  };
+}
+
 export function moveOnIsland(x, y) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     hero.location.coordinateX = x;
     hero.location.coordinateY = y;
     save(hero).then(() => dispatch({ type: MOVE_ON_ISLAND, hero }));
@@ -62,21 +76,21 @@ export function removeThing(hero) {
 
 export function saveComplect(name, things) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     hero.complects.push({ id: uid(), name, things });
     save(hero).then(() => dispatch({ type: SAVE_COMPLECT, hero }));
   };
 }
 export function removeComplect(id) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     hero.complects = hero.complects.filter(item => item.id !== id);
     save(hero).then(() => dispatch({ type: REMOVE_COMPLECT, hero }));
   };
 }
 export function applyComplect(id) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     const { things } = mediator.storage;
     const complect = hero.complects.find(item => item.id === id);
     undress(hero);
@@ -95,7 +109,7 @@ export function applyComplect(id) {
 
 export function undressThings() {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     undress(hero);
     save(hero).then(() => dispatch({ type: UNDRESS_THINGS, hero }));
   };
@@ -103,7 +117,7 @@ export function undressThings() {
 
 export function asyncRemoveThing(id) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     hero.things = hero.things.filter(item => item.id !== id);
     save(hero).then(() => dispatch(removeThing(hero)));
   };
@@ -111,7 +125,7 @@ export function asyncRemoveThing(id) {
 
 export function dressOrUndressThing(id, dress) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     const heroThing = hero.things.find(item => item.id === id);
     heroThing.dressed = dress;
     updateFeature(hero);
@@ -121,7 +135,7 @@ export function dressOrUndressThing(id, dress) {
 
 export function asyncSaveGeneral(data) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     Object.assign(hero, data);
     save(hero).then(() => dispatch(saveGeneral(hero)));
   };
@@ -129,7 +143,7 @@ export function asyncSaveGeneral(data) {
 
 export function increaseParameter(name) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
     hero[name]++;
     hero.numberOfParameters--;
     updateFeature(hero);
@@ -149,7 +163,7 @@ export function increaseAbility(name) {
 
 export function increaseSkill(id) {
   return (dispatch, getState) => {
-    const hero = getState().hero;
+    const hero = clone(getState().hero);
 
     let heroSkill = hero.skills.find((item) => item.skill === id);
 
@@ -176,7 +190,7 @@ export function fetch() {
     }, (res) => {
       const ref = db().child('heroes').child(res.id);
 
-      ref.once('value', (data) => {
+      ref.once('value').then(data => {
         let hero = data.val();
         if (!hero) {
           hero = res;

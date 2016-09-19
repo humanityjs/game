@@ -20,39 +20,28 @@ export function db() {
 export function fechStorage() {
   return Promise.all([
 
-    new Promise((resolve) => {
-      db().child('tableExperience').once('value', (data) => {
-        mediator.storage.tableExperience = data.val();
-        resolve();
-      });
+    db().child('tableExperience').once('value').then(data => {
+      mediator.storage.tableExperience = data.val();
     }),
 
-    new Promise((resolve) => {
-      db().child('skills').once('value', (data) => {
-        mediator.storage.skills = data.val();
-        resolve();
-      });
+    db().child('skills').once('value').then(data => {
+      mediator.storage.skills = data.val();
     }),
 
-    new Promise((resolve) => {
-      db().child('heroImages').once('value', (data) => {
-        mediator.storage.heroImages = data.val();
-        resolve();
-      });
+    db().child('heroImages').once('value').then(data => {
+      mediator.storage.heroImages = data.val();
     }),
 
-    new Promise((resolve) => {
-      db().child('things').once('value', (data) => {
-        mediator.storage.things = data.val();
-        resolve();
-      });
+    db().child('things').once('value').then(data => {
+      mediator.storage.things = data.val();
     }),
 
-    new Promise((resolve) => {
-      db().child('islands').once('value', (data) => {
-        mediator.storage.islands = data.val();
-        resolve();
-      });
+    db().child('islands').once('value').then(data => {
+      mediator.storage.islands = data.val();
+    }),
+
+    db().child('heroes').once('value').then(data => {
+      mediator.storage.heroes = data.val();
     }),
 
   ]);

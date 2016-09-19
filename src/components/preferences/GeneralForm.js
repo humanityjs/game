@@ -36,7 +36,7 @@ class GeneralForm extends Component {
           <div className="uk-form-controls">
             <input
               value={name}
-              onChange={(e) => { this.setState({ name: e.target.value }); }}
+              onChange={e => this.setState({ name: e.target.value })}
               className="uk-width-1-1"
               type="text"
               id="name"

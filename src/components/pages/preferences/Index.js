@@ -1,5 +1,5 @@
 import React from 'react';
-import Menu from '../../PreferenceMenu';
+import Menu from '../../preferences/Menu';
 
 export default ({ children }) => (
   <div className="uk-grid">

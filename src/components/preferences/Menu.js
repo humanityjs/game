@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import classNames from 'classnames';
 
-const PreferenceMenu = (props, context) => {
+const Menu = (props, context) => {
   const { router } = context;
 
   const items = [{
@@ -27,8 +27,8 @@ const PreferenceMenu = (props, context) => {
   );
 };
 
-PreferenceMenu.contextTypes = {
+Menu.contextTypes = {
   router: PropTypes.object.isRequired,
 };
 
-export default PreferenceMenu;
+export default Menu;
