@@ -30,7 +30,7 @@ export default class extends Component {
   render() {
     const { items, className, label } = this.props;
     const { value } = this.state;
-    const selectedItem = items.find(item => item.key == value);
+    const selectedItem = items.find(item => item.key == value); // eslint-disable-line eqeqeq
 
     const selectClassNames = classNames('uk-button uk-form-select', className);
     return (

@@ -20,9 +20,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    console.log(2)
     FB.getLoginStatus((res) => {
-      console.log(3)
       if (res.status === 'connected') {
         this.initLoad();
       } else {

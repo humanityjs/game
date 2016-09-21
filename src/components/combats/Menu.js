@@ -15,9 +15,6 @@ const Menu = (props, context) => {
     label: 'Chaotic',
     path: '/combats/chaotic',
   }, {
-    label: 'Territorial',
-    path: '/combats/territorial',
-  }, {
     label: 'Current',
     path: '/combats/current',
   }, {

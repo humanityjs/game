@@ -12,6 +12,7 @@ import moment from 'moment';
 class List extends Component {
   static propTypes = {
     type: PropTypes.oneOf(['duel', 'chaotic', 'group']),
+    info: PropTypes.bool,
   };
 
   renderHero(warrior) {
@@ -25,7 +26,7 @@ class List extends Component {
     );
   }
   renderItem(combat, index) {
-    const { hero, dispatch, type } = this.props;
+    const { hero, dispatch, type, info } = this.props;
     const { created, timeout, injury, timewait, warriors } = combat;
     const {
       firstTeamCount, firstTeamLevelMin, firstTeamLevelMax,
@@ -37,6 +38,7 @@ class List extends Component {
     const { inCombat } = hero;
     const firstTeam = warriors.filter(item => item.team === 1);
     const secondTeam = warriors.filter(item => item.team === 2);
+    const noActions = info;
 
     return (
       <li key={index}>
@@ -65,7 +67,7 @@ class List extends Component {
         {' '}
 
         {firstTeam.map(::this.renderHero)}
-        {
+        { !noActions &&
           !isOwner && !inCombat && !warriors.find(item => item.warrior === hero.id) &&
           ((firstTeamLevelMin === -1 || hero.level >= firstTeamLevelMin) &&
           (firstTeamLevelMax === -1 || hero.level <= firstTeamLevelMax)) &&
@@ -91,7 +93,7 @@ class List extends Component {
             title="Start"
           /> : null}
 
-        {isOwner && warriors.length === 1 ?
+        {!noActions && isOwner && warriors.length === 1 ?
           <Button
             type="link"
             className="uk-icon-hover"
@@ -100,7 +102,7 @@ class List extends Component {
             onClick={() => dispatch(removeCombat(combat))}
           /> : null}
 
-        {
+        { !noActions &&
           !isOwner && !inCombat && !warriors.find(item => item.warrior === hero.id) &&
           (type === 'duel' ||
           ((secondTeamLevelMin === -1 || hero.level >= secondTeamLevelMin) &&
@@ -114,7 +116,9 @@ class List extends Component {
             onClick={() => dispatch(joinCombat(combat, 2, hero))}
           /> : null}
 
-        {type === 'duel' && !isOwner && warriors.find(item => item.warrior === hero.id) ?
+        { !noActions &&
+          type === 'duel' &&
+          !isOwner && warriors.find(item => item.warrior === hero.id) ?
           <Button
             type="link"
             className="uk-icon-hover"
@@ -128,15 +132,15 @@ class List extends Component {
     );
   }
   render() {
-    const { combats, type, dispatch } = this.props;
+    const { combats, type, dispatch, info } = this.props;
 
     return (
       <div>
-        <Button
+        {!info && <Button
           className="uk-align-center"
           icon="refresh"
           onClick={() => dispatch(fetchCombats())}
-        />
+        />}
         {combats && combats.length ?
           <div className="uk-panel uk-panel-box uk-margin-top">
             <ul className="uk-list">
