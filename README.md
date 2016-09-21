@@ -31,6 +31,7 @@ npm start
 ![Preferences](progress-preferences.png)
 ![Inventory](progress-inventory.png)
 ![Island](progress-island.png)
+![Combats](progress-combats.png)
 
 ## License
 
