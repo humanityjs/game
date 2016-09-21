@@ -20,6 +20,9 @@ const Menu = (props, context) => {
         <li className={classNames({ 'uk-active': router.isActive('/preferences') })}>
           <Link to="/preferences">Preferences</Link>
         </li>
+        <li className={classNames({ 'uk-active': router.isActive('/combats') })}>
+          <Link to="/combats">Combats</Link>
+        </li>
       </ul>
       <div className="uk-navbar-flip">
         <ul className="uk-navbar-nav">

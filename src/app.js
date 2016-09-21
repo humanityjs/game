@@ -43,6 +43,5 @@ window.fbAsyncInit = () => {
     xfbml: true,
     version: 'v2.5',
   });
+  run();
 };
-
-setTimeout(run, 1000);

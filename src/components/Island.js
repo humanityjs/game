@@ -10,7 +10,7 @@ import config from '../config/index';
 
 import { moveOnIsland } from '../actions/heroActions';
 
-export default class Island extends Component {
+class Island extends Component {
   state = {
     moveTime: 0,
   };
