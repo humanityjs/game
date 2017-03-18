@@ -1,0 +1,88 @@
+v 1.0.0
+1. Sign In
+- Logo
+- Sign with FB button
+
+2. Menu
+- Hero
+- Inventory
+- Preferences
+- Logout
+
+3. Hero
+- Header
+-- Hero username and life
+- Hero body (squares around with things and in the middle hero image)
+--- (gloves, helmet, amulet, treetops, arms, armor, shield, pants, elixir 4, rings 4, belt, boots)
+- Hero characteristic
+-- Parameters (Strength, Dexterity, Intuition, Health and add button if needed)
+-- Information (Wins, Losses, Draws and Exp)
+-- Modifiers (Dodge, Accuracy, Devastate, Block break, Armor break)
+-- Skills (Dynamic and add button if needed)
+-- Abilities (Swords, Knives, Axes, Clubs, Shields and add button if needed)
+-- Damage & Protection (Damage, Protection (Head, Breast, Belly, Groin, Legs))
+
+4. Preferences
+- Edit Profile
+-- Full Name field
+-- Email field
+-- About field
+
+5. Inventory
+- Hero body
+- Top actions (Undress, Things filter)
+- Things
+-- Information (Main (Name, Image, Broken, Price, Capacity), Requirments, Description)
+--- Requirments ('levelNeed',
+'strengthNeed', 'dexterityNeed', 'intuitionNeed', 'healthNeed',
+'swordsNeed', 'axesNeed', 'knivesNeed', 'clubsNeed', 'shieldsNeed')
+--- Description ('strengthGive', 'dexterityGive', 'intuitionGive', 'healthGive',
+'swordsGive', 'axesGive', 'knivesGive', 'clubsGive', 'shieldsGive',
+'damageMin', 'damageMax',
+'protectionHead', 'protectionBreast', 'protectionBelly', 'protectionGroin', 'protectionLegs',
+'accuracy', 'dodge', 'devastate', 'durability',
+'blockBreak', 'armorBreak',
+'hp',
+'strikeCount', 'blockCount',
+'capacity',
+'isTwoHands',
+'timeDuration')
+-- Actions (Remove, Wear)
+
+6. World
+- Map (Hero in the middle and ability to move with squares)
+- Info (position, buildings nearby, bots/hero nearby)
+- Actions (fight with bots/heroes, go to building)
+
+7. Combat
+- Heroes bodies (hero health on top)
+- Hero info 
+(Strength, Dexterity, Intuition, Health, Dodge, Accuracy, Devastate, Block break, Armor break, Damage, Protection (Head, Breast, Belly, Groin, Legs))
+- Hero actions
+-- Hit (Head, Breast, Belly, Groin, Legs) can be several
+-- Block (Head and Breast, Breast and Belly, Belly and Groin, Groin and Legs, Legs and Head) can be several
+-- Refresh
+-- Next hero
+- Log
+-- first hero hit and block other (health count, crit or dodge or block break or armor break)
+-- second hero hit and block other
+- List of users
+-- One team vs Second team (Hero Name [hp])
+- How much hp count
+- Timeout (if not skip action)
+- End fight who win or draw or loose, count of exp
+
+8. Hero info
+- Hero body
+- Hero characteristic
+-- Parameters
+-- Information
+-- Modifiers
+- About
+-- Online
+-- Place
+-- Date of registration
+-- Time in game
+-- Full Name
+-- About text
+- Thing Information (Main (Name, Image, Broken, Price, Capacity), Requirments, Description)
