@@ -1,29 +1,36 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import React, { PropTypes } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import Text from './Text';
 
 const styles = StyleSheet.create({
   button: {
-    width: 320,
-    height: 60,
-    backgroundColor: '#3B5998',
+    height: 56,
+    alignItems: 'center',
+    paddingTop: 18,
   },
   text: {
-    marginTop: 15,
-    textAlign: 'center',
-    color: '#FFF',
     fontSize: 12,
-    fontFamily: 'Avenir',
+    color: 'white',
   },
 });
 
-const Button = () => (
-  <TouchableOpacity style={styles.button}>
-    <Text style={styles.text}>Sign In With FaceBook</Text>
+const Button = ({ onPress, style, children, textStyle }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.button, style]}
+  >
+    <Text style={[styles.text, textStyle]}>
+      {children}
+    </Text>
   </TouchableOpacity>
 );
+
+Button.propTypes = {
+  style: View.propTypes.style,
+  textStyle: Text.propTypes.style,
+  children: PropTypes.string,
+  onPress: PropTypes.func,
+};
 
 export default Button;

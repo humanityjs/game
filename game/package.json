@@ -8,8 +8,18 @@
     "lint": "eslint src/**"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
+    "npm-font-open-sans": "^1.0.3",
     "react": "~15.4.1",
-    "react-native": "0.42.2"
+    "react-native": "0.42.2",
+    "react-native-fbsdk": "^0.5.0",
+    "react-native-svg-uri": "^1.2.0",
+    "react-navigation": "^1.0.0-beta.7",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.8.2",
+    "redux-persist": "^4.5.0",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
@@ -32,11 +42,17 @@
     ],
     "sourceMaps": true
   },
+  "rnpm": {
+    "assets": [
+      "./node_modules/npm-font-open-sans/fonts"
+    ]
+  },
   "eslintConfig": {
     "parser": "babel-eslint",
     "extends": "airbnb",
     "rules": {
-      "react/jsx-filename-extension": 0
+      "react/jsx-filename-extension": 0,
+      "react/require-default-props": 0
     }
   }
 }
