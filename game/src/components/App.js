@@ -13,8 +13,8 @@ import LoginScreen from './LoginScreen';
 import HeroScreen from './HeroScreen';
 
 const AppNavigator = StackNavigator({
-  Hero: { screen: HeroScreen },
   Login: { screen: LoginScreen },
+  Hero: { screen: HeroScreen },
 }, {
   headerMode: 'none',
 });
@@ -25,8 +25,16 @@ const AppWithNavigationState = connect(state => ({
   <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />
 ));
 
+function getCurrentRoute(state) {
+  if (state.routes) {
+    return getCurrentRoute(state.routes[state.index]);
+  }
+  return state;
+}
+
 const navReducer = (state, action) => {
   const newState = AppNavigator.router.getStateForAction(action, state);
+  newState.currentRoute = getCurrentRoute(newState).routeName;
   return newState || state;
 };
 

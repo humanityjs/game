@@ -8,6 +8,7 @@
     "lint": "eslint src/**"
   },
   "dependencies": {
+    "firebase": "^3.7.4",
     "lodash": "^4.17.4",
     "npm-font-open-sans": "^1.0.3",
     "react": "~15.4.1",

@@ -29,7 +29,7 @@ const Button = ({ onPress, style, children, textStyle }) => (
 Button.propTypes = {
   style: View.propTypes.style,
   textStyle: Text.propTypes.style,
-  children: PropTypes.string,
+  children: PropTypes.node,
   onPress: PropTypes.func,
 };
 

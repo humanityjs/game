@@ -16,7 +16,7 @@ const TextWrapper = ({ style, children }) => (
 
 TextWrapper.propTypes = {
   style: Text.propTypes.style,
-  children: PropTypes.string,
+  children: PropTypes.node,
 };
 
 export default TextWrapper;

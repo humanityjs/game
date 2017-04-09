@@ -5,11 +5,10 @@ import {
   View,
 } from 'react-native';
 
-import Text from './shared/Text';
-
 import Hp from './Hp';
 import Body from './Body';
 import Info from './Info';
+import TopInfo from './TopInfo';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,19 +31,7 @@ export default class extends Component {
           </View>
           <View style={{ marginLeft: 20, width: 640 }}>
             <View style={{ alignItems: 'flex-end' }}>
-              <View style={{
-                width: 220, 
-                height: 40,
-                backgroundColor: '#EAEAEA',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                <Text>Money</Text>
-                <Text style={{ marginLeft: 5 }}>22.34</Text>
-                <Text style={{ marginLeft: 10 }}>Capacity</Text>
-                <Text style={{ marginLeft: 5 }}>34/100</Text>
-              </View>
+              <TopInfo />
             </View>
             <View style={{ marginTop: 10 }}>
               <Info />

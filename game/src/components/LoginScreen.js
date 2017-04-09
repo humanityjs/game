@@ -8,11 +8,14 @@ import {
 import {
   StyleSheet,
   View,
+  ActivityIndicator,
+  AsyncStorage,
 } from 'react-native';
 
 import Button from './shared/Button';
 
-import { login } from '../actions/app';
+import { login, fetchInitData } from '../actions/app';
+import { fetchHero } from '../actions/hero';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,7 +23,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F2F2F2',
-    marginTop: -255,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'black',
+    opacity: 0.5,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -36,10 +52,33 @@ class Login extends Component {
 
     this.onLogin = this.onLogin.bind(this);
   }
+  state = {
+    loading: false,
+  }
+  componentDidMount() {
+    AsyncStorage.getItem('Id')
+      .then((id) => {
+        if (!id) return;
+        this.setState({ loading: true });
+        const { dispatch } = this.context.store;
+        dispatch(fetchHero({ id }));
+        dispatch(fetchInitData());
+      });
+  }
+  shouldComponentUpdate(nextProps) {
+    return (nextProps.currentRoute === 'Login');
+  }
   componentWillUpdate(nextProps) {
-    const { app } = nextProps;
-    if (app.loggedIn) {
-      const { dispatch } = this.context.store;
+    const { app, hero } = nextProps;
+
+    const { dispatch } = this.context.store;
+
+    if (app.loggedIn && !hero.hero) {
+      this.state.loading = true;
+      dispatch(fetchHero(app.loggedData));
+      dispatch(fetchInitData());
+    }
+    if (hero.hero && app.initData) {
       dispatch(NavigationActions.navigate({ routeName: 'Hero' }));
     }
   }
@@ -50,25 +89,37 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <SvgUri
-          width="192"
-          height="255"
-          source={require('../assets/images/logo.svg')}
-        />
-        <Button
-          style={{
-            backgroundColor: '#4267B2',
-            width: 320,
-            height: 60,
-          }}
-          textStyle={{
-            fontSize: 15,
-          }}
-          onPress={this.onLogin}
-        >Sign In with FaceBook</Button>
+        <View style={{ marginTop: -255, alignItems: 'center' }}>
+          <SvgUri
+            width="192"
+            height="255"
+            source={require('../assets/images/logo.svg')}
+          />
+          <Button
+            style={{
+              backgroundColor: '#4267B2',
+              width: 320,
+              height: 60,
+            }}
+            textStyle={{
+              fontSize: 15,
+            }}
+            onPress={this.onLogin}
+          >Sign In with FaceBook</Button>
+        </View>
+
+        {this.state.loading &&
+          <View style={styles.overlay}>
+            <ActivityIndicator style={styles.loading} />
+          </View>
+        }
       </View>
     );
   }
 }
 
-export default connect(state => ({ app: state.app }))(Login);
+export default connect(state => ({
+  app: state.app,
+  hero: state.hero,
+  currentRoute: state.nav.currentRoute,
+}))(Login);
