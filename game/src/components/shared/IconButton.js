@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-
-const styles = StyleSheet.create({
-});
+import { TouchableOpacity, View } from 'react-native';
 
 const IconButton = ({ onPress, style, children }) => (
   <TouchableOpacity

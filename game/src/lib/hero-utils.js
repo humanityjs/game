@@ -124,11 +124,11 @@ export function updateFeature(hero, initData) {
   };
 }
 
-export function levelUp(hero) {
-  const tableExperience = mediator.storage.tableExperience;
+export function levelUp(hero, initData) {
+  const tableExperience = initData.tableExperience;
 
   const tableExperienceItems = tableExperience
-    .filter((item) => item.level > hero.level && item.experience <= hero.experience);
+    .filter(item => item.level > hero.level && item.experience <= hero.experience);
 
   if (!tableExperienceItems.length) return;
 
@@ -139,8 +139,6 @@ export function levelUp(hero) {
 
     hero.money += item.money;
     hero.level++;
-
-    debug('hero level up %s %s', hero.login, hero.level);
   });
 }
 

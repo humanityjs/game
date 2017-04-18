@@ -1,13 +1,13 @@
-import React, { Component, PropTypes } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+
+import { StyleSheet, View } from 'react-native';
 
 import Text from './shared/Text';
 
 import { countHp } from '../lib/utils';
+
+import heroStore from '../stores/hero';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -36,17 +36,13 @@ const styles = StyleSheet.create({
   },
 });
 
-class Hp extends Component {
-  static propTypes = {
-    hero: PropTypes.shape(),
-  }
-  constructor(props) {
+@observer
+export default class extends Component {
+  constructor() {
     super();
 
-    const { current, max } = props.hero.feature.hp;
-    this.state = {
-      currentHp: current,
-    };
+    const { current, max } = heroStore.hero.feature.hp;
+    this.state = { currentHp: current };
 
     this.maxHp = max;
 
@@ -56,7 +52,7 @@ class Hp extends Component {
     this.countHp();
   }
   componentDidUpdate() {
-    const { hp } = this.props.hero.feature;
+    const { hp } = heroStore.hero.feature;
     if (hp.max !== this.maxHp) {
       this.maxHp = hp.max;
       this.countHp();
@@ -66,8 +62,7 @@ class Hp extends Component {
     clearInterval(this.setHpInterval);
   }
   setHp() {
-    const { hero } = this.props;
-    const hp = countHp(hero.feature.hp);
+    const hp = countHp(heroStore.hero.feature.hp);
 
     if (hp.current !== this.state.currentHp) {
       this.setState({ currentHp: hp.current });
@@ -82,7 +77,7 @@ class Hp extends Component {
     this.setHp();
   }
   render() {
-    const { hero } = this.props;
+    const { hero } = heroStore;
     const { currentHp } = this.state;
 
     const { hp } = hero.feature;
@@ -101,5 +96,3 @@ class Hp extends Component {
     );
   }
 }
-
-export default connect(state => ({ hero: state.hero.hero }))(Hp);

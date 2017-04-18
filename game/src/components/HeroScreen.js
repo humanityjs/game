@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
   StyleSheet,
@@ -18,28 +18,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <View style={{ width: 324 }}>
-            <Hp />
-            <View style={{ marginTop: 10 }}>
-              <Body />
-            </View>
-          </View>
-          <View style={{ marginLeft: 20, width: 640 }}>
-            <View style={{ alignItems: 'flex-end' }}>
-              <TopInfo />
-            </View>
-            <View style={{ marginTop: 10 }}>
-              <Info />
-            </View>
-          </View>
+export default () => (
+  <View style={styles.container}>
+    <View style={{ flex: 1, flexDirection: 'row' }}>
+      <View style={{ width: 324 }}>
+        <Hp />
+        <View style={{ marginTop: 10 }}>
+          <Body />
         </View>
       </View>
-    );
-  }
-}
-
+      <View style={{ marginLeft: 20, width: 640 }}>
+        <View style={{ alignItems: 'flex-end' }}>
+          <TopInfo />
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <Info />
+        </View>
+      </View>
+    </View>
+  </View>
+);

@@ -1,21 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import SvgUri from 'react-native-svg-uri';
-import { connect } from 'react-redux';
-import {
-  NavigationActions,
-} from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
+import { observer } from 'mobx-react';
+import { observe } from 'mobx';
 
 import {
   StyleSheet,
   View,
   ActivityIndicator,
-  AsyncStorage,
 } from 'react-native';
 
 import Button from './shared/Button';
 
-import { login, fetchInitData } from '../actions/app';
-import { fetchHero } from '../actions/hero';
+import authStore from '../stores/auth';
+import heroStore from '../stores/hero';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,51 +38,18 @@ const styles = StyleSheet.create({
   },
 });
 
-class Login extends Component {
+@observer
+export default class extends Component {
   static propTypes = {
-    app: PropTypes.shape(),
-  };
-  static contextTypes = {
-    store: PropTypes.shape(),
+    navigation: PropTypes.shape(),
   }
   constructor() {
     super();
 
-    this.onLogin = this.onLogin.bind(this);
-  }
-  state = {
-    loading: false,
-  }
-  componentDidMount() {
-    AsyncStorage.getItem('Id')
-      .then((id) => {
-        if (!id) return;
-        this.setState({ loading: true });
-        const { dispatch } = this.context.store;
-        dispatch(fetchHero({ id }));
-        dispatch(fetchInitData());
-      });
-  }
-  shouldComponentUpdate(nextProps) {
-    return (nextProps.currentRoute === 'Login');
-  }
-  componentWillUpdate(nextProps) {
-    const { app, hero } = nextProps;
-
-    const { dispatch } = this.context.store;
-
-    if (app.loggedIn && !hero.hero) {
-      this.state.loading = true;
-      dispatch(fetchHero(app.loggedData));
-      dispatch(fetchInitData());
-    }
-    if (hero.hero && app.initData) {
-      dispatch(NavigationActions.navigate({ routeName: 'Hero' }));
-    }
-  }
-  onLogin() {
-    const { dispatch } = this.context.store;
-    dispatch(login());
+    observe(heroStore, 'hero', () => {
+      this.props.navigation.navigate('Hero');
+      NavigationActions.navigate({ routeName: 'Hero' });
+    });
   }
   render() {
     return (
@@ -104,11 +69,11 @@ class Login extends Component {
             textStyle={{
               fontSize: 15,
             }}
-            onPress={this.onLogin}
+            onPress={authStore.login}
           >Sign In with FaceBook</Button>
         </View>
 
-        {this.state.loading &&
+        {authStore.isLoggedIn &&
           <View style={styles.overlay}>
             <ActivityIndicator style={styles.loading} />
           </View>
@@ -117,9 +82,3 @@ class Login extends Component {
     );
   }
 }
-
-export default connect(state => ({
-  app: state.app,
-  hero: state.hero,
-  currentRoute: state.nav.currentRoute,
-}))(Login);

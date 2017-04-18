@@ -4,44 +4,31 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest",
     "lint": "eslint src/**"
   },
   "dependencies": {
     "firebase": "^3.7.4",
     "lodash": "^4.17.4",
+    "mobx": "^3.1.9",
+    "mobx-react": "^4.1.8",
     "npm-font-open-sans": "^1.0.3",
-    "react": "~15.4.1",
-    "react-native": "0.42.2",
+    "react": "16.0.0-alpha.6",
+    "react-native": "0.43.3",
     "react-native-fbsdk": "^0.5.0",
     "react-native-svg-uri": "^1.2.0",
-    "react-navigation": "^1.0.0-beta.7",
-    "react-redux": "^5.0.3",
-    "redux": "^3.6.0",
-    "redux-logger": "^2.8.2",
-    "redux-persist": "^4.5.0",
-    "redux-thunk": "^2.2.0"
+    "react-navigation": "git+https://github.com/react-community/react-navigation.git"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
     "babel-jest": "19.0.0",
+    "babel-plugin-flow-react-proptypes": "^1.2.0",
     "babel-preset-react-native": "1.9.1",
+    "babel-preset-react-native-stage-0": "^1.0.1",
     "eslint": "^3.18.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.0",
-    "jest": "19.0.2",
-    "react-test-renderer": "~15.4.1"
-  },
-  "jest": {
-    "preset": "react-native"
-  },
-  "babel": {
-    "presets": [
-      "react-native"
-    ],
-    "sourceMaps": true
+    "eslint-plugin-react": "^6.10.0"
   },
   "rnpm": {
     "assets": [
