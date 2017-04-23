@@ -8,9 +8,11 @@ class App {
   async fetchInitData() {
     const skills = await db().child('skills').once('value');
     const tableExperience = await db().child('tableExperience').once('value');
+    const things = await db().child('things').once('value');
     this.initData = {
       skills: skills.val(),
       tableExperience: tableExperience.val(),
+      things: things.val(),
     };
   }
 }

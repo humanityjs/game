@@ -1,4 +1,4 @@
-import { observable, action, toJS } from 'mobx';
+import { observable, action, computed, toJS } from 'mobx';
 import db from '../lib/db';
 
 import { init as heroInit, updateFeature } from '../lib/hero-utils';
@@ -7,6 +7,14 @@ import appStore from './app';
 
 class Hero {
   @observable hero = null;
+
+  @computed get undressedThings() {
+    return this.hero.things.filter(item => !item.dressed);
+  }
+
+  @computed get dressedThings() {
+    return this.hero.things.filter(item => item.dressed);
+  }
 
   @action
   async fetch(data) {
@@ -60,6 +68,28 @@ class Hero {
 
     this.hero.numberOfSkills -= 1;
 
+    updateFeature(this.hero, appStore.initData);
+    await this.save();
+  }
+
+  @action
+  async removeThing(id) {
+    const index = this.hero.things.findIndex(item => item.id === id);
+    this.hero.things.splice(index, 1);
+    await this.save();
+  }
+
+  @action
+  async dressUndressThing(dress, id) {
+    const heroThing = this.hero.things.find(item => item.id === id);
+    heroThing.dressed = dress;
+    updateFeature(this.hero, appStore.initData);
+    await this.save();
+  }
+
+  @action
+  async undressThings() {
+    this.hero.things.forEach(item => (item.dressed = false));
     updateFeature(this.hero, appStore.initData);
     await this.save();
   }

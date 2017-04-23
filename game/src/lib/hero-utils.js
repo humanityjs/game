@@ -190,6 +190,7 @@ export function init(hero) {
 
 export function thingCanBeDressed(hero, thing) {
   return (
+    (!thing.levelNeed || thing.levelNeed <= hero.level) &&
     (!thing.strengthNeed || thing.strengthNeed <= hero.strength) &&
     (!thing.dexterityNeed || thing.dexterityNeed <= hero.dexterity) &&
     (!thing.intuitionNeed || thing.intuitionNeed <= hero.intuition) &&

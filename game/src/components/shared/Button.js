@@ -1,36 +1,58 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Text from './Text';
 
 const styles = StyleSheet.create({
   button: {
-    height: 56,
+    height: 30,
     alignItems: 'center',
-    paddingTop: 18,
+    paddingTop: 5,
+    backgroundColor: '#1C57FF',
+    width: 80,
   },
   text: {
     fontSize: 12,
     color: 'white',
   },
+  disabled: {
+    backgroundColor: 'grey',
+  },
 });
 
-const Button = ({ onPress, style, children, textStyle }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.button, style]}
-  >
-    <Text style={[styles.text, textStyle]}>
-      {children}
-    </Text>
-  </TouchableOpacity>
-);
+export default class extends Component {
+  static propTypes = {
+    style: View.propTypes.style,
+    textStyle: Text.propTypes.style,
+    children: PropTypes.node,
+    onPress: PropTypes.func,
+    disabled: PropTypes.bool,
+  };
 
-Button.propTypes = {
-  style: View.propTypes.style,
-  textStyle: Text.propTypes.style,
-  children: PropTypes.node,
-  onPress: PropTypes.func,
-};
+  constructor() {
+    super();
 
-export default Button;
+    this.onPress = this.onPress.bind(this);
+  }
+  onPress() {
+    const { disabled, onPress } = this.props;
+
+    if (disabled) return;
+
+    onPress();
+  }
+  render() {
+    const { style, disabled, textStyle, children } = this.props;
+
+    return (
+      <TouchableOpacity
+        onPress={this.onPress}
+        style={[styles.button, style, disabled && styles.disabled]}
+      >
+        <Text style={[styles.text, textStyle]}>
+          {children}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+}

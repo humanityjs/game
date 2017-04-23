@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation';
 
 import LoginScreen from './LoginScreen';
 import HeroScreen from './HeroScreen';
+import InventoryScreen from './InventoryScreen';
 
 import startLogging from '../lib/mobx-logger';
 
@@ -16,7 +17,7 @@ const stackNavigatorConfig = {
 
 const Stack = StackNavigator({
   Login: { screen: LoginScreen },
-  Hero: { screen: HeroScreen },
+  Hero: { screen: InventoryScreen },
 }, stackNavigatorConfig);
 
 export default () => <Stack />;

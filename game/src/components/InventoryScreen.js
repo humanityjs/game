@@ -8,7 +8,7 @@ import {
 import Hp from './Hp';
 import Body from './Body';
 import TopInfo from './TopInfo';
-import Info from './Info';
+import Inventory from './Inventory';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,7 +32,7 @@ export default () => (
           <TopInfo />
         </View>
         <View style={{ marginTop: 10 }}>
-          <Info />
+          <Inventory />
         </View>
       </View>
     </View>

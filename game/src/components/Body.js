@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
+import { observer } from 'mobx-react';
+
+import heroStore from '../stores/hero';
+import appStore from '../stores/app';
+
+import { thingImageRequire, thingSlotImageRequire, getThing } from '../lib/utils';
 
 const OFFSET = 4;
 const WIDTH = 76;
@@ -81,173 +89,153 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginLeft: 2,
   },
+  slotThing: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
-export default () => (
-  <View style={styles.wrapper}>
+function getSlotStyles(type) {
+  switch (type) {
+    case 'gloves':
+      return [styles.topBlock, styles.block, { left: OFFSET }];
+    case 'helmet':
+      return [styles.topBlock, styles.block, { left: WIDTH + (OFFSET * 2) }];
+    case 'amulet':
+      return [styles.topBlock, styles.block, { left: (WIDTH * 2) + (OFFSET * 3) }];
+    case 'bracer':
+      return [styles.topBlock, styles.block, { left: (WIDTH * 3) + (OFFSET * 4) }];
+    case 'sword':
+      return [styles.sword, styles.sideBlock, styles.block];
+    case 'armor':
+      return [styles.armor, styles.sideBlock, styles.block];
+    case 'pants':
+      return [styles.pents, styles.sideBlock, styles.block];
+    case 'shield':
+      return [styles.shield, styles.sideBlock, styles.block];
+    case 'belt':
+      return [styles.belt, styles.sideBlock, styles.block];
+    case 'boots':
+      return [styles.boots, styles.sideBlock, styles.block];
+    default: return null;
+  }
+}
 
-    <View style={[styles.topBlock, styles.block, { left: OFFSET }]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/gloves.svg')}
-        style={styles.icon}
-      />
-    </View>
-    <View style={[styles.topBlock, styles.block, { left: WIDTH + (OFFSET * 2) }]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/helmet.svg')}
-        style={styles.icon}
-      />
-    </View>
-    <View style={[styles.topBlock, styles.block, { left: (WIDTH * 2) + (OFFSET * 3) }]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/amulet.svg')}
-        style={styles.icon}
-      />
-    </View>
-    <View style={[styles.topBlock, styles.block, { left: (WIDTH * 3) + (OFFSET * 4) }]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/bracer.svg')}
-        style={styles.icon}
-      />
-    </View>
+@observer
+export default class extends Component {
+  render() {
+    return (
+      <View style={styles.wrapper}>
+        <SvgUri
+          width="305"
+          height="305"
+          source={require('../assets/images/person.svg')}
+          style={{ marginTop: 72, marginLeft: 10 }}
+        />
+        {[
+          'gloves', 'helmet', 'amulet', 'bracer', 'sword',
+          'arms', 'armor', 'shield', 'pants', 'belt', 'boots',
+        ].map((type) => {
+          let thing;
+          const heroThing = heroStore.dressedThings
+            .find((item) => {
+              thing = getThing(appStore.initData.things, item.thing);
+              return thing.type === type;
+            });
 
-    <View style={[styles.sword, styles.sideBlock, styles.block]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/sword.svg')}
-        style={styles.icon}
-      />
-    </View>
-    <View style={[styles.armor, styles.sideBlock, styles.block]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/armor.svg')}
-        style={styles.icon}
-      />
-    </View>
-    <View style={[styles.pents, styles.sideBlock, styles.block]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/pants.svg')}
-        style={styles.icon}
-      />
-    </View>
+          return (
+            <View key={type} style={getSlotStyles(type)}>
+              <SvgUri
+                width="16"
+                height="16"
+                source={thingSlotImageRequire(type)}
+                style={styles.icon}
+              />
+              {heroThing ?
+                <TouchableOpacity
+                  onPress={() => heroStore.dressUndressThing(false, heroThing.id)}
+                  style={styles.slotThing}
+                >
+                  <Image source={thingImageRequire(thing.image)} />
+                </TouchableOpacity> : null}
+            </View>
+          );
+        })}
 
-    <View style={[styles.shield, styles.sideBlock, styles.block]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/shield.svg')}
-        style={{ marginTop: 4, marginLeft: 2 }}
-      />
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/sword.svg')}
-        style={{ marginTop: -18 }}
-      />
-    </View>
-    <View style={styles.rings}>
-      <View style={[styles.ring, styles.block, { top: 0, left: 0 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
+        <View style={styles.rings}>
+          <View style={[styles.ring, styles.block, { top: 0, left: 0 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/ring.svg')}
+              style={{ marginLeft: 2 }}
+            />
+          </View>
+          <View style={[styles.ring, styles.block, { top: 0, left: 40 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/ring.svg')}
+              style={{ marginLeft: 2 }}
+            />
+          </View>
+          <View style={[styles.ring, styles.block, { top: 40, left: 0 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/ring.svg')}
+              style={{ marginLeft: 2 }}
+            />
+          </View>
+          <View style={[styles.ring, styles.block, { top: 40, left: 40 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/ring.svg')}
+              style={{ marginLeft: 2 }}
+            />
+          </View>
+        </View>
+        <View style={styles.elixirs}>
+          <View style={[styles.elixir, styles.block, { left: 0 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/elixir.svg')}
+              style={{ marginTop: 2 }}
+            />
+          </View>
+          <View style={[styles.elixir, styles.block, { left: 40 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/elixir.svg')}
+              style={{ marginTop: 2 }}
+            />
+          </View>
+          <View style={[styles.elixir, styles.block, { left: 80 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/elixir.svg')}
+              style={{ marginTop: 2 }}
+            />
+          </View>
+          <View style={[styles.elixir, styles.block, { left: 120 }]}>
+            <SvgUri
+              width="12"
+              height="12"
+              source={require('../assets/images/elixir.svg')}
+              style={{ marginTop: 2 }}
+            />
+          </View>
+        </View>
       </View>
-      <View style={[styles.ring, styles.block, { top: 0, left: 40 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
-      </View>
-      <View style={[styles.ring, styles.block, { top: 40, left: 0 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
-      </View>
-      <View style={[styles.ring, styles.block, { top: 40, left: 40 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
-      </View>
-    </View>
-    <View style={[styles.belt, styles.sideBlock, styles.block]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/belt.svg')}
-        style={{ marginLeft: 2 }}
-      />
-    </View>
-    <View style={[styles.boots, styles.sideBlock, styles.block]}>
-      <SvgUri
-        width="16"
-        height="16"
-        source={require('../assets/images/boots.svg')}
-        style={styles.icon}
-      />
-    </View>
-
-    <View style={styles.elixirs}>
-      <View style={[styles.elixir, styles.block, { left: 0 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
-      </View>
-      <View style={[styles.elixir, styles.block, { left: 40 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
-      </View>
-      <View style={[styles.elixir, styles.block, { left: 80 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
-      </View>
-      <View style={[styles.elixir, styles.block, { left: 120 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
-      </View>
-    </View>
-    <SvgUri
-      width="305"
-      height="305"
-      source={require('../assets/images/person.svg')}
-      style={{ marginTop: 72, marginLeft: 10 }}
-    />
-  </View>
-);
+    );
+  }
+}

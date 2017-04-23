@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import SvgUri from 'react-native-svg-uri';
-import { NavigationActions } from 'react-navigation';
 import { observer } from 'mobx-react';
 import { observe } from 'mobx';
 
@@ -48,7 +47,6 @@ export default class extends Component {
 
     observe(heroStore, 'hero', () => {
       this.props.navigation.navigate('Hero');
-      NavigationActions.navigate({ routeName: 'Hero' });
     });
   }
   render() {
@@ -65,6 +63,7 @@ export default class extends Component {
               backgroundColor: '#4267B2',
               width: 320,
               height: 60,
+              paddingTop: 18,
             }}
             textStyle={{
               fontSize: 15,
