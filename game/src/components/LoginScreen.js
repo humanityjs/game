@@ -13,6 +13,7 @@ import Button from './shared/Button';
 
 import authStore from '../stores/auth';
 import heroStore from '../stores/hero';
+import appStore from '../stores/app';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,7 +47,7 @@ export default class extends Component {
     super();
 
     observe(heroStore, 'hero', () => {
-      this.props.navigation.navigate('Hero');
+      appStore.navigate('Inner', 'outer');
     });
   }
   render() {

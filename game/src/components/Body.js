@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import {
   StyleSheet,
   View,
@@ -126,116 +126,117 @@ function getSlotStyles(type) {
   }
 }
 
-@observer
-export default class extends Component {
-  render() {
-    return (
-      <View style={styles.wrapper}>
+const Body = observer(({ undressEnabled }) => (
+  <View style={styles.wrapper}>
+    <SvgUri
+      width="305"
+      height="305"
+      source={require('../assets/images/person.svg')}
+      style={{ marginTop: 72, marginLeft: 10 }}
+    />
+    {[
+      'gloves', 'helmet', 'amulet', 'bracer', 'sword',
+      'arms', 'armor', 'shield', 'pants', 'belt', 'boots',
+    ].map((type) => {
+      let thing;
+      const heroThing = heroStore.dressedThings
+        .find((item) => {
+          thing = getThing(appStore.initData.things, item.thing);
+          return thing.type === type;
+        });
+
+      return (
+        <View key={type} style={getSlotStyles(type)}>
+          <SvgUri
+            width="16"
+            height="16"
+            source={thingSlotImageRequire(type)}
+            style={styles.icon}
+          />
+          {heroThing ?
+            <TouchableOpacity
+              onPress={undressEnabled ? () => heroStore.dressUndressThing(false, heroThing.id) : null}
+              style={styles.slotThing}
+            >
+              <Image source={thingImageRequire(thing.image)} />
+            </TouchableOpacity> : null}
+        </View>
+      );
+    })}
+
+    <View style={styles.rings}>
+      <View style={[styles.ring, styles.block, { top: 0, left: 0 }]}>
         <SvgUri
-          width="305"
-          height="305"
-          source={require('../assets/images/person.svg')}
-          style={{ marginTop: 72, marginLeft: 10 }}
+          width="12"
+          height="12"
+          source={require('../assets/images/ring.svg')}
+          style={{ marginLeft: 2 }}
         />
-        {[
-          'gloves', 'helmet', 'amulet', 'bracer', 'sword',
-          'arms', 'armor', 'shield', 'pants', 'belt', 'boots',
-        ].map((type) => {
-          let thing;
-          const heroThing = heroStore.dressedThings
-            .find((item) => {
-              thing = getThing(appStore.initData.things, item.thing);
-              return thing.type === type;
-            });
-
-          return (
-            <View key={type} style={getSlotStyles(type)}>
-              <SvgUri
-                width="16"
-                height="16"
-                source={thingSlotImageRequire(type)}
-                style={styles.icon}
-              />
-              {heroThing ?
-                <TouchableOpacity
-                  onPress={() => heroStore.dressUndressThing(false, heroThing.id)}
-                  style={styles.slotThing}
-                >
-                  <Image source={thingImageRequire(thing.image)} />
-                </TouchableOpacity> : null}
-            </View>
-          );
-        })}
-
-        <View style={styles.rings}>
-          <View style={[styles.ring, styles.block, { top: 0, left: 0 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/ring.svg')}
-              style={{ marginLeft: 2 }}
-            />
-          </View>
-          <View style={[styles.ring, styles.block, { top: 0, left: 40 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/ring.svg')}
-              style={{ marginLeft: 2 }}
-            />
-          </View>
-          <View style={[styles.ring, styles.block, { top: 40, left: 0 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/ring.svg')}
-              style={{ marginLeft: 2 }}
-            />
-          </View>
-          <View style={[styles.ring, styles.block, { top: 40, left: 40 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/ring.svg')}
-              style={{ marginLeft: 2 }}
-            />
-          </View>
-        </View>
-        <View style={styles.elixirs}>
-          <View style={[styles.elixir, styles.block, { left: 0 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/elixir.svg')}
-              style={{ marginTop: 2 }}
-            />
-          </View>
-          <View style={[styles.elixir, styles.block, { left: 40 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/elixir.svg')}
-              style={{ marginTop: 2 }}
-            />
-          </View>
-          <View style={[styles.elixir, styles.block, { left: 80 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/elixir.svg')}
-              style={{ marginTop: 2 }}
-            />
-          </View>
-          <View style={[styles.elixir, styles.block, { left: 120 }]}>
-            <SvgUri
-              width="12"
-              height="12"
-              source={require('../assets/images/elixir.svg')}
-              style={{ marginTop: 2 }}
-            />
-          </View>
-        </View>
       </View>
-    );
-  }
-}
+      <View style={[styles.ring, styles.block, { top: 0, left: 40 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/ring.svg')}
+          style={{ marginLeft: 2 }}
+        />
+      </View>
+      <View style={[styles.ring, styles.block, { top: 40, left: 0 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/ring.svg')}
+          style={{ marginLeft: 2 }}
+        />
+      </View>
+      <View style={[styles.ring, styles.block, { top: 40, left: 40 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/ring.svg')}
+          style={{ marginLeft: 2 }}
+        />
+      </View>
+    </View>
+    <View style={styles.elixirs}>
+      <View style={[styles.elixir, styles.block, { left: 0 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/elixir.svg')}
+          style={{ marginTop: 2 }}
+        />
+      </View>
+      <View style={[styles.elixir, styles.block, { left: 40 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/elixir.svg')}
+          style={{ marginTop: 2 }}
+        />
+      </View>
+      <View style={[styles.elixir, styles.block, { left: 80 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/elixir.svg')}
+          style={{ marginTop: 2 }}
+        />
+      </View>
+      <View style={[styles.elixir, styles.block, { left: 120 }]}>
+        <SvgUri
+          width="12"
+          height="12"
+          source={require('../assets/images/elixir.svg')}
+          style={{ marginTop: 2 }}
+        />
+      </View>
+    </View>
+  </View>
+));
+
+Body.propTypes = {
+  undressEnabled: PropTypes.bool,
+};
+
+export default Body;
