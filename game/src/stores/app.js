@@ -4,6 +4,7 @@ import { NavigationActions } from 'react-navigation'
 import db from '../lib/db';
 class App {
   @observable initData = {};
+  @observable overlay = false;
   @observable currentNavs = {
     outer: null,
     inner: null,
@@ -46,6 +47,9 @@ class App {
       this.navigationRefs[type]._navigation.navigate(name);
     }
     this.currentNavs[type] = name;
+    if (type === 'outer') {
+      this.currentNavs.inner = null;
+    } 
   }
 
   @action
@@ -55,6 +59,11 @@ class App {
     } else {
       this.menuRef.close();
     }
+  }
+
+  @action
+  toggleOverlay(value) {
+    this.overlay = value;
   }
 }
 

@@ -43,3 +43,8 @@ export function loginAndFetchData() {
       .then(rresult => fetchMe(rresult.accessToken));
   });
 }
+
+
+export function logout() {
+  return LoginManager.logOut();
+}

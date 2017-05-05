@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import { View, StyleSheet } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
-
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
 import IconButton from './shared/IconButton';
 
 import appStore from '../stores/app';
+import authStore from '../stores/auth';
+
+import SettingsModal from './SettingsModal';
 
 const styles = StyleSheet.create({
   item: {
@@ -18,57 +21,79 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(() => {
-  const currentNav = appStore.currentNavs.inner;
+@observer
+export default class extends Component {
+  @observable showSettingsModal = false;
+  constructor() {
+    super();
 
-  const items = [{
-    onPress: () => { 
-      appStore.navigate('Hero');
-      appStore.toggleMenu(false);
-    },
-    image: require('../assets/images/person-white.svg'),
-    height: 24,
-    width: 20,
-    active: !currentNav || currentNav === 'Hero',
-  }, {
-    onPress: () => {
-      appStore.navigate('Inventory');
-      appStore.toggleMenu(false);
-    },
-    image: require('../assets/images/bag.svg'),
-    height: 18,
-    width: 16,
-    active: currentNav === 'Inventory',
-  }, {
-    onPress: () => { console.log('3'); },
-    image: require('../assets/images/cog.svg'),
-  }, {
-    onPress: () => { console.log('4'); },
-    image: require('../assets/images/logout.svg'),
-  }];
+    this.onShowSettingsModal = this.onToggleSettingsModal.bind(this, true);
+    this.onHideSettingsModal = this.onToggleSettingsModal.bind(this, false);
+  }
+  onToggleSettingsModal(value) {
+    appStore.toggleOverlay(value);
+    this.showSettingsModal = value;
+  }
+  render() {
+    const currentNav = appStore.currentNavs.inner;
 
-  return (
-    <View>
-      <View style={[styles.item]}>
-        <SvgUri
-          width="24"
-          height="32"
-          source={require('../assets/images/logo-white.svg')}
-        />
-      </View>
-      {items.map((item, index) => (
-        <IconButton
-          key={index}
-          style={[styles.item, item.active ? { backgroundColor: '#21C064' } : null]}
-          onPress={item.onPress}
-        >
+    const items = [{
+      onPress: () => { 
+        appStore.navigate('Hero');
+        appStore.toggleMenu(false);
+      },
+      image: require('../assets/images/person-white.svg'),
+      height: 24,
+      width: 20,
+      active: !currentNav || currentNav === 'Hero',
+    }, {
+      onPress: () => {
+        appStore.navigate('Inventory');
+        appStore.toggleMenu(false);
+      },
+      image: require('../assets/images/bag.svg'),
+      height: 18,
+      width: 16,
+      active: currentNav === 'Inventory',
+    }, {
+      onPress: () => {
+        this.onShowSettingsModal();
+        appStore.toggleMenu(false);
+      },
+      image: require('../assets/images/cog.svg'),
+    }, {
+      onPress: () => {
+        appStore.toggleMenu(false);
+        authStore.logout();
+        appStore.navigate('Login', 'outer');
+      },
+      image: require('../assets/images/logout.svg'),
+    }];
+
+    return (
+      <View>
+        <View style={[styles.item]}>
           <SvgUri
-            width={item.width || 16}
-            height={item.height || 16}
-            source={item.image}
+            width="24"
+            height="32"
+            source={require('../assets/images/logo-white.svg')}
           />
-        </IconButton>
-      ))}
-    </View>
-  );
-});
+        </View>
+        {items.map((item, index) => (
+          <IconButton
+            key={index}
+            style={[styles.item, item.active ? { backgroundColor: '#21C064' } : null]}
+            onPress={item.onPress}
+          >
+            <SvgUri
+              width={item.width || 16}
+              height={item.height || 16}
+              source={item.image}
+            />
+          </IconButton>
+        ))}
+        {this.showSettingsModal ? <SettingsModal onHide={this.onHideSettingsModal} /> : null}
+      </View>
+    );
+  }
+}

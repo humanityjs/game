@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
   base: {
     fontFamily: 'Open Sans',
     fontWeight: '100',
+    color: '#333',
   },
 });
 

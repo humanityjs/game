@@ -94,6 +94,12 @@ class Hero {
     await this.save();
   }
 
+  @action 
+  async saveGeneral(data) {
+    Object.assign(this.hero, data);
+    await this.save();
+  }
+
   async save() {
     await db().child('heroes').child(this.hero.id).set(toJS(this.hero));
   }
