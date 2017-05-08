@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import SvgUri from 'react-native-svg-uri';
 import { observer } from 'mobx-react';
 import { observe } from 'mobx';
@@ -40,9 +40,6 @@ const styles = StyleSheet.create({
 
 @observer
 export default class extends Component {
-  static propTypes = {
-    navigation: PropTypes.shape(),
-  }
   constructor() {
     super();
 

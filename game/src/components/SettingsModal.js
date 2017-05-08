@@ -20,6 +20,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 50,
   },
+  conatainer: {
+    flex: 1,
+    marginTop: 100,
+    marginBottom: 100,
+    marginLeft: 50,
+    marginRight: 50,
+    backgroundColor: 'white',
+  },
 });
 
 const FIELDS = [{
@@ -88,7 +96,7 @@ export default observer(({ onHide }) => {
       transparent
       visible
     >
-      <View style={{ flex: 1, marginTop: 100, marginBottom: 100, marginLeft: 50, marginRight: 50, backgroundColor: 'white' }}>
+      <View style={styles.conatainer}>
         <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
           <Button
             style={{ backgroundColor: 'transparent' }}

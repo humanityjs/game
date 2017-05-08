@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-
 import { StyleSheet, View } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 import { capitalize, camelCase } from 'lodash';
@@ -28,25 +27,10 @@ const styles = StyleSheet.create({
 
 @observer
 class SkillsInfo extends Component {
-  constructor() {
-    super();
-
-    this.onNextPage = this.onNextPage.bind(this);
-    this.onPreviousPage = this.onPreviousPage.bind(this);
-  }
-  state = {
-    page: 0,
-  }
-  onNextPage() {
-    this.setState({ page: this.state.page + 1 });
-  }
-  onPreviousPage() {
-    this.setState({ page: this.state.page - 1 });
-  }
+  @observer page = 0;
   render() {
     const { hero } = heroStore;
     const { skills } = appStore.initData;
-    const { page } = this.state;
 
     const perPage = 5;
 
@@ -54,7 +38,7 @@ class SkillsInfo extends Component {
       <View style={[styles.infoBlock, { height: 190 }]}>
         <Text style={styles.title}>Skills</Text>
         {skills
-          .slice(page * perPage, (page * perPage) + perPage)
+          .slice(this.page * perPage, (this.page * perPage) + perPage)
           .map((skill) => {
             const heroSkill = hero.skills.find(item => item.skill === skill.id);
             return (
@@ -81,9 +65,9 @@ class SkillsInfo extends Component {
             <Text>To increase</Text>
             <Text style={{ marginLeft: 10 }}>{hero.numberOfSkills}</Text>
           </View> : null}
-        {this.state.page > 0 &&
+        {this.page > 0 &&
           <IconButton
-            onPress={this.onPreviousPage}
+            onPress={() => { this.page += 1; }}
             style={{ position: 'absolute', top: 10, right: 25 }}
           >
             <SvgUri
@@ -92,9 +76,9 @@ class SkillsInfo extends Component {
               source={require('../assets/images/left.svg')}
             />
           </IconButton>}
-        {(page + 1) * perPage < skills.length &&
+        {(this.page + 1) * perPage < skills.length &&
           <IconButton
-            onPress={this.onNextPage}
+            onPress={() => { this.page -= 1; }}
             style={{ position: 'absolute', top: 10, right: 10 }}
           >
             <SvgUri

@@ -38,7 +38,8 @@ export default class extends Component {
     const currentNav = appStore.currentNavs.inner;
 
     const items = [{
-      onPress: () => { 
+      key: 1,
+      onPress: () => {
         appStore.navigate('Hero');
         appStore.toggleMenu(false);
       },
@@ -47,6 +48,7 @@ export default class extends Component {
       width: 20,
       active: !currentNav || currentNav === 'Hero',
     }, {
+      key: 2,
       onPress: () => {
         appStore.navigate('Inventory');
         appStore.toggleMenu(false);
@@ -56,12 +58,14 @@ export default class extends Component {
       width: 16,
       active: currentNav === 'Inventory',
     }, {
+      key: 3,
       onPress: () => {
         this.onShowSettingsModal();
         appStore.toggleMenu(false);
       },
       image: require('../assets/images/cog.svg'),
     }, {
+      key: 4,
       onPress: () => {
         appStore.toggleMenu(false);
         authStore.logout();
@@ -79,9 +83,9 @@ export default class extends Component {
             source={require('../assets/images/logo-white.svg')}
           />
         </View>
-        {items.map((item, index) => (
+        {items.map(item => (
           <IconButton
-            key={index}
+            key={item.key}
             style={[styles.item, item.active ? { backgroundColor: '#21C064' } : null]}
             onPress={item.onPress}
           >
