@@ -1,4 +1,8 @@
-export function countHp(hp) {
+// @flow
+
+import type { HpType, ThingsType } from './types';
+
+export function countHp(hp: HpType): HpType {
   const now = new Date().getTime();
   const delay = 100;
 
@@ -18,7 +22,7 @@ export function countHp(hp) {
   return { current, time: new Date().getTime(), max };
 }
 
-export function getFeatureParam(orig, feature) {
+export function getFeatureParam(orig: number, feature: number): string {
   let output = '';
   if (orig - feature === 0) {
     return output;
@@ -36,7 +40,7 @@ export function getFeatureParam(orig, feature) {
   return output;
 }
 
-export function thingImageRequire(name) {
+export function thingImageRequire(name: string) {
   switch (name) {
     case 'gloves.png':
       return require('../assets/things/gloves.png');
@@ -48,7 +52,7 @@ export function thingImageRequire(name) {
   }
 }
 
-export function thingSlotImageRequire(type) {
+export function thingSlotImageRequire(type: string) {
   switch (type) {
     case 'gloves':
       return require('../assets/images/gloves.svg');
@@ -74,6 +78,6 @@ export function thingSlotImageRequire(type) {
   }
 }
 
-export function getThing(things, id) {
+export function getThing(things: Array<ThingsType>, id: string) {
   return things.find(item => item.id === id);
 }

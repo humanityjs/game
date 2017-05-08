@@ -1,3 +1,5 @@
+// @flow
+
 import { observable, action, computed, toJS } from 'mobx';
 import db from '../lib/db';
 
@@ -5,19 +7,21 @@ import { init as heroInit, updateFeature } from '../lib/hero-utils';
 
 import appStore from './app';
 
-class Hero {
-  @observable hero = null;
+import type { UserType, HeroType, HeroThingType } from '../lib/types';
 
-  @computed get undressedThings() {
+class Hero {
+  @observable hero: HeroType = null;
+
+  @computed get undressedThings(): Array<HeroThingType> {
     return this.hero.things.filter(item => !item.dressed);
   }
 
-  @computed get dressedThings() {
+  @computed get dressedThings(): Array<HeroThingType> {
     return this.hero.things.filter(item => item.dressed);
   }
 
   @action
-  async fetch(data) {
+  async fetch(data: UserType) {
     const ref = db().child('heroes').child(data.id);
     let hero = await ref.once('value');
     hero = hero.val();
@@ -37,7 +41,7 @@ class Hero {
   }
 
   @action
-  async increaseParameter(name) {
+  async increaseParameter(name: string) {
     this.hero[name] += 1;
     this.hero.numberOfParameters -= 1;
     updateFeature(this.hero, appStore.initData);
@@ -45,7 +49,7 @@ class Hero {
   }
 
   @action
-  async increaseAbility(name) {
+  async increaseAbility(name: string) {
     this.hero[name] += 1;
     this.hero.numberOfAbilities -= 1;
     updateFeature(this.hero, appStore.initData);
@@ -53,7 +57,7 @@ class Hero {
   }
 
   @action
-  async increaseSkill(id) {
+  async increaseSkill(id: string) {
     let heroSkill = this.hero.skills.find(item => item.skill === id);
 
     if (!heroSkill) {
@@ -73,14 +77,14 @@ class Hero {
   }
 
   @action
-  async removeThing(id) {
+  async removeThing(id: string) {
     const index = this.hero.things.findIndex(item => item.id === id);
     this.hero.things.splice(index, 1);
     await this.save();
   }
 
   @action
-  async dressUndressThing(dress, id) {
+  async dressUndressThing(dress: boolean, id: string) {
     const heroThing = this.hero.things.find(item => item.id === id);
     heroThing.dressed = dress;
     updateFeature(this.hero, appStore.initData);
@@ -89,13 +93,16 @@ class Hero {
 
   @action
   async undressThings() {
-    this.hero.things.forEach(item => (item.dressed = false));
+    this.hero.things.forEach((item) => {
+      const iitem = item;
+      iitem.dressed = false;
+    });
     updateFeature(this.hero, appStore.initData);
     await this.save();
   }
 
-  @action 
-  async saveGeneral(data) {
+  @action
+  async saveGeneral(data: HeroType) {
     Object.assign(this.hero, data);
     await this.save();
   }

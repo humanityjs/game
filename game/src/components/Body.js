@@ -155,7 +155,8 @@ const Body = observer(({ undressEnabled }) => (
           />
           {heroThing ?
             <TouchableOpacity
-              onPress={undressEnabled ? () => heroStore.dressUndressThing(false, heroThing.id) : null}
+              onPress={undressEnabled ?
+                () => heroStore.dressUndressThing(false, heroThing.id) : null}
               style={styles.slotThing}
             >
               <Image source={thingImageRequire(thing.image)} />

@@ -132,7 +132,9 @@ export default class extends Component {
               <Image
                 source={thingImageRequire(thing.image)}
               />
-              <Text style={{ marginTop: 5 }}>{heroThing.stabilityLeft} / {heroThing.stabilityAll}</Text>
+              <Text style={{ marginTop: 5 }}>
+                {heroThing.stabilityLeft} / {heroThing.stabilityAll}
+              </Text>
             </View>
             <View style={{ width: 170, marginLeft: 20 }}>
               <Text style={styles.itemTitle}>Requirments</Text>

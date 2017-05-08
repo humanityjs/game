@@ -1,3 +1,5 @@
+// @flow
+
 import { observable, computed, action } from 'mobx';
 import { AsyncStorage } from 'react-native';
 import { loginAndFetchData, logout } from '../lib/crud-utils';
@@ -5,12 +7,12 @@ import { loginAndFetchData, logout } from '../lib/crud-utils';
 import appStore from './app';
 import heroStore from './hero';
 
+import type { UserType } from '../lib/types';
+
 class Auth {
-  @observable user = null;
+  @observable user: UserType = null;
 
   constructor() {
-    this.login = this.login.bind(this);
-
     AsyncStorage.getItem('Id')
       .then((id) => {
         if (!id) return;
@@ -18,7 +20,7 @@ class Auth {
         this.prepare();
       });
   }
-  @computed get isLoggedIn() {
+  @computed get isLoggedIn(): boolean {
     return Boolean(this.user);
   }
 

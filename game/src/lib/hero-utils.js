@@ -1,10 +1,14 @@
+// @flow
+
 import config from './config';
 
-import { countHp } from '../lib/utils';
+import { countHp } from './utils';
+
+import type { HeroType, InitDataType, ThingType } from './types';
 
 const heroConfig = config.hero;
 
-export function updateFeature(hero, initData) {
+export function updateFeature(hero: HeroType, initData: InitDataType) {
   const { skills, things } = initData;
   const { feature } = hero;
 
@@ -124,7 +128,7 @@ export function updateFeature(hero, initData) {
   };
 }
 
-export function levelUp(hero, initData) {
+export function levelUp(hero: HeroType, initData: InitDataType) {
   const tableExperience = initData.tableExperience;
 
   const tableExperienceItems = tableExperience
@@ -133,16 +137,17 @@ export function levelUp(hero, initData) {
   if (!tableExperienceItems.length) return;
 
   tableExperienceItems.forEach((item) => {
-    hero.numberOfAbilities += item.numberOfAbilities;
-    hero.numberOfSkills += item.numberOfSkills;
-    hero.numberOfParameters += item.numberOfParameters;
+    const hhero = hero;
+    hhero.numberOfAbilities += item.numberOfAbilities;
+    hhero.numberOfSkills += item.numberOfSkills;
+    hhero.numberOfParameters += item.numberOfParameters;
 
-    hero.money += item.money;
-    hero.level++;
+    hhero.money += item.money;
+    hhero.level += 1;
   });
 }
 
-export function init(hero) {
+export function init(hero: HeroType) {
   Object.assign(hero, {
     login: 'Empty',
     level: -1,
@@ -188,7 +193,7 @@ export function init(hero) {
   updateFeature(hero);
 }
 
-export function thingCanBeDressed(hero, thing) {
+export function thingCanBeDressed(hero: HeroType, thing: ThingType): boolean {
   return (
     (!thing.levelNeed || thing.levelNeed <= hero.level) &&
     (!thing.strengthNeed || thing.strengthNeed <= hero.strength) &&
@@ -202,12 +207,4 @@ export function thingCanBeDressed(hero, thing) {
     (!thing.clubsNeed || thing.clubsNeed <= hero.clubs) &&
     (!thing.shieldsNeed || thing.shieldsNeed <= hero.shields)
   );
-}
-
-export function thingsCanBeDressed(hero, things) {
-  for (const thing of things) {
-    if (!this.thingCanBeDressed(hero, thing)) return false;
-  }
-
-  return true;
 }

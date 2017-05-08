@@ -1,16 +1,19 @@
+// @flow
 import { observable, action } from 'mobx';
-import { NavigationActions } from 'react-navigation'
 
 import db from '../lib/db';
+
+import type { InitDataType } from '../lib/types';
+
 class App {
-  @observable initData = {};
-  @observable overlay = false;
+  @observable initData: InitDataType = {};
+  @observable overlay: boolean = false;
   @observable currentNavs = {
     outer: null,
     inner: null,
   };
   navigationRefs = {};
-  menuRef = null;
+  menuRef: any = null;
 
   @action
   async fetchInitData() {
@@ -25,17 +28,17 @@ class App {
   }
 
   @action
-  setNavigationRef(ref, type) {
+  setNavigationRef(ref: any, type: string) {
     this.navigationRefs[type] = ref;
   }
 
   @action
-  setMenuRef(ref) {
+  setMenuRef(ref: any) {
     this.menuRef = ref;
   }
 
   @action
-  navigate(name, type = 'inner') {
+  navigate(name: string, type: string = 'inner') {
     if (name === this.currentNavs[type]) return;
 
     const exists = this.navigationRefs[type]._navigation.state.routes
@@ -49,11 +52,11 @@ class App {
     this.currentNavs[type] = name;
     if (type === 'outer') {
       this.currentNavs.inner = null;
-    } 
+    }
   }
 
   @action
-  toggleMenu(value) {
+  toggleMenu(value: boolean): void {
     if (value) {
       this.menuRef.open();
     } else {
@@ -62,7 +65,7 @@ class App {
   }
 
   @action
-  toggleOverlay(value) {
+  toggleOverlay(value: boolean): void {
     this.overlay = value;
   }
 }
