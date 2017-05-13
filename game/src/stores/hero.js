@@ -107,6 +107,13 @@ class Hero {
     await this.save();
   }
 
+  @action
+  async moveOnIsland(x: number, y: number) {
+    this.hero.location.coordinateX = x;
+    this.hero.location.coordinateY = y;
+    await this.save();
+  }
+
   async save() {
     await db().child('heroes').child(this.hero.id).set(toJS(this.hero));
   }

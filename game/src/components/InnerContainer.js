@@ -8,6 +8,7 @@ import Header from './Header';
 
 import HeroScreen from './HeroScreen';
 import InventoryScreen from './InventoryScreen';
+import IslandScreen from './IslandScreen';
 
 import appStore from '../stores/app';
 
@@ -20,6 +21,7 @@ const stackNavigatorConfig = {
 const Stack = StackNavigator({
   Hero: { screen: HeroScreen, navigationOptions: { gesturesEnabled: false } },
   Inventory: { screen: InventoryScreen, navigationOptions: { gesturesEnabled: false } },
+  Island: { screen: IslandScreen, navigationOptions: { gesturesEnabled: false } },
 }, stackNavigatorConfig);
 
 const styles = StyleSheet.create({

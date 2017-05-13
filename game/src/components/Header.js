@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 
 import { View } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
@@ -9,7 +10,7 @@ import TopInfo from './TopInfo';
 
 import appStore from '../stores/app';
 
-export default () => (
+export default observer(() => (
   <View style={{ position: 'relative' }}>
     <IconButton
       onPress={() => appStore.toggleMenu(true)}
@@ -29,5 +30,16 @@ export default () => (
         <TopInfo />
       </View>
     </View>
+    {appStore.currentNavs.inner !== 'Island' ?
+      <IconButton
+        style={{ position: 'absolute', right: 240, top: 10 }}
+        onPress={() => appStore.navigate('Island')}
+      >
+        <SvgUri
+          width="24"
+          height="24"
+          source={require('../assets/images/back.svg')}
+        />
+      </IconButton> : null}
   </View>
-);
+));

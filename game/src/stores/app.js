@@ -20,10 +20,13 @@ class App {
     const skills = await db().child('skills').once('value');
     const tableExperience = await db().child('tableExperience').once('value');
     const things = await db().child('things').once('value');
+    const islands = await db().child('islands').once('value');
+
     this.initData = {
       skills: skills.val(),
       tableExperience: tableExperience.val(),
       things: things.val(),
+      islands: islands.val(),
     };
   }
 
@@ -45,7 +48,7 @@ class App {
       .find(item => item.routeName === name);
 
     if (exists && name === 'Hero') {
-      this.navigationRefs[type]._navigation.goBack();
+      this.navigationRefs[type]._navigation.goBack('Hero');
     } else {
       this.navigationRefs[type]._navigation.navigate(name);
     }

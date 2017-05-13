@@ -15,7 +15,7 @@ type TableExperienceType = {
 export type InitDataType = {
   skills: Array<SkillType>,
   things: Array<ThingType>,
-  TableExperience: Array<TableExperienceType>,
+  tableExperience: Array<TableExperienceType>,
 };
 
 export type UserType = {
@@ -41,4 +41,8 @@ export type HeroType = {
   name: string,
   things: Array<HeroThingType>,
   hp: HpType,
+};
+
+export type IslandType = {
+  id: string,
 };

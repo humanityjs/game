@@ -5,7 +5,6 @@ export default {
       authDomain: 'butuzgol-game.firebaseio.com',
       apiKey: 'AIzaSyDxlqtfV70hd-tC6c7msqYzO1gbZ5jHIM0',
     },
-    islandMoveTime: 5,
   },
   hero: {
     default: {
@@ -57,4 +56,5 @@ export default {
       'blockCount',
     ],
   },
+  islandMoveTime: 5,
 };

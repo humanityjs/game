@@ -43,7 +43,7 @@
     "parser": "babel-eslint",
     "extends": "airbnb",
     "rules": {
-      "react/sort-comp": 0,
+      "react/sort-comp": 1,
       "react/jsx-filename-extension": 0,
       "react/require-default-props": 0,
       "no-underscore-dangle": 1,
