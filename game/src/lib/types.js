@@ -46,3 +46,7 @@ export type HeroType = {
 export type IslandType = {
   id: string,
 };
+
+export type BotType = {
+  id: string,
+};

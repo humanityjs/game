@@ -13,7 +13,7 @@ import IslandScreen from './IslandScreen';
 import appStore from '../stores/app';
 
 const stackNavigatorConfig = {
-  initialRouteName: 'Hero',
+  initialRouteName: 'Island',
   headerMode: 'none',
   cardStyle: { shadowOpacity: 0, backgroundColor: '#F2F2F2' },
 };

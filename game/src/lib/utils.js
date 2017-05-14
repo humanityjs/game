@@ -173,3 +173,7 @@ export function getThing(things: Array<ThingType>, id: string): ThingType {
 export function getIsland(islands: Array<IslandType>, id: string): IslandType {
   return islands.find(item => item.id === id);
 }
+
+export function mapObjToArray(obj: {}): Array {
+  return Object.keys(obj).map(key => obj[key]);
+}

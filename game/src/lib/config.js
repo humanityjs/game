@@ -1,7 +1,7 @@
 export default {
   base: {
     firebase: {
-      databaseURL: 'https://butuzgol-game.firebaseio.com/',
+      databaseURL: 'https://game-dev-7995e.firebaseio.com',
       authDomain: 'butuzgol-game.firebaseio.com',
       apiKey: 'AIzaSyDxlqtfV70hd-tC6c7msqYzO1gbZ5jHIM0',
     },

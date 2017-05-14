@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint src/**",
-    "flow": "node_modules/.bin/flow"
+    "flow": "node_modules/.bin/flow",
+    "data": "babel-node ./data/index.js"
   },
   "dependencies": {
     "firebase": "^3.7.4",

@@ -9,6 +9,7 @@ import Menu from './Menu';
 import LoginScreen from './LoginScreen';
 
 import InnerContainer from './InnerContainer';
+import CombatScreen from './CombatScreen';
 
 import authStore from '../stores/auth';
 import appStore from '../stores/app';
@@ -26,7 +27,13 @@ const stackNavigatorConfig = {
 const Stack = StackNavigator({
   Login: { screen: LoginScreen },
   Inner: { screen: InnerContainer, navigationOptions: { gesturesEnabled: false } },
+  Combat: { screen: CombatScreen, navigationOptions: { gesturesEnabled: false } },
 }, stackNavigatorConfig);
+
+// 1. Bot data
+// 2. Combat UI
+// 3. Start combat
+// 4. First attach
 
 const styles = StyleSheet.create({
   overlay: {

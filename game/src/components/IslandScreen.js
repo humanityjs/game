@@ -14,6 +14,7 @@ import IconButton from './shared/IconButton';
 
 import appStore from '../stores/app';
 import heroStore from '../stores/hero';
+import islandStore from '../stores/island';
 
 import { arrayContains, islandImageRequire, getMapMargin, getIsland } from '../lib/utils';
 
@@ -35,9 +36,9 @@ const styles = StyleSheet.create({
   heroesInfo: {
     backgroundColor: '#EAEAEA',
     width: 218,
-    height: 40,
     position: 'absolute',
     right: 2,
+    padding: 10,
   },
 });
 
@@ -62,6 +63,10 @@ export default class extends Component {
 
     this.onCancelMove = this.onCancelMove.bind(this);
   }
+  componentDidMount() {
+    const { coordinateX, coordinateY } = heroStore.hero.location;
+    islandStore.updateBots(coordinateX, coordinateY);
+  }
   onMove(x, y) {
     const island = getIsland(appStore.initData.islands, heroStore.hero.location.island);
     if (arrayContains(island.disabledCoordinates, [x, y])) return;
@@ -78,12 +83,65 @@ export default class extends Component {
       if (counter === 0) {
         clearInterval(this.moveInterval);
         heroStore.moveOnIsland(x, y);
+        islandStore.updateBots(x, y);
       }
     }, 1000);
   }
   onCancelMove() {
     clearInterval(this.moveInterval);
     this.moveTime = 0;
+  }
+  onCombat(id) {
+    heroStore.putInCombat(id);
+    appStore.navigate('Combat', 'outer');
+  }
+  renderPositionInfo() {
+    const { coordinateX, coordinateY } = heroStore.hero.location;
+    return (
+      <View style={styles.positionInfo}>
+        <Text>Position {coordinateX}:{coordinateY}</Text>
+        {this.moveTime ?
+          <View style={{ flexDirection: 'row' }}>
+            <Text>Left: {this.moveTime}</Text>
+            <IconButton style={{ marginTop: 4, marginLeft: 5 }} onPress={this.onCancelMove}>
+              <SvgUri
+                width="12"
+                height="12"
+                source={require('../assets/images/cross.svg')}
+              />
+            </IconButton>
+          </View> : null}
+      </View>
+    );
+  }
+  renderHeroesInfo() {
+    return (
+      <View style={styles.heroesInfo}>
+        <Text style={{ fontWeight: '400', marginBottom: 5 }}>Bots</Text>
+        {islandStore.bots.map(bot => (
+          <View key={bot.id} style={{ flexDirection: 'row' }}>
+            <Text>{bot.login} [{bot.level}]</Text>
+            <IconButton style={{ marginTop: 3, marginLeft: 5 }}>
+              <SvgUri
+                width="14"
+                height="14"
+                source={require('../assets/images/info.svg')}
+              />
+            </IconButton>
+            <IconButton
+              style={{ marginTop: 3, marginLeft: 5 }}
+              onPress={() => this.onCombat(bot.id)}
+            >
+              <SvgUri
+                width="14"
+                height="14"
+                source={require('../assets/images/fight.svg')}
+              />
+            </IconButton>
+          </View>
+        ))}
+      </View>
+    );
   }
   render() {
     const { hero } = heroStore;
@@ -155,21 +213,8 @@ export default class extends Component {
             }}
           />
         </View>
-        <View style={styles.positionInfo}>
-          <Text>Position {coordinateX}:{coordinateY}</Text>
-          {this.moveTime ?
-            <View style={{ flexDirection: 'row' }}>
-              <Text>Left: {this.moveTime}</Text>
-              <IconButton style={{ marginTop: 4, marginLeft: 5 }} onPress={this.onCancelMove}>
-                <SvgUri
-                  width="12"
-                  height="12"
-                  source={require('../assets/images/cross.svg')}
-                />
-              </IconButton>
-            </View> : null}
-        </View>
-        <View style={styles.heroesInfo} />
+        {this.renderPositionInfo()}
+        {this.renderHeroesInfo()}
       </View>
     );
   }

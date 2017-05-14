@@ -1,9 +1,9 @@
 // @flow
 
 import { observable, action, computed, toJS } from 'mobx';
-import db from '../lib/db';
 
-import { init as heroInit, updateFeature } from '../lib/hero-utils';
+import { getHero, saveHero } from '../lib/crud-utils';
+import { updateFeature } from '../lib/hero-utils';
 
 import appStore from './app';
 
@@ -22,14 +22,12 @@ class Hero {
 
   @action
   async fetch(data: UserType) {
-    const ref = db().child('heroes').child(data.id);
-    let hero = await ref.once('value');
-    hero = hero.val();
+    const hero = await getHero(data.id);
 
     if (!hero) {
-      hero = data;
-      heroInit(hero);
-      ref.set(hero);
+      // hero = data;
+      // heroInit(hero);
+      // ref.set(hero);
     } else {
       // TODO: firebase is [] ignores so we should add
       if (!hero.things) hero.things = [];
@@ -114,8 +112,13 @@ class Hero {
     await this.save();
   }
 
+  @action
+  async putInCombat(id: string) {
+
+  }
+
   async save() {
-    await db().child('heroes').child(this.hero.id).set(toJS(this.hero));
+    await saveHero(toJS(this.hero));
   }
 }
 

@@ -1,7 +1,7 @@
 // @flow
 import { observable, action } from 'mobx';
 
-import db from '../lib/db';
+import { getSkills, getTableExperience, getThings, getIslands } from '../lib/crud-utils';
 
 import type { InitDataType } from '../lib/types';
 
@@ -17,16 +17,11 @@ class App {
 
   @action
   async fetchInitData() {
-    const skills = await db().child('skills').once('value');
-    const tableExperience = await db().child('tableExperience').once('value');
-    const things = await db().child('things').once('value');
-    const islands = await db().child('islands').once('value');
-
     this.initData = {
-      skills: skills.val(),
-      tableExperience: tableExperience.val(),
-      things: things.val(),
-      islands: islands.val(),
+      skills: await getSkills(),
+      tableExperience: await getTableExperience(),
+      things: await getThings(),
+      islands: await getIslands(),
     };
   }
 
