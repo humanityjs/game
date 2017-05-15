@@ -50,3 +50,7 @@ export type IslandType = {
 export type BotType = {
   id: string,
 };
+
+export type CombatType = {
+  id: string,
+};

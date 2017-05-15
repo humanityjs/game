@@ -14,6 +14,7 @@ import Button from './shared/Button';
 import authStore from '../stores/auth';
 import heroStore from '../stores/hero';
 import appStore from '../stores/app';
+import combatStore from '../stores/combat';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,8 +44,10 @@ export default class extends Component {
   constructor() {
     super();
 
-    observe(heroStore, 'hero', () => {
-      appStore.navigate('Inner', 'outer');
+    observe(combatStore, 'combat', () => {
+      let navName = 'Inner';
+      if (combatStore.combat) navName = 'Combat';
+      appStore.navigate(navName, 'outer');
     });
   }
   render() {

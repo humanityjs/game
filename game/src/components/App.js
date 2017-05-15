@@ -30,11 +30,6 @@ const Stack = StackNavigator({
   Combat: { screen: CombatScreen, navigationOptions: { gesturesEnabled: false } },
 }, stackNavigatorConfig);
 
-// 1. Bot data
-// 2. Combat UI
-// 3. Start combat
-// 4. First attach
-
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',

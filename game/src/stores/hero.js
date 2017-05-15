@@ -2,7 +2,7 @@
 
 import { observable, action, computed, toJS } from 'mobx';
 
-import { getHero, saveHero } from '../lib/crud-utils';
+import { getHero, saveHero, newCombat } from '../lib/crud-utils';
 import { updateFeature } from '../lib/hero-utils';
 
 import appStore from './app';
@@ -114,7 +114,18 @@ class Hero {
 
   @action
   async putInCombat(id: string) {
+    const combat = {
+      location: this.hero.location,
+      warriors: [{
+        hero: this.hero.id,
+        team: 1,
+      }, {
+        bot: id,
+        team: 2,
+      }],
+    };
 
+    await newCombat(combat);
   }
 
   async save() {
