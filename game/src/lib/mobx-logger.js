@@ -3,9 +3,13 @@ import mobx from 'mobx';
 const DEFAULT_STYLE = 'color: #006d92; font-weight:bold;';
 
 // Utilities
-const repeat = (str, times) => (new Array(times + 1)).join(str);
+const repeat = (str, times) => new Array(times + 1).join(str);
 const pad = (num, maxLength) => repeat('0', maxLength - num.toString().length) + num;
-const formatTime = time => `${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(time.getSeconds(), 2)}.${pad(time.getMilliseconds(), 3)}`;
+const formatTime = time =>
+  `${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(time.getSeconds(), 2)}.${pad(
+    time.getMilliseconds(),
+    3,
+  )}`;
 
 // Just call this function after MobX initialization
 // As argument you can pass an object with:

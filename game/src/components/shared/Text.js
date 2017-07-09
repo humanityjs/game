@@ -9,11 +9,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const TextWrapper = ({ style, children }) => (
+const TextWrapper = ({ style, children }) =>
   <Text style={[styles.base, style]}>
     {children}
-  </Text>
-);
+  </Text>;
 
 TextWrapper.propTypes = {
   style: Text.propTypes.style,

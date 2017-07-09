@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 
 import Text from './shared/Text';
@@ -99,18 +94,19 @@ export default class extends Component {
     const { coordinateX, coordinateY } = heroStore.hero.location;
     return (
       <View style={styles.positionInfo}>
-        <Text>Position {coordinateX}:{coordinateY}</Text>
-        {this.moveTime ?
-          <View style={{ flexDirection: 'row' }}>
-            <Text>Left: {this.moveTime}</Text>
+        <Text>
+          Position {coordinateX}:{coordinateY}
+        </Text>
+        {this.moveTime
+          ? <View style={{ flexDirection: 'row' }}>
+            <Text>
+                Left: {this.moveTime}
+            </Text>
             <IconButton style={{ marginTop: 4, marginLeft: 5 }} onPress={this.onCancelMove}>
-              <SvgUri
-                width="12"
-                height="12"
-                source={require('../assets/images/cross.svg')}
-              />
+              <SvgUri width="12" height="12" source={require('../assets/images/cross.svg')} />
             </IconButton>
-          </View> : null}
+          </View>
+          : null}
       </View>
     );
   }
@@ -118,28 +114,22 @@ export default class extends Component {
     return (
       <View style={styles.heroesInfo}>
         <Text style={{ fontWeight: '400', marginBottom: 5 }}>Bots</Text>
-        {islandStore.bots.map(bot => (
+        {islandStore.bots.map(bot =>
           <View key={bot.id} style={{ flexDirection: 'row' }}>
-            <Text>{bot.login} [{bot.level}]</Text>
+            <Text>
+              {bot.login} [{bot.level}]
+            </Text>
             <IconButton style={{ marginTop: 3, marginLeft: 5 }}>
-              <SvgUri
-                width="14"
-                height="14"
-                source={require('../assets/images/info.svg')}
-              />
+              <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
             </IconButton>
             <IconButton
               style={{ marginTop: 3, marginLeft: 5 }}
               onPress={() => this.onCombat(bot.id)}
             >
-              <SvgUri
-                width="14"
-                height="14"
-                source={require('../assets/images/fight.svg')}
-              />
+              <SvgUri width="14" height="14" source={require('../assets/images/fight.svg')} />
             </IconButton>
-          </View>
-        ))}
+          </View>,
+        )}
       </View>
     );
   }
@@ -158,9 +148,9 @@ export default class extends Component {
     const squares = [];
 
     /* eslint-disable no-continue */
-    for (let x = coordinateX - 1; x < (coordinateX - 1) + 3; x += 1) {
+    for (let x = coordinateX - 1; x < coordinateX - 1 + 3; x += 1) {
       if (x < 0 || x > ISLAND_DIMENSIONS.width) continue;
-      for (let y = coordinateY - 1; y < (coordinateY - 1) + 3; y += 1) {
+      for (let y = coordinateY - 1; y < coordinateY - 1 + 3; y += 1) {
         if (y < 0 || y > ISLAND_DIMENSIONS.height) continue;
         if (x === coordinateX && y === coordinateY) continue;
 
@@ -171,8 +161,8 @@ export default class extends Component {
               backgroundColor: 'white',
               opacity: 0.2,
               position: 'absolute',
-              top: (y * SQUARE_WIDTH) - mapOffset.top,
-              left: (x * SQUARE_WIDTH) - mapOffset.left,
+              top: y * SQUARE_WIDTH - mapOffset.top,
+              left: x * SQUARE_WIDTH - mapOffset.left,
               width: SQUARE_WIDTH,
               height: SQUARE_WIDTH,
             }}
@@ -208,8 +198,8 @@ export default class extends Component {
             source={require('../assets/images/person.svg')}
             style={{
               position: 'absolute',
-              top: (coordinateY * SQUARE_WIDTH) - mapOffset.top - 8,
-              left: (coordinateX * SQUARE_WIDTH) - mapOffset.left - 2,
+              top: coordinateY * SQUARE_WIDTH - mapOffset.top - 8,
+              left: coordinateX * SQUARE_WIDTH - mapOffset.left - 2,
             }}
           />
         </View>

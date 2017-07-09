@@ -1,11 +1,6 @@
 // @flow
 
-import {
-  LoginManager,
-  AccessToken,
-  GraphRequest,
-  GraphRequestManager,
-} from 'react-native-fbsdk';
+import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 import db from './db';
 
@@ -48,19 +43,15 @@ export function fetchMe(accessToken: string) {
         resolve(result);
       },
     );
-    new GraphRequestManager()
-      .addRequest(infoRequest)
-      .start();
+    new GraphRequestManager().addRequest(infoRequest).start();
   });
 }
 
 export function loginAndFetchData() {
-  return login()
-    .then((result) => {
-      if (result.isCancelled) return null;
-      return fetchAccessToken()
-        .then(rresult => fetchMe(rresult.accessToken));
-    });
+  return login().then((result) => {
+    if (result.isCancelled) return null;
+    return fetchAccessToken().then(rresult => fetchMe(rresult.accessToken));
+  });
 }
 
 export function logout() {
@@ -98,10 +89,7 @@ export async function getBot(id: string): BotType {
 }
 
 export async function saveHero(hero: HeroType) {
-  await db()
-    .child('heroes')
-    .child(hero.id)
-    .set(hero);
+  await db().child('heroes').child(hero.id).set(hero);
 }
 
 export async function getBotsOnIsland(x: number, y: number): Array<BotType> {
@@ -118,32 +106,29 @@ export async function getBotsOnIsland(x: number, y: number): Array<BotType> {
 }
 
 export async function newCombat(combat: CombatType) {
-  await db()
-    .child('combats')
-    .push(mapCombat({
+  await db().child('combats').push(
+    mapCombat({
       injury: 'middle',
       timeout: 60,
       type: 'territorial',
       status: 'fight',
       created: new Date().getTime(),
       ...combat,
-    }));
+    }),
+  );
 }
 
 export async function getActiveHeroCombat(id: string): CombatType {
-  const combatsRef = await db()
-    .child('combats')
-    .orderByChild(`warriors/${id}`)
-    .once('value');
+  const combatsRef = await db().child('combats').orderByChild(`warriors/${id}`).once('value');
 
   const combats = combatsRef.val();
   if (!combats) return null;
 
-  let combat = mapObjToArray(combats)
-    .find(item =>
+  let combat = mapObjToArray(combats).find(
+    item =>
       (item.status === 'fight' || item.status === 'afterfight') &&
-      !mapObjToArray(item.warriors).find(warrior => warrior.warrior === id).isQuote
-    );
+      !mapObjToArray(item.warriors).find(warrior => warrior.warrior === id).isQuote,
+  );
 
   if (!combat) return null;
 
@@ -152,15 +137,12 @@ export async function getActiveHeroCombat(id: string): CombatType {
   combat = mapCombat(combat);
 
   for (const item of combat.warriors) {
-    item._warrior = (!item.isBot) ? await getHero(item.warrior) : await getBot(item.warrior);
+    item._warrior = !item.isBot ? await getHero(item.warrior) : await getBot(item.warrior);
   }
 
   return combat;
 }
 
 export async function saveCombat(combat: CombatType) {
-  await db()
-    .child('combats')
-    .child(combat.id)
-    .set(mapCombat(combat));
+  await db().child('combats').child(combat.id).set(mapCombat(combat));
 }

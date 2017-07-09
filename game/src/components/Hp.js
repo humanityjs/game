@@ -38,7 +38,7 @@ export default class extends Component {
   static propTypes = {
     updateHp: PropTypes.bool,
     warrior: PropTypes.shape(),
-  }
+  };
   constructor(props) {
     super();
 
@@ -88,11 +88,15 @@ export default class extends Component {
     return (
       <View style={styles.wrapper}>
         <View style={styles.nameWrapper}>
-          <Text style={styles.name}>{warrior.login} </Text>
-          <Text style={styles.level}>[{warrior.level}]</Text>
+          <Text style={styles.name}>
+            {warrior.login}{' '}
+          </Text>
+          <Text style={styles.level}>
+            [{warrior.level}]
+          </Text>
         </View>
         <View style={styles.hpWrapper}>
-          <View style={[styles.hp, { width: `${(hpReady * 100)}%` }]} />
+          <View style={[styles.hp, { width: `${hpReady * 100}%` }]} />
         </View>
       </View>
     );

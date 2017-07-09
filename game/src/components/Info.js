@@ -37,55 +37,52 @@ class SkillsInfo extends Component {
     return (
       <View style={[styles.infoBlock, { height: 190 }]}>
         <Text style={styles.title}>Skills</Text>
-        {skills
-          .slice(this.page * perPage, (this.page * perPage) + perPage)
-          .map((skill) => {
-            const heroSkill = hero.skills.find(item => item.skill === skill.id);
-            return (
-              <View key={`${skill.id}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-                <Text style={{ width: 75 }}>{skill.name}</Text>
-                <Text>{heroSkill ? heroSkill.level : 0}</Text>
-                {hero.numberOfSkills ?
-                  <IconButton
-                    onPress={() => heroStore.increaseSkill(skill.id)}
-                    style={{ marginTop: 2, marginLeft: 8 }}
-                  >
-                    <SvgUri
-                      width="14"
-                      height="14"
-                      source={require('../assets/images/plus.svg')}
-                    />
-                  </IconButton> : null}
-              </View>
-            );
-          })
-        }
-        {hero.numberOfSkills ?
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+        {skills.slice(this.page * perPage, this.page * perPage + perPage).map((skill) => {
+          const heroSkill = hero.skills.find(item => item.skill === skill.id);
+          return (
+            <View key={`${skill.id}`} style={{ flexDirection: 'row', marginTop: 2 }}>
+              <Text style={{ width: 75 }}>
+                {skill.name}
+              </Text>
+              <Text>
+                {heroSkill ? heroSkill.level : 0}
+              </Text>
+              {hero.numberOfSkills
+                ? <IconButton
+                  onPress={() => heroStore.increaseSkill(skill.id)}
+                  style={{ marginTop: 2, marginLeft: 8 }}
+                >
+                  <SvgUri width="14" height="14" source={require('../assets/images/plus.svg')} />
+                </IconButton>
+                : null}
+            </View>
+          );
+        })}
+        {hero.numberOfSkills
+          ? <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text>To increase</Text>
-            <Text style={{ marginLeft: 10 }}>{hero.numberOfSkills}</Text>
-          </View> : null}
+            <Text style={{ marginLeft: 10 }}>
+              {hero.numberOfSkills}
+            </Text>
+          </View>
+          : null}
         {this.page > 0 &&
           <IconButton
-            onPress={() => { this.page += 1; }}
+            onPress={() => {
+              this.page += 1;
+            }}
             style={{ position: 'absolute', top: 10, right: 25 }}
           >
-            <SvgUri
-              width="14"
-              height="14"
-              source={require('../assets/images/left.svg')}
-            />
+            <SvgUri width="14" height="14" source={require('../assets/images/left.svg')} />
           </IconButton>}
         {(this.page + 1) * perPage < skills.length &&
           <IconButton
-            onPress={() => { this.page -= 1; }}
+            onPress={() => {
+              this.page -= 1;
+            }}
             style={{ position: 'absolute', top: 10, right: 10 }}
           >
-            <SvgUri
-              width="14"
-              height="14"
-              source={require('../assets/images/right.svg')}
-            />
+            <SvgUri width="14" height="14" source={require('../assets/images/right.svg')} />
           </IconButton>}
       </View>
     );
@@ -95,52 +92,52 @@ class SkillsInfo extends Component {
 export default observer(() => {
   const { hero } = heroStore;
 
-  const tableExperienceItem = appStore.initData.tableExperience
-    .find(item => item.experience > hero.experience);
+  const tableExperienceItem = appStore.initData.tableExperience.find(
+    item => item.experience > hero.experience,
+  );
 
   return (
     <View style={{ flexDirection: 'row' }}>
       <View>
         <View style={[styles.infoBlock, { height: 170 }]}>
           <Text style={styles.title}>Parameters</Text>
-          {['strength',
-            'dexterity',
-            'intuition',
-            'health',
-          ].map(item => (
+          {['strength', 'dexterity', 'intuition', 'health'].map(item =>
             <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>{capitalize(item)}</Text>
-              <Text>{hero[item]} {getFeatureParam(hero[item], hero.feature[item])}</Text>
+              <Text style={{ width: 75 }}>
+                {capitalize(item)}
+              </Text>
+              <Text>
+                {hero[item]} {getFeatureParam(hero[item], hero.feature[item])}
+              </Text>
               {hero.numberOfParameters &&
                 <IconButton
                   onPress={() => heroStore.increaseParameter(item)}
                   style={{ marginTop: 2, marginLeft: 8 }}
                 >
-                  <SvgUri
-                    width="14"
-                    height="14"
-                    source={require('../assets/images/plus.svg')}
-                  />
+                  <SvgUri width="14" height="14" source={require('../assets/images/plus.svg')} />
                 </IconButton>}
-            </View>
-          ))}
+            </View>,
+          )}
           {hero.numberOfParameters &&
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text>To increase</Text>
-              <Text style={{ marginLeft: 10 }}>{hero.numberOfParameters}</Text>
+              <Text style={{ marginLeft: 10 }}>
+                {hero.numberOfParameters}
+              </Text>
             </View>}
         </View>
         <View style={[styles.infoBlock, { marginTop: 20, height: 145 }]}>
           <Text style={styles.title}>Info</Text>
-          {['wins',
-            'losses',
-            'draws',
-          ].map(item => (
+          {['wins', 'losses', 'draws'].map(item =>
             <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>{capitalize(item)}</Text>
-              <Text>{hero[`numberOf${capitalize(item)}`]}</Text>
-            </View>
-          ))}
+              <Text style={{ width: 75 }}>
+                {capitalize(item)}
+              </Text>
+              <Text>
+                {hero[`numberOf${capitalize(item)}`]}
+              </Text>
+            </View>,
+          )}
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <Text>Experience</Text>
             <Text style={{ marginLeft: 10 }}>
@@ -152,68 +149,65 @@ export default observer(() => {
       <View style={{ marginLeft: 20 }}>
         <View style={[styles.infoBlock, { height: 160 }]}>
           <Text style={styles.title}>Modifiers</Text>
-          {['dodge',
-            'accuracy',
-            'devastate',
-            'block break',
-            'armor break',
-          ].map(item => (
+          {['dodge', 'accuracy', 'devastate', 'block break', 'armor break'].map(item =>
             <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 95 }}>{capitalize(item)}</Text>
-              <Text>{hero.feature[camelCase(item)]}%</Text>
-            </View>
-          ))}
+              <Text style={{ width: 95 }}>
+                {capitalize(item)}
+              </Text>
+              <Text>
+                {hero.feature[camelCase(item)]}%
+              </Text>
+            </View>,
+          )}
         </View>
         <View style={[styles.infoBlock, { marginTop: 20, height: 205 }]}>
           <Text style={styles.title}>Damage & Protection</Text>
           <View style={{ flexDirection: 'row', marginTop: 2 }}>
             <Text style={{ width: 75 }}>Damage</Text>
-            <Text>{hero.feature.damageMin} - {hero.feature.damageMax}</Text>
+            <Text>
+              {hero.feature.damageMin} - {hero.feature.damageMax}
+            </Text>
           </View>
           <Text style={{ fontWeight: '400', marginTop: 5 }}>Protection</Text>
-          {['head',
-            'breast',
-            'belly',
-            'groin',
-            'legs',
-          ].map(item => (
+          {['head', 'breast', 'belly', 'groin', 'legs'].map(item =>
             <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>{capitalize(item)}</Text>
-              <Text>{hero.feature[`protection${capitalize(item)}`]}</Text>
-            </View>
-          ))}
+              <Text style={{ width: 75 }}>
+                {capitalize(item)}
+              </Text>
+              <Text>
+                {hero.feature[`protection${capitalize(item)}`]}
+              </Text>
+            </View>,
+          )}
         </View>
       </View>
       <View style={{ marginLeft: 20 }}>
         <SkillsInfo hero={hero} />
         <View style={[styles.infoBlock, { marginTop: 20, height: 190 }]}>
           <Text style={styles.title}>Abilities</Text>
-          {['swords',
-            'axes',
-            'knives',
-            'clubs',
-            'shields',
-          ].map(item => (
+          {['swords', 'axes', 'knives', 'clubs', 'shields'].map(item =>
             <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>{capitalize(item)}</Text>
-              <Text>{hero[item]}</Text>
+              <Text style={{ width: 75 }}>
+                {capitalize(item)}
+              </Text>
+              <Text>
+                {hero[item]}
+              </Text>
               {hero.numberOfAbilities &&
                 <IconButton
                   onPress={() => heroStore.increaseAbility(item)}
                   style={{ marginTop: 2, marginLeft: 8 }}
                 >
-                  <SvgUri
-                    width="14"
-                    height="14"
-                    source={require('../assets/images/plus.svg')}
-                  />
+                  <SvgUri width="14" height="14" source={require('../assets/images/plus.svg')} />
                 </IconButton>}
-            </View>
-          ))}
+            </View>,
+          )}
           {hero.numberOfAbilities &&
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text>To increase</Text>
-              <Text style={{ marginLeft: 10 }}>{hero.numberOfAbilities}</Text>
+              <Text style={{ marginLeft: 10 }}>
+                {hero.numberOfAbilities}
+              </Text>
             </View>}
         </View>
       </View>

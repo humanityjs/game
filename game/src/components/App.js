@@ -24,11 +24,14 @@ const stackNavigatorConfig = {
   cardStyle: { backgroundColor: 'transparent', shadowOpacity: 0 },
 };
 
-const Stack = StackNavigator({
-  Login: { screen: LoginScreen },
-  Inner: { screen: InnerContainer, navigationOptions: { gesturesEnabled: false } },
-  Combat: { screen: CombatScreen, navigationOptions: { gesturesEnabled: false } },
-}, stackNavigatorConfig);
+const Stack = StackNavigator(
+  {
+    Login: { screen: LoginScreen },
+    Inner: { screen: InnerContainer, navigationOptions: { gesturesEnabled: false } },
+    Combat: { screen: CombatScreen, navigationOptions: { gesturesEnabled: false } },
+  },
+  stackNavigatorConfig,
+);
 
 const styles = StyleSheet.create({
   overlay: {
@@ -42,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(() => (
+export default observer(() =>
   <View style={{ flex: 1 }}>
     <Drawer
       type="static"
@@ -61,5 +64,5 @@ export default observer(() => (
       </View>
     </Drawer>
     {appStore.overlay ? <View style={styles.overlay} /> : null}
-  </View>
-));
+  </View>,
+);

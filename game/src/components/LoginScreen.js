@@ -3,11 +3,7 @@ import SvgUri from 'react-native-svg-uri';
 import { observer } from 'mobx-react';
 import { observe } from 'mobx';
 
-import {
-  StyleSheet,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 
 import Button from './shared/Button';
 
@@ -53,11 +49,7 @@ export default class extends Component {
     return (
       <View style={styles.container}>
         <View style={{ marginTop: -255, alignItems: 'center' }}>
-          <SvgUri
-            width="192"
-            height="255"
-            source={require('../assets/images/logo.svg')}
-          />
+          <SvgUri width="192" height="255" source={require('../assets/images/logo.svg')} />
           <Button
             style={{
               backgroundColor: '#4267B2',
@@ -69,14 +61,15 @@ export default class extends Component {
               fontSize: 15,
             }}
             onPress={authStore.login}
-          >Sign In with FaceBook</Button>
+          >
+            Sign In with FaceBook
+          </Button>
         </View>
 
         {authStore.isLoggedIn &&
           <View style={styles.overlay}>
             <ActivityIndicator style={styles.loading} />
-          </View>
-        }
+          </View>}
       </View>
     );
   }

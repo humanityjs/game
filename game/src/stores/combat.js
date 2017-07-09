@@ -26,8 +26,9 @@ class Combat {
 
     const warrior = findCombatWarrior(this.combat, warriorId)._warrior;
 
-    const tableExperienceItem = appStore.initData.tableExperience
-      .find(item => item.experience > hero.experience);
+    const tableExperienceItem = appStore.initData.tableExperience.find(
+      item => item.experience > hero.experience,
+    );
 
     // dodge уворот
     // accuracy точность
@@ -53,8 +54,7 @@ class Combat {
         attackWarrior = hero;
         blockWarrior = warrior;
       } else {
-        setStrikes = range(warrior.feature.strikeCount)
-          .map(() => random(0, 4));
+        setStrikes = range(warrior.feature.strikeCount).map(() => random(0, 4));
         setBlocks = blocks;
 
         attackWarrior = warrior;
@@ -66,14 +66,18 @@ class Combat {
 
       setStrikes.forEach((strike) => {
         const block = setBlocks.includes(strike);
-        const dodge = range(attackWarrior.feature.accuracy - blockWarrior.feature.dodge)
-          .includes(random(config.combatRange.accuracy));
-        const devastate = range(attackWarrior.feature.devastate - blockWarrior.feature.durability)
-          .includes(random(config.combatRange.devastate));
-        const blockBreak = range(attackWarrior.feature.blockBreak)
-          .includes(random(config.combatRange.blockBreak));
-        const armorBreak = range(attackWarrior.feature.armorBreak)
-          .includes(random(config.combatRange.armorBreak));
+        const dodge = range(attackWarrior.feature.accuracy - blockWarrior.feature.dodge).includes(
+          random(config.combatRange.accuracy),
+        );
+        const devastate = range(
+          attackWarrior.feature.devastate - blockWarrior.feature.durability,
+        ).includes(random(config.combatRange.devastate));
+        const blockBreak = range(attackWarrior.feature.blockBreak).includes(
+          random(config.combatRange.blockBreak),
+        );
+        const armorBreak = range(attackWarrior.feature.armorBreak).includes(
+          random(config.combatRange.armorBreak),
+        );
 
         const damage = random(attackWarrior.feature.damageMin, attackWarrior.feature.damageMax);
 
@@ -99,8 +103,7 @@ class Combat {
 
         let strikeDamage;
         if (!armorBreak) {
-          strikeDamage =
-          damage - damage * (protection / config.combatRange.damage / 100.0);
+          strikeDamage = damage - damage * (protection / config.combatRange.damage / 100.0);
         } else {
           strikeDamage = damage;
         }

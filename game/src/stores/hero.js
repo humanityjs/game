@@ -13,11 +13,13 @@ import type { UserType, HeroType, HeroThingType } from '../lib/types';
 class Hero {
   @observable hero: HeroType = null;
 
-  @computed get undressedThings(): Array<HeroThingType> {
+  @computed
+  get undressedThings(): Array<HeroThingType> {
     return this.hero.things.filter(item => !item.dressed);
   }
 
-  @computed get dressedThings(): Array<HeroThingType> {
+  @computed
+  get dressedThings(): Array<HeroThingType> {
     return this.hero.things.filter(item => item.dressed);
   }
 
@@ -117,14 +119,17 @@ class Hero {
   async putInCombat(id: string) {
     const combat = {
       location: this.hero.location,
-      warriors: [{
-        warrior: this.hero.id,
-        team: 1,
-      }, {
-        warrior: id,
-        isBot: true,
-        team: 2,
-      }],
+      warriors: [
+        {
+          warrior: this.hero.id,
+          team: 1,
+        },
+        {
+          warrior: id,
+          isBot: true,
+          team: 2,
+        },
+      ],
     };
 
     await this.updateHp();
@@ -140,6 +145,5 @@ class Hero {
     await saveHero(toJS(this.hero));
   }
 }
-
 
 export default new Hero();

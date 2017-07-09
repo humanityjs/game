@@ -14,14 +14,14 @@ class Auth {
   @observable user: UserType = null;
 
   constructor() {
-    AsyncStorage.getItem('Id')
-      .then((id) => {
-        if (!id) return;
-        this.user = { id };
-        this.prepare();
-      });
+    AsyncStorage.getItem('Id').then((id) => {
+      if (!id) return;
+      this.user = { id };
+      this.prepare();
+    });
   }
-  @computed get isLoggedIn(): boolean {
+  @computed
+  get isLoggedIn(): boolean {
     return Boolean(this.user);
   }
 
@@ -45,7 +45,6 @@ class Auth {
     await heroStore.fetch(this.user);
     await combatStore.fetch(this.user.id);
   }
-
 }
 
 export default new Auth();

@@ -74,11 +74,10 @@ export default class extends Component {
     const { placeholder, style } = this.props;
 
     return (
-      <TouchableOpacity
-        onPress={this.showPicker}
-        style={[styles.picker, style]}
-      >
-        <Text style={styles.text}>{this.getLebel() || placeholder || ''}</Text>
+      <TouchableOpacity onPress={this.showPicker} style={[styles.picker, style]}>
+        <Text style={styles.text}>
+          {this.getLebel() || placeholder || ''}
+        </Text>
         <SvgUri
           width="18"
           height="12"

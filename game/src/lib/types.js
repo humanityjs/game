@@ -17,7 +17,7 @@ type TableExperienceType = {
   numberOfAbilities: number,
   numberOfSkills: number,
   money: number,
-}
+};
 
 export type InitDataType = {
   skills: Array<SkillType>,
@@ -41,7 +41,7 @@ export type HpType = {
   current: number,
   time: number,
   max: number,
-}
+};
 
 export type HeroType = {
   id: string,
@@ -85,7 +85,7 @@ type CombatLogWarrior = {
   }>,
   blocks: Array<number>,
   experience: number,
-}
+};
 
 type CombatLogType = {
   warriorOne: CombatLogWarrior,

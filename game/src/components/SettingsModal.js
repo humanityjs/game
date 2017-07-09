@@ -30,19 +30,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const FIELDS = [{
-  key: 'name',
-  type: 'TEXT',
-  label: 'FULL NAME',
-}, {
-  key: 'email',
-  type: 'EMAIL',
-  label: 'EMAIL',
-}, {
-  key: 'about',
-  type: 'TEXTAREA',
-  label: 'ABOUT',
-}];
+const FIELDS = [
+  {
+    key: 'name',
+    type: 'TEXT',
+    label: 'FULL NAME',
+  },
+  {
+    key: 'email',
+    type: 'EMAIL',
+    label: 'EMAIL',
+  },
+  {
+    key: 'about',
+    type: 'TEXTAREA',
+    label: 'ABOUT',
+  },
+];
 
 @observer
 class FieldValue extends Component {
@@ -51,7 +55,7 @@ class FieldValue extends Component {
     value: PropTypes.string,
     type: PropTypes.oneOf(['EMAIL', 'TEXT', 'TEXTAREA']).isRequired,
     onChange: PropTypes.func.isRequired,
-  }
+  };
   constructor(props) {
     super();
 
@@ -83,7 +87,8 @@ class FieldValue extends Component {
             value={this.value}
           />
         );
-      default: return null;
+      default:
+        return null;
     }
   }
 }
@@ -91,39 +96,38 @@ class FieldValue extends Component {
 export default observer(({ onHide }) => {
   const data = {};
   return (
-    <Modal
-      animationType="slide"
-      transparent
-      visible
-    >
+    <Modal animationType="slide" transparent visible>
       <View style={styles.conatainer}>
         <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
           <Button
             style={{ backgroundColor: 'transparent' }}
             textStyle={{ color: '#333' }}
             onPress={onHide}
-          >CLOSE</Button>
+          >
+            CLOSE
+          </Button>
           <Text style={{ fontSize: 17 }}>Edit Profile</Text>
           <Button
             style={{ backgroundColor: 'transparent' }}
             textStyle={{ color: '#333' }}
             onPress={() => heroStore.saveGeneral(data)}
-          >SAVE</Button>
+          >
+            SAVE
+          </Button>
         </View>
         <View style={{ marginTop: 10 }}>
-          {FIELDS.map(item => (
-            <View
-              key={item.key}
-              style={[styles.line, item.type === 'TEXTAREA' && { height: 150 }]}
-            >
-              <Text style={{ paddingTop: 15 }}>{item.label}</Text>
+          {FIELDS.map(item =>
+            <View key={item.key} style={[styles.line, item.type === 'TEXTAREA' && { height: 150 }]}>
+              <Text style={{ paddingTop: 15 }}>
+                {item.label}
+              </Text>
               <FieldValue
                 value={heroStore.hero[item.key]}
                 type={item.type}
                 onChange={value => (data[item.key] = value)}
               />
-            </View>
-          ))}
+            </View>,
+          )}
         </View>
       </View>
     </Modal>

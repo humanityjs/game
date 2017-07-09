@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { StyleSheet, View, ScrollView, Image } from 'react-native';
 
 import { capitalize } from 'lodash';
 
@@ -63,7 +58,9 @@ export default class extends Component {
         <Button
           disabled={!heroStore.dressedThings.length}
           onPress={() => heroStore.undressThings()}
-        >UNDRESS</Button>
+        >
+          UNDRESS
+        </Button>
         <Picker
           style={{ marginLeft: 20 }}
           data={FILTERS}
@@ -82,16 +79,28 @@ export default class extends Component {
       if (typeof value === 'undefined' || !value) return null;
 
       return (
-        <Text key={key}>{key}{' '}
-          {safe === false ? <Text style={{ color: '#E85349' }}>{value}</Text> : value}
+        <Text key={key}>
+          {key}{' '}
+          {safe === false
+            ? <Text style={{ color: '#E85349' }}>
+              {value}
+            </Text>
+            : value}
         </Text>
       );
     }
 
     const needItems = [
       'levelNeed',
-      'strengthNeed', 'dexterityNeed', 'intuitionNeed', 'healthNeed',
-      'swordsNeed', 'axesNeed', 'knivesNeed', 'clubsNeed', 'shieldsNeed',
+      'strengthNeed',
+      'dexterityNeed',
+      'intuitionNeed',
+      'healthNeed',
+      'swordsNeed',
+      'axesNeed',
+      'knivesNeed',
+      'clubsNeed',
+      'shieldsNeed',
     ].map((item) => {
       const key = item.replace('Need', '');
       const label = capitalize(key);
@@ -100,14 +109,31 @@ export default class extends Component {
     });
 
     const giveItems = [
-      'strengthGive', 'dexterityGive', 'intuitionGive', 'healthGive',
-      'swordsGive', 'axesGive', 'knivesGive', 'clubsGive', 'shieldsGive',
-      'damageMin', 'damageMax',
-      'protectionHead', 'protectionBreast', 'protectionBelly', 'protectionGroin', 'protectionLegs',
-      'accuracy', 'dodge', 'devastate', 'durability',
-      'blockBreak', 'armorBreak',
+      'strengthGive',
+      'dexterityGive',
+      'intuitionGive',
+      'healthGive',
+      'swordsGive',
+      'axesGive',
+      'knivesGive',
+      'clubsGive',
+      'shieldsGive',
+      'damageMin',
+      'damageMax',
+      'protectionHead',
+      'protectionBreast',
+      'protectionBelly',
+      'protectionGroin',
+      'protectionLegs',
+      'accuracy',
+      'dodge',
+      'devastate',
+      'durability',
+      'blockBreak',
+      'armorBreak',
       'hp',
-      'strikeCount', 'blockCount',
+      'strikeCount',
+      'blockCount',
       'capacity',
       'isTwoHands',
       'timeDuration',
@@ -117,21 +143,22 @@ export default class extends Component {
     });
 
     return (
-      <View
-        key={heroThing.id}
-        style={[styles.itemWrapper, index > 0 && { marginTop: 20 }]}
-      >
+      <View key={heroThing.id} style={[styles.itemWrapper, index > 0 && { marginTop: 20 }]}>
         <View>
-          <Text style={{ fontSize: 18 }}>{thing.name}</Text>
+          <Text style={{ fontSize: 18 }}>
+            {thing.name}
+          </Text>
           <View style={{ flexDirection: 'row' }}>
-            <Text>Money {thing.price}</Text>
-            <Text style={{ marginLeft: 10 }}>Capacity {thing.capacity}</Text>
+            <Text>
+              Money {thing.price}
+            </Text>
+            <Text style={{ marginLeft: 10 }}>
+              Capacity {thing.capacity}
+            </Text>
           </View>
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <View style={{ width: 80, alignItems: 'center', marginTop: 5 }}>
-              <Image
-                source={thingImageRequire(thing.image)}
-              />
+              <Image source={thingImageRequire(thing.image)} />
               <Text style={{ marginTop: 5 }}>
                 {heroThing.stabilityLeft} / {heroThing.stabilityAll}
               </Text>
@@ -152,7 +179,9 @@ export default class extends Component {
           <Button
             onPress={() => heroStore.removeThing(heroThing.id)}
             style={{ backgroundColor: '#E85349', marginTop: 10 }}
-          >REMOVE</Button>
+          >
+            REMOVE
+          </Button>
         </View>
       </View>
     );

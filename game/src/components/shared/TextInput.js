@@ -11,9 +11,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const TextInputWrapper = ({ style, ...props }) => (
-  <TextInput style={[styles.base, style]} {...props} />
-);
+const TextInputWrapper = ({ style, ...props }) =>
+  <TextInput style={[styles.base, style]} {...props} />;
 
 TextInputWrapper.propTypes = {
   style: TextInput.propTypes.style,

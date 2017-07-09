@@ -8,7 +8,8 @@ import type { InitDataType } from '../lib/types';
 class App {
   @observable initData: InitDataType = {};
   @observable overlay: boolean = false;
-  @observable currentNavs = {
+  @observable
+  currentNavs = {
     outer: null,
     inner: null,
   };
@@ -39,8 +40,9 @@ class App {
   navigate(name: string, type: string = 'inner') {
     if (name === this.currentNavs[type]) return;
 
-    const exists = this.navigationRefs[type]._navigation.state.routes
-      .find(item => item.routeName === name);
+    const exists = this.navigationRefs[type]._navigation.state.routes.find(
+      item => item.routeName === name,
+    );
 
     if (exists && name === 'Hero') {
       this.navigationRefs[type]._navigation.goBack('Hero');
@@ -67,6 +69,5 @@ class App {
     this.overlay = value;
   }
 }
-
 
 export default new App();

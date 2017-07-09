@@ -37,9 +37,7 @@
     "flow-bin": "^0.42.0"
   },
   "rnpm": {
-    "assets": [
-      "./node_modules/npm-font-open-sans/fonts"
-    ]
+    "assets": ["./node_modules/npm-font-open-sans/fonts"]
   },
   "eslintConfig": {
     "parser": "babel-eslint",

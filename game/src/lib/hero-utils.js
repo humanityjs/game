@@ -43,11 +43,13 @@ export function updateFeature(hero: HeroType, initData: InitDataType) {
   feature.strikeCount = heroConfig.default.strikeCount;
   feature.blockCount = heroConfig.default.blockCount;
 
-  const hp = feature.hp ? countHp(feature.hp) : {
-    current: 0,
-    max: 0,
-    time: new Date().getTime(),
-  };
+  const hp = feature.hp
+    ? countHp(feature.hp)
+    : {
+      current: 0,
+      max: 0,
+      time: new Date().getTime(),
+    };
   const capacity = feature.capacity || {
     current: 0,
     max: 0,
@@ -65,40 +67,52 @@ export function updateFeature(hero: HeroType, initData: InitDataType) {
   });
 
   // Things
-  hero.things
-    .filter(item => item.dressed)
-    .forEach((heroThing) => {
-      const thing = things.find(item => item.id === heroThing.id);
-      [
-        'strengthGive', 'dexterityGive', 'intuitionGive', 'healthGive',
-        'swordsGive', 'axesGive', 'knivesGive', 'clubsGive', 'shieldsGive',
+  hero.things.filter(item => item.dressed).forEach((heroThing) => {
+    const thing = things.find(item => item.id === heroThing.id);
+    [
+      'strengthGive',
+      'dexterityGive',
+      'intuitionGive',
+      'healthGive',
+      'swordsGive',
+      'axesGive',
+      'knivesGive',
+      'clubsGive',
+      'shieldsGive',
 
-        'damageMin', 'damageMax',
+      'damageMin',
+      'damageMax',
 
-        'protectionHead', 'protectionBreast', 'protectionBelly',
-        'protectionGroin', 'protectionLegs',
+      'protectionHead',
+      'protectionBreast',
+      'protectionBelly',
+      'protectionGroin',
+      'protectionLegs',
 
-        'accuracy', 'dodge', 'devastate', 'durability',
+      'accuracy',
+      'dodge',
+      'devastate',
+      'durability',
 
-        'blockBreak', 'armorBreak',
+      'blockBreak',
+      'armorBreak',
 
-        'hp', 'capacity',
+      'hp',
+      'capacity',
 
-        'strikeCount', 'blockCount',
-      ].forEach((attr) => {
-        if (!thing[attr]) return;
-        feature[attr.replace('Give', '')] += thing[attr];
-      });
+      'strikeCount',
+      'blockCount',
+    ].forEach((attr) => {
+      if (!thing[attr]) return;
+      feature[attr.replace('Give', '')] += thing[attr];
     });
+  });
 
   // Strike count
-  const count = hero.things
-    .filter(item => item.dressed)
-    .filter((heroThing) => {
-      const thing = things.find(item => item.id === heroThing.id);
-      return heroThing.dressed &&
-        ['sword', 'axe', 'knive', 'clubs'].indexOf(thing.type) !== -1;
-    }).length;
+  const count = hero.things.filter(item => item.dressed).filter((heroThing) => {
+    const thing = things.find(item => item.id === heroThing.id);
+    return heroThing.dressed && ['sword', 'axe', 'knive', 'clubs'].indexOf(thing.type) !== -1;
+  }).length;
 
   if (count === 2) feature.strikeCount += 1;
 
@@ -131,8 +145,9 @@ export function updateFeature(hero: HeroType, initData: InitDataType) {
 export function levelUp(hero: HeroType, initData: InitDataType) {
   const tableExperience = initData.tableExperience;
 
-  const tableExperienceItems = tableExperience
-    .filter(item => item.level > hero.level && item.experience <= hero.experience);
+  const tableExperienceItems = tableExperience.filter(
+    item => item.level > hero.level && item.experience <= hero.experience,
+  );
 
   if (!tableExperienceItems.length) return;
 
@@ -200,7 +215,6 @@ export function thingCanBeDressed(hero: HeroType, thing: ThingType): boolean {
     (!thing.dexterityNeed || thing.dexterityNeed <= hero.dexterity) &&
     (!thing.intuitionNeed || thing.intuitionNeed <= hero.intuition) &&
     (!thing.healthNeed || thing.healthNeed <= hero.health) &&
-
     (!thing.swordsNeed || thing.swordsNeed <= hero.swords) &&
     (!thing.axesNeed || thing.axesNeed <= hero.axes) &&
     (!thing.knivesNeed || thing.knivesNeed <= hero.knives) &&

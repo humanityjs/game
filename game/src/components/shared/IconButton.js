@@ -1,14 +1,10 @@
 import React, { PropTypes } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
-const IconButton = ({ onPress, style, children }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[style]}
-  >
+const IconButton = ({ onPress, style, children }) =>
+  <TouchableOpacity onPress={onPress} style={[style]}>
     {children}
-  </TouchableOpacity>
-);
+  </TouchableOpacity>;
 
 IconButton.propTypes = {
   style: View.propTypes.style,

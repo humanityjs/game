@@ -18,11 +18,14 @@ const stackNavigatorConfig = {
   cardStyle: { shadowOpacity: 0, backgroundColor: '#F2F2F2' },
 };
 
-const Stack = StackNavigator({
-  Hero: { screen: HeroScreen, navigationOptions: { gesturesEnabled: false } },
-  Inventory: { screen: InventoryScreen, navigationOptions: { gesturesEnabled: false } },
-  Island: { screen: IslandScreen, navigationOptions: { gesturesEnabled: false } },
-}, stackNavigatorConfig);
+const Stack = StackNavigator(
+  {
+    Hero: { screen: HeroScreen, navigationOptions: { gesturesEnabled: false } },
+    Inventory: { screen: InventoryScreen, navigationOptions: { gesturesEnabled: false } },
+    Island: { screen: IslandScreen, navigationOptions: { gesturesEnabled: false } },
+  },
+  stackNavigatorConfig,
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -32,9 +35,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default () => (
+export default () =>
   <View style={styles.container}>
     <Header />
     <Stack ref={ref => appStore.setNavigationRef(ref, 'inner')} />
-  </View>
-);
+  </View>;

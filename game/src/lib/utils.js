@@ -14,7 +14,7 @@ export function countHp(hp: HpType): HpType {
     return hp;
   }
 
-  current += ((now - time) / 1000) / (delay / max);
+  current += (now - time) / 1000 / (delay / max);
 
   if (current > max) current = max;
 
@@ -49,7 +49,8 @@ export function thingImageRequire(name: string) {
       return require('../assets/things/armor.png');
     case 'helmet.png':
       return require('../assets/things/helmet.png');
-    default: return null;
+    default:
+      return null;
   }
 }
 
@@ -75,7 +76,8 @@ export function thingSlotImageRequire(type: string) {
       return require('../assets/images/belt.svg');
     case 'boots':
       return require('../assets/images/boots.svg');
-    default: return null;
+    default:
+      return null;
   }
 }
 
@@ -83,7 +85,8 @@ export function islandImageRequire(name: string) {
   switch (name) {
     case '1.png':
       return require('../assets/islands/1.png');
-    default: return null;
+    default:
+      return null;
   }
 }
 
@@ -100,7 +103,8 @@ export function arrayContains(haystack: Array<Array<number>>, needle: Array<numb
 }
 
 export function getMapMargin(
-  x: number, y: number,
+  x: number,
+  y: number,
   mapDimensions: { width: number, height: number },
   islandDimensions: { width: number, height: number },
 ): { left: number, top: number } {
@@ -148,8 +152,8 @@ export function getMapMargin(
   // 6 - 4 / 2 = 4 | 2 < 4 true
 
   const mapMargin = {
-    left: x - (mapDimensions.width / 2),
-    top: y - (mapDimensions.height / 2),
+    left: x - mapDimensions.width / 2,
+    top: y - mapDimensions.height / 2,
   };
 
   if (Math.floor(mapMargin.left) <= 0) {
@@ -186,15 +190,13 @@ export function isAllDead(combat: CombatType, team: number) {
 export function getDamage(combat: CombatType, hero: HeroType): number {
   let damage = 0;
 
-  combat.logs
-    .filter(item => item.warriorOne)
-    .forEach(({ warriorOne, warriorTwo }) => {
-      if (combat.warriors[0].warrior === hero.id && warriorOne.experience) {
-        damage += warriorOne.damage;
-      } else if (combat.warriors[1].warrior === hero.id && warriorTwo.experience) {
-        damage += warriorOne.damage;
-      }
-    });
+  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
+    if (combat.warriors[0].warrior === hero.id && warriorOne.experience) {
+      damage += warriorOne.damage;
+    } else if (combat.warriors[1].warrior === hero.id && warriorTwo.experience) {
+      damage += warriorOne.damage;
+    }
+  });
 
   return damage;
 }
@@ -208,8 +210,7 @@ export function getBlockItems(startIndex: number, blockCount: number) {
 
   return range(blockCount).map((item) => {
     const mergedIndex = startIndex + item;
-    return mergedIndex >= amount ?
-      mergedIndex - amount : mergedIndex;
+    return mergedIndex >= amount ? mergedIndex - amount : mergedIndex;
   });
 }
 
@@ -220,7 +221,6 @@ export function getBodyPart(index: number) {
 export function findCombatWarrior(combat: CombatType, id: string) {
   return combat.warriors.find(item => item.warrior === id);
 }
-
 
 // armorBreak block blockBreak devastate dodge
 
@@ -251,10 +251,20 @@ export function getLogLine(combat: CombatType, logItem: CombatLogType) {
     if (strike.dodge) content.push('but dodged');
     if (!content.length) content.push('strike');
 
-    const warriorOne = findWarrior(combat, logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].warrior);
-    const warriorTwo = findWarrior(combat, logItem[team === 2 ? 'warriorOne' : 'warriorTwo'].warrior);
+    const warriorOne = findWarrior(
+      combat,
+      logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].warrior,
+    );
+    const warriorTwo = findWarrior(
+      combat,
+      logItem[team === 2 ? 'warriorOne' : 'warriorTwo'].warrior,
+    );
     const blocks = logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].blocks;
-    return `${logItem.created} ${buildWarriorName(warriorOne)} ${content.join(', ')} ${buildWarriorName(warriorTwo)} on ${strike.damage} (${blocks.map(getBodyPart).join(' ')}, ${getBodyPart(strike.strike)})`;
+    return `${logItem.created} ${buildWarriorName(warriorOne)} ${content.join(
+      ', ',
+    )} ${buildWarriorName(warriorTwo)} on ${strike.damage} (${blocks
+      .map(getBodyPart)
+      .join(' ')}, ${getBodyPart(strike.strike)})`;
   }
 
   if (logItem.isDead) {

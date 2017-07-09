@@ -1,10 +1,5 @@
 import React, { PropTypes } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 import { observer } from 'mobx-react';
 
@@ -38,38 +33,38 @@ const styles = StyleSheet.create({
     width: WIDTH,
   },
   sword: {
-    top: WIDTH + (OFFSET * 2),
+    top: WIDTH + OFFSET * 2,
     left: OFFSET,
     height: 100,
   },
   armor: {
-    top: WIDTH + (OFFSET * 3) + 100,
+    top: WIDTH + OFFSET * 3 + 100,
     left: OFFSET,
     height: 105,
   },
   pents: {
-    top: WIDTH + (OFFSET * 4) + 100 + 105,
+    top: WIDTH + OFFSET * 4 + 100 + 105,
     left: OFFSET,
     height: 110,
   },
   shield: {
-    top: WIDTH + (OFFSET * 2),
+    top: WIDTH + OFFSET * 2,
     left: RIGHT,
     height: 100,
   },
   belt: {
-    top: WIDTH + (OFFSET * 5) + 100 + (36 * 2),
+    top: WIDTH + OFFSET * 5 + 100 + 36 * 2,
     left: RIGHT,
     height: 45,
   },
   boots: {
-    top: WIDTH + (OFFSET * 6) + 100 + (36 * 2) + 45,
+    top: WIDTH + OFFSET * 6 + 100 + 36 * 2 + 45,
     left: RIGHT,
     height: 90,
   },
   rings: {
     position: 'absolute',
-    top: WIDTH + (OFFSET * 3) + 100,
+    top: WIDTH + OFFSET * 3 + 100,
     left: RIGHT,
   },
   ring: {
@@ -79,7 +74,7 @@ const styles = StyleSheet.create({
   elixirs: {
     position: 'absolute',
     top: WHEIGHT - 36 - OFFSET,
-    left: (OFFSET * 2) + WIDTH,
+    left: OFFSET * 2 + WIDTH,
   },
   elixir: {
     height: 36,
@@ -105,11 +100,11 @@ function getSlotStyles(type) {
     case 'gloves':
       return [styles.topBlock, styles.block, { left: OFFSET }];
     case 'helmet':
-      return [styles.topBlock, styles.block, { left: WIDTH + (OFFSET * 2) }];
+      return [styles.topBlock, styles.block, { left: WIDTH + OFFSET * 2 }];
     case 'amulet':
-      return [styles.topBlock, styles.block, { left: (WIDTH * 2) + (OFFSET * 3) }];
+      return [styles.topBlock, styles.block, { left: WIDTH * 2 + OFFSET * 3 }];
     case 'bracer':
-      return [styles.topBlock, styles.block, { left: (WIDTH * 3) + (OFFSET * 4) }];
+      return [styles.topBlock, styles.block, { left: WIDTH * 3 + OFFSET * 4 }];
     case 'sword':
       return [styles.sword, styles.sideBlock, styles.block];
     case 'armor':
@@ -122,11 +117,12 @@ function getSlotStyles(type) {
       return [styles.belt, styles.sideBlock, styles.block];
     case 'boots':
       return [styles.boots, styles.sideBlock, styles.block];
-    default: return null;
+    default:
+      return null;
   }
 }
 
-const Body = observer(({ warrior, undressEnabled }) => (
+const Body = observer(({ warrior, undressEnabled }) =>
   <View style={styles.wrapper}>
     <SvgUri
       width="305"
@@ -135,32 +131,37 @@ const Body = observer(({ warrior, undressEnabled }) => (
       style={{ marginTop: 72, marginLeft: 10 }}
     />
     {[
-      'gloves', 'helmet', 'amulet', 'bracer', 'sword',
-      'arms', 'armor', 'shield', 'pants', 'belt', 'boots',
+      'gloves',
+      'helmet',
+      'amulet',
+      'bracer',
+      'sword',
+      'arms',
+      'armor',
+      'shield',
+      'pants',
+      'belt',
+      'boots',
     ].map((type) => {
       let thing;
-      const heroThing = heroStore.dressedThings
-        .find((item) => {
-          thing = getThing(appStore.initData.things, item.thing);
-          return thing.type === type;
-        });
+      const heroThing = heroStore.dressedThings.find((item) => {
+        thing = getThing(appStore.initData.things, item.thing);
+        return thing.type === type;
+      });
 
       return (
         <View key={type} style={getSlotStyles(type)}>
-          <SvgUri
-            width="16"
-            height="16"
-            source={thingSlotImageRequire(type)}
-            style={styles.icon}
-          />
-          {heroThing ?
-            <TouchableOpacity
-              onPress={undressEnabled ?
-                () => heroStore.dressUndressThing(false, heroThing.id) : null}
+          <SvgUri width="16" height="16" source={thingSlotImageRequire(type)} style={styles.icon} />
+          {heroThing
+            ? <TouchableOpacity
+              onPress={
+                  undressEnabled ? () => heroStore.dressUndressThing(false, heroThing.id) : null
+                }
               style={styles.slotThing}
             >
               <Image source={thingImageRequire(thing.image)} />
-            </TouchableOpacity> : null}
+            </TouchableOpacity>
+            : null}
         </View>
       );
     })}
@@ -233,8 +234,8 @@ const Body = observer(({ warrior, undressEnabled }) => (
         />
       </View>
     </View>
-  </View>
-));
+  </View>,
+);
 
 Body.propTypes = {
   warrior: PropTypes.shape(),
