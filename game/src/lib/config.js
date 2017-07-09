@@ -57,4 +57,11 @@ export default {
     ],
   },
   islandMoveTime: 5,
+  combatRange: {
+    accuracy: 500,
+    devastate: 500,
+    blockBreak: 500,
+    armorBreak: 500,
+    damage: 500,
+  },
 };

@@ -186,7 +186,7 @@ export function init(hero: HeroType) {
       building: null,
     },
 
-    created: new Date(),
+    created: new Date().getTime(),
   });
 
   levelUp(hero);

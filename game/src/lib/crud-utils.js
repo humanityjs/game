@@ -9,9 +9,19 @@ import {
 
 import db from './db';
 
-import type { HeroType, SkillType, ThingType, TableExperienceType, IslandType, BotType } from './types';
+import type {
+  HeroType,
+  SkillType,
+  ThingType,
+  TableExperienceType,
+  IslandType,
+  BotType,
+  CombatType,
+} from './types';
 
 import { mapObjToArray } from './utils';
+
+import { mapCombat } from './mapper';
 
 export function login() {
   return LoginManager.logInWithReadPermissions(['public_profile', 'email']);
@@ -82,6 +92,11 @@ export async function getHero(id: string): HeroType {
   return hero.val();
 }
 
+export async function getBot(id: string): BotType {
+  const hero = await db().child('bots').child(id).once('value');
+  return hero.val();
+}
+
 export async function saveHero(hero: HeroType) {
   await db()
     .child('heroes')
@@ -90,11 +105,62 @@ export async function saveHero(hero: HeroType) {
 }
 
 export async function getBotsOnIsland(x: number, y: number): Array<BotType> {
-  const bots = await db()
+  const botsRef = await db()
     .child('bots')
     .orderByChild('location/coordinateX')
     .equalTo(x)
     .once('value');
 
-  return mapObjToArray(bots.val()).filter(item => item.location.coordinateY === y);
+  const bots = botsRef.val();
+  if (!bots) return [];
+
+  return mapObjToArray(bots).filter(item => item.location.coordinateY === y);
+}
+
+export async function newCombat(combat: CombatType) {
+  await db()
+    .child('combats')
+    .push(mapCombat({
+      injury: 'middle',
+      timeout: 60,
+      type: 'territorial',
+      status: 'fight',
+      created: new Date().getTime(),
+      ...combat,
+    }));
+}
+
+export async function getActiveHeroCombat(id: string): CombatType {
+  const combatsRef = await db()
+    .child('combats')
+    .orderByChild(`warriors/${id}`)
+    .once('value');
+
+  const combats = combatsRef.val();
+  if (!combats) return null;
+
+  let combat = mapObjToArray(combats)
+    .find(item =>
+      (item.status === 'fight' || item.status === 'afterfight') &&
+      !mapObjToArray(item.warriors).find(warrior => warrior.warrior === id).isQuote
+    );
+
+  if (!combat) return null;
+
+  if (!combat.logs) combat.logs = [];
+
+  combat = mapCombat(combat);
+
+  for (const item of combat.warriors) {
+    item._warrior = (!item.isBot) ? await getHero(item.warrior) : await getBot(item.warrior);
+  }
+
+  return combat;
+}
+
+export async function saveCombat(combat: CombatType) {
+  await db()
+    .child('combats')
+    .child(combat.id)
+    .set(mapCombat(combat));
 }

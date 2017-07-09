@@ -21,7 +21,7 @@ startLogging();
 const stackNavigatorConfig = {
   initialRouteName: 'Login',
   headerMode: 'none',
-  cardStyle: { backgroundColor: 'transparent' },
+  cardStyle: { backgroundColor: 'transparent', shadowOpacity: 0 },
 };
 
 const Stack = StackNavigator({
@@ -29,11 +29,6 @@ const Stack = StackNavigator({
   Inner: { screen: InnerContainer, navigationOptions: { gesturesEnabled: false } },
   Combat: { screen: CombatScreen, navigationOptions: { gesturesEnabled: false } },
 }, stackNavigatorConfig);
-
-// 1. Bot data
-// 2. Combat UI
-// 3. Start combat
-// 4. First attach
 
 const styles = StyleSheet.create({
   overlay: {

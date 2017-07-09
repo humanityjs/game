@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { StyleSheet, View } from 'react-native';
 
 import Text from './shared/Text';
 
 import { countHp } from '../lib/utils';
-
-import heroStore from '../stores/hero';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -37,10 +35,14 @@ const styles = StyleSheet.create({
 
 @observer
 export default class extends Component {
-  constructor() {
+  static propTypes = {
+    updateHp: PropTypes.bool,
+    warrior: PropTypes.shape(),
+  }
+  constructor(props) {
     super();
 
-    const { current, max } = heroStore.hero.feature.hp;
+    const { current, max } = props.warrior.feature.hp;
     this.state = { currentHp: current };
 
     this.maxHp = max;
@@ -48,10 +50,11 @@ export default class extends Component {
     this.setHp = this.setHp.bind(this);
   }
   componentDidMount() {
-    this.countHp();
+    if (this.props.updateHp) this.countHp();
   }
   componentDidUpdate() {
-    const { hp } = heroStore.hero.feature;
+    if (!this.props.updateHp) return;
+    const { hp } = this.props.warrior.feature;
     if (hp.max !== this.maxHp) {
       this.maxHp = hp.max;
       this.countHp();
@@ -61,7 +64,7 @@ export default class extends Component {
     clearInterval(this.setHpInterval);
   }
   setHp() {
-    const hp = countHp(heroStore.hero.feature.hp);
+    const hp = countHp(this.props.warrior.feature.hp);
 
     if (hp.current !== this.state.currentHp) {
       this.setState({ currentHp: hp.current });
@@ -76,17 +79,17 @@ export default class extends Component {
     this.setHp();
   }
   render() {
-    const { hero } = heroStore;
+    const { warrior } = this.props;
     const { currentHp } = this.state;
 
-    const { hp } = hero.feature;
+    const { hp } = warrior.feature;
     const hpReady = currentHp / hp.max;
 
     return (
       <View style={styles.wrapper}>
         <View style={styles.nameWrapper}>
-          <Text style={styles.name}>{hero.login} </Text>
-          <Text style={styles.level}>[{hero.level}]</Text>
+          <Text style={styles.name}>{warrior.login} </Text>
+          <Text style={styles.level}>[{warrior.level}]</Text>
         </View>
         <View style={styles.hpWrapper}>
           <View style={[styles.hp, { width: `${(hpReady * 100)}%` }]} />

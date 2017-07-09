@@ -6,6 +6,7 @@ import { AsyncStorage } from 'react-native';
 import { loginAndFetchData, logout } from '../lib/crud-utils';
 import appStore from './app';
 import heroStore from './hero';
+import combatStore from './combat';
 
 import type { UserType } from '../lib/types';
 
@@ -42,6 +43,7 @@ class Auth {
   async prepare() {
     await appStore.fetchInitData();
     await heroStore.fetch(this.user);
+    await combatStore.fetch(this.user.id);
   }
 
 }

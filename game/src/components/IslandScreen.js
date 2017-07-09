@@ -91,8 +91,8 @@ export default class extends Component {
     clearInterval(this.moveInterval);
     this.moveTime = 0;
   }
-  onCombat(id) {
-    heroStore.putInCombat(id);
+  async onCombat(id) {
+    await heroStore.putInCombat(id);
     appStore.navigate('Combat', 'outer');
   }
   renderPositionInfo() {

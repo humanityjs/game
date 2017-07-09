@@ -126,7 +126,7 @@ function getSlotStyles(type) {
   }
 }
 
-const Body = observer(({ undressEnabled }) => (
+const Body = observer(({ warrior, undressEnabled }) => (
   <View style={styles.wrapper}>
     <SvgUri
       width="305"
@@ -237,6 +237,7 @@ const Body = observer(({ undressEnabled }) => (
 ));
 
 Body.propTypes = {
+  warrior: PropTypes.shape(),
   undressEnabled: PropTypes.bool,
 };
 

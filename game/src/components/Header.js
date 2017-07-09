@@ -9,6 +9,7 @@ import Hp from './Hp';
 import TopInfo from './TopInfo';
 
 import appStore from '../stores/app';
+import heroStore from '../stores/hero';
 
 export default observer(() => (
   <View style={{ position: 'relative' }}>
@@ -24,7 +25,7 @@ export default observer(() => (
     </IconButton>
     <View style={{ flexDirection: 'row', marginBottom: 10 }}>
       <View>
-        <Hp />
+        <Hp warrior={heroStore.hero} />
       </View>
       <View style={{ flex: 1, alignItems: 'flex-end' }}>
         <TopInfo />

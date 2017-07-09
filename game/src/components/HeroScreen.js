@@ -8,6 +8,8 @@ import {
 import Body from './Body';
 import Info from './Info';
 
+import heroStore from '../stores/hero';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
 export default () => (
   <View style={styles.container}>
     <View style={{ width: 324 }}>
-      <Body />
+      <Body hero={heroStore.hero} />
     </View>
     <View style={{ marginLeft: 20, width: 640 }}>
       <Info />

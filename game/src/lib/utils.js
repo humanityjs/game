@@ -1,6 +1,7 @@
 // @flow
+import { range } from 'lodash';
 
-import type { HpType, ThingType, IslandType } from './types';
+import type { HpType, ThingType, IslandType, CombatType, HeroType, CombatLogType } from './types';
 
 export function countHp(hp: HpType): HpType {
   const now = new Date().getTime();
@@ -174,6 +175,98 @@ export function getIsland(islands: Array<IslandType>, id: string): IslandType {
   return islands.find(item => item.id === id);
 }
 
-export function mapObjToArray(obj: {}): Array {
-  return Object.keys(obj).map(key => obj[key]);
+export function mapObjToArray(obj: {}): Array<any> {
+  return Object.keys(obj).map(key => ({ id: key, ...obj[key] }));
+}
+
+export function isAllDead(combat: CombatType, team: number) {
+  return combat.warriors.some(warrior => warrior.isDead && warrior.team === team);
+}
+
+export function getDamage(combat: CombatType, hero: HeroType): number {
+  let damage = 0;
+
+  combat.logs
+    .filter(item => item.warriorOne)
+    .forEach(({ warriorOne, warriorTwo }) => {
+      if (combat.warriors[0].warrior === hero.id && warriorOne.experience) {
+        damage += warriorOne.damage;
+      } else if (combat.warriors[1].warrior === hero.id && warriorTwo.experience) {
+        damage += warriorOne.damage;
+      }
+    });
+
+  return damage;
+}
+
+export function notQuiteFromCombat() {
+  return true;
+}
+
+export function getBlockItems(startIndex: number, blockCount: number) {
+  const amount = 5;
+
+  return range(blockCount).map((item) => {
+    const mergedIndex = startIndex + item;
+    return mergedIndex >= amount ?
+      mergedIndex - amount : mergedIndex;
+  });
+}
+
+export function getBodyPart(index: number) {
+  return ['Head', 'Breast', 'Belly', 'Groin', 'Legs'][index];
+}
+
+export function findCombatWarrior(combat: CombatType, id: string) {
+  return combat.warriors.find(item => item.warrior === id);
+}
+
+
+// armorBreak block blockBreak devastate dodge
+
+// WarriorOne[lvl] text WarriorOne[lvl] (strike) (block)
+
+// ButuzGOL[0] struck Fog[0] on -5 (all false)
+
+// break armor (armorBreak)
+// but blocked (block)
+// break block (blockBreak)
+// critical strike (devastate)
+// but dodged (dodge)
+
+export function getLogLine(combat: CombatType, logItem: CombatLogType) {
+  function findWarrior(combat, id) {
+    return findCombatWarrior(combat, id)._warrior;
+  }
+  function buildWarriorName(warrior) {
+    return `${warrior.login} [${warrior.level}]`;
+  }
+
+  function build(team, strike, logItem) {
+    const content = [];
+    if (strike.armorBreak) content.push('break armor');
+    if (strike.block) content.push('but blocked');
+    if (strike.blockBreak) content.push('break block');
+    if (strike.devastate) content.push('critical strike');
+    if (strike.dodge) content.push('but dodged');
+    if (!content.length) content.push('strike');
+
+    const warriorOne = findWarrior(combat, logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].warrior);
+    const warriorTwo = findWarrior(combat, logItem[team === 2 ? 'warriorOne' : 'warriorTwo'].warrior);
+    const blocks = logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].blocks;
+    return `${logItem.created} ${buildWarriorName(warriorOne)} ${content.join(', ')} ${buildWarriorName(warriorTwo)} on ${strike.damage} (${blocks.map(getBodyPart).join(' ')}, ${getBodyPart(strike.strike)})`;
+  }
+
+  if (logItem.isDead) {
+    const warrior = findWarrior(combat, logItem.warrior);
+    return `${buildWarriorName(warrior)} is dead`;
+  } else if (logItem.isQuit) {
+    const warrior = findWarrior(combat, logItem.warrior);
+    return `${buildWarriorName(warrior)} is quit`;
+  }
+
+  return [
+    ...logItem.warriorOne.strikes.map(strike => build(1, strike, logItem)),
+    ...logItem.warriorTwo.strikes.map(strike => build(2, strike, logItem)),
+  ].join('\n');
 }
