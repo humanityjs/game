@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { range } from 'lodash';
+import moment from 'moment';
 
 import RadioForm, {
   RadioButton,
@@ -18,10 +19,17 @@ import appStore from '../stores/app';
 import combatStore from '../stores/combat';
 import heroStore from '../stores/hero';
 
-import Hp from './Hp';
-import Body from './Body';
+import FullBody from './FullBody';
 
-import { getDamage, getBlockItems, getBodyPart, getLogLine } from '../lib/utils';
+import {
+  getDamage,
+  getBlockItems,
+  getBodyPart,
+  getLogPart,
+  getExperience,
+  isWin,
+  isDraw,
+} from '../lib/utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,7 +39,7 @@ const styles = StyleSheet.create({
 });
 
 @observer
-export default class extends Component {
+export default class CombatScreen extends Component {
   @observable attacks;
   @observable block;
   constructor() {
@@ -43,7 +51,7 @@ export default class extends Component {
     this.onQuit = this.onQuit.bind(this);
   }
   componentDidMount() {
-    if (!combatStore.combat) combatStore.fetch();
+    if (!combatStore.combat) combatStore.fetch(heroStore.hero.combat);
   }
   onAttack() {
     combatStore.attack(
@@ -59,29 +67,67 @@ export default class extends Component {
   renderLog() {
     const { combat } = combatStore;
 
+    function renderLine(line) {
+      if (typeof line === 'string') {
+        return (
+          <Text>
+            {line}
+          </Text>
+        );
+      } else if (line.time) {
+        return (
+          <Text>
+            [{moment(line.time).format('hh:mm')}]
+          </Text>
+        );
+      } else if (line.warriorOne) {
+        return (
+          <Text style={{ color: '#1C57FF' }}>
+            {line.warriorOne}
+          </Text>
+        );
+      } else if (line.warriorTwo) {
+        return (
+          <Text style={{ color: '#E85349' }}>
+            {line.warriorTwo}
+          </Text>
+        );
+      } else if (line.damage) {
+        return (
+          <Text style={{ color: '#E0483E', fontWeight: 'bold' }}>
+            -{line.damage}
+          </Text>
+        );
+      }
+
+      return (
+        <Text>
+          {Object.values(line).join(' ')}
+        </Text>
+      );
+    }
     return (
       <ScrollView style={{ backgroundColor: '#EAEAEA', width: '100%', padding: 20 }}>
-        {combat.logs.reverse().map(item =>
-          <View key={item.created}>
-            <Text>
-              {getLogLine(combat, item)}
-            </Text>
-            <Text>------------</Text>
-          </View>,
-        )}
+        {combat.logs.reverse().map((log) => {
+          const part = getLogPart(combat, log);
+          if (!Array.isArray(part[0])) {
+            return (
+              <View key={log.created} style={{ marginBottom: 10, flexDirection: 'row' }}>
+                {part.map(renderLine)}
+              </View>
+            );
+          }
+          return (
+            <View style={{ marginBottom: 10 }}>
+              {part.map(item => (
+                item.map(iitem => (
+                  <View style={{ flexDirection: 'row' }}>{iitem.map(renderLine)}</View>
+                ))
+              ))}
+            </View>
+          );
+        })}
       </ScrollView>
-    );
-  }
-  renderBody(warrior) {
-    return (
-      <View>
-        <View>
-          <Hp warrior={warrior} />
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <Body warrior={warrior} />
-        </View>
-      </View>
     );
   }
   renderActions() {
@@ -158,21 +204,21 @@ export default class extends Component {
   renderWarriorsInfo() {
     const { combat } = combatStore;
 
-    const renderItem = item =>
+    const renderItem = (item, team) =>
       <View key={item.id} style={{ flexDirection: 'row' }}>
-        <Text>
+        <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>
           {item.login}
         </Text>
-        <Text>
-          {' '}[{item.level}]
-        </Text>
         <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+        <Text>
+          [{item.feature.hp.current} / {item.feature.hp.max}]
+        </Text>
       </View>;
 
     function renderWarriors(team) {
       return combat.warriors
         .filter(item => item.team === team)
-        .map(item => renderItem(item._warrior));
+        .map(item => renderItem(item._warrior, team));
     }
 
     return (
@@ -185,34 +231,50 @@ export default class extends Component {
   }
   render() {
     const { combat } = combatStore;
+    const { hero } = heroStore;
 
     if (!combat) return null;
     const combatFinished = combat.status === 'afterfight' || combat.status === 'past';
 
     return (
       <View style={styles.container}>
-        <View style={{ alignItems: 'center', height: 20 }}>
-          <Text>
-            Damage {getDamage(combat, heroStore.hero)}
-          </Text>
+        <View style={{ position: 'absolute', width: '100%', top: 20, zIndex: 2 }}>
+          <View style={{ alignItems: 'center' }}>
+            {!combatFinished
+              ? <Text>
+                  Damage {getDamage(combat, hero)}
+              </Text>
+              : <Text>
+                  Fight is finished.{' '}
+                {isWin(combat, hero) ? 'You win.' : isDraw(combat) ? 'Draw.' : 'You loose.'}{' '}
+                  Damage {getDamage(combat, hero)}. Expreince {getExperience(combat, hero)}.
+                </Text>}
+          </View>
+          {combatFinished &&
+            <View style={{ alignItems: 'center', marginTop: 5 }}>
+              <Button onPress={this.onQuit}>Quit</Button>
+            </View>}
         </View>
-        {combatFinished &&
-          <View style={{ alignItems: 'center', zIndex: 2 }}>
-            <Button onPress={this.onQuit}>Quit</Button>
-          </View>}
-        <View style={{ marginTop: -20 }}>
+        <View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
-              {this.renderBody(combat.warriors[0]._warrior)}
+              <FullBody warrior={combat.warriors[0]._warrior} />
             </View>
-            {!combatFinished && [
-              <View style={{ marginTop: 60 }}>
-                {this.renderActions()}
-              </View>,
-              <View>
-                {this.renderBody(combat.warriors[1]._warrior)}
-              </View>,
-            ]}
+            {!combatFinished
+              ? [
+                <View key="actions" style={{ marginTop: 50 }}>
+                  {this.renderActions()}
+                </View>,
+                <View key="warrior-two-bod3y">
+                  <FullBody warrior={combat.warriors[1]._warrior} />
+                </View>,
+              ]
+              : <SvgUri
+                style={{ marginTop: 60, marginRight: 40 }}
+                width="400"
+                height="400"
+                source={require('../assets/images/dragon.svg')}
+              />}
           </View>
           <View style={{ alignItems: 'center', marginTop: 10 }}>
             {this.renderWarriorsInfo()}

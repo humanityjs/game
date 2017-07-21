@@ -43,7 +43,9 @@ class Auth {
   async prepare() {
     await appStore.fetchInitData();
     await heroStore.fetch(this.user);
-    await combatStore.fetch(this.user.id);
+    if (heroStore.hero.combat) {
+      await combatStore.fetch(heroStore.hero.combat);
+    }
   }
 }
 

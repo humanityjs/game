@@ -13,6 +13,7 @@
     "lodash": "^4.17.4",
     "mobx": "^3.1.9",
     "mobx-react": "^4.1.8",
+    "moment": "^2.18.1",
     "npm-font-open-sans": "^1.0.3",
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
@@ -37,7 +38,9 @@
     "flow-bin": "^0.42.0"
   },
   "rnpm": {
-    "assets": ["./node_modules/npm-font-open-sans/fonts"]
+    "assets": [
+      "./node_modules/npm-font-open-sans/fonts"
+    ]
   },
   "eslintConfig": {
     "parser": "babel-eslint",

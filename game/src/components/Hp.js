@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
 import { StyleSheet, View } from 'react-native';
 
 import Text from './shared/Text';
@@ -33,10 +32,8 @@ const styles = StyleSheet.create({
   },
 });
 
-@observer
-export default class extends Component {
+export default class Hp extends Component {
   static propTypes = {
-    updateHp: PropTypes.bool,
     warrior: PropTypes.shape(),
   };
   constructor(props) {
@@ -50,10 +47,14 @@ export default class extends Component {
     this.setHp = this.setHp.bind(this);
   }
   componentDidMount() {
-    if (this.props.updateHp) this.countHp();
+    this.countHp();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.warrior !== undefined) {
+      this.state.currentHp = nextProps.warrior.feature.hp.current;
+    }
   }
   componentDidUpdate() {
-    if (!this.props.updateHp) return;
     const { hp } = this.props.warrior.feature;
     if (hp.max !== this.maxHp) {
       this.maxHp = hp.max;
@@ -75,6 +76,9 @@ export default class extends Component {
     }
   }
   countHp() {
+    const { warrior } = this.props;
+    if (warrior.combat) return;
+
     this.setHpInterval = setInterval(this.setHp, 1000);
     this.setHp();
   }

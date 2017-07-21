@@ -9,6 +9,7 @@ import Button from './shared/Button';
 
 import authStore from '../stores/auth';
 import appStore from '../stores/app';
+import heroStore from '../stores/hero';
 import combatStore from '../stores/combat';
 
 const styles = StyleSheet.create({
@@ -39,10 +40,14 @@ export default class extends Component {
   constructor() {
     super();
 
-    observe(combatStore, 'combat', () => {
-      let navName = 'Inner';
-      if (combatStore.combat) navName = 'Combat';
-      appStore.navigate(navName, 'outer');
+    observe(heroStore, 'hero', () => {
+      if (heroStore.hero.combat) {
+        observe(combatStore, 'combat', () => {
+          appStore.navigate('Combat', 'outer');
+        });
+        return;
+      }
+      appStore.navigate('Inner', 'outer');
     });
   }
   render() {

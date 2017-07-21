@@ -184,25 +184,7 @@ export function mapObjToArray(obj: {}): Array<any> {
 }
 
 export function isAllDead(combat: CombatType, team: number) {
-  return combat.warriors.some(warrior => warrior.isDead && warrior.team === team);
-}
-
-export function getDamage(combat: CombatType, hero: HeroType): number {
-  let damage = 0;
-
-  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
-    if (combat.warriors[0].warrior === hero.id && warriorOne.experience) {
-      damage += warriorOne.damage;
-    } else if (combat.warriors[1].warrior === hero.id && warriorTwo.experience) {
-      damage += warriorOne.damage;
-    }
-  });
-
-  return damage;
-}
-
-export function notQuiteFromCombat() {
-  return true;
+  return combat.warriors.filter(warrior => warrior.team === team).every(warrior => warrior.isDead);
 }
 
 export function getBlockItems(startIndex: number, blockCount: number) {
@@ -218,7 +200,7 @@ export function getBodyPart(index: number) {
   return ['Head', 'Breast', 'Belly', 'Groin', 'Legs'][index];
 }
 
-export function findCombatWarrior(combat: CombatType, id: string) {
+export function getCombatWarrior(combat: CombatType, id: string) {
   return combat.warriors.find(item => item.warrior === id);
 }
 
@@ -234,12 +216,12 @@ export function findCombatWarrior(combat: CombatType, id: string) {
 // critical strike (devastate)
 // but dodged (dodge)
 
-export function getLogLine(combat: CombatType, logItem: CombatLogType) {
-  function findWarrior(combat, id) {
-    return findCombatWarrior(combat, id)._warrior;
+export function getLogPart(combat: CombatType, logItem: CombatLogType) {
+  function getWarrior(combat, id) {
+    return getCombatWarrior(combat, id)._warrior;
   }
   function buildWarriorName(warrior) {
-    return `${warrior.login} [${warrior.level}]`;
+    return warrior.login;
   }
 
   function build(team, strike, logItem) {
@@ -251,32 +233,86 @@ export function getLogLine(combat: CombatType, logItem: CombatLogType) {
     if (strike.dodge) content.push('but dodged');
     if (!content.length) content.push('strike');
 
-    const warriorOne = findWarrior(
-      combat,
-      logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].warrior,
-    );
-    const warriorTwo = findWarrior(
-      combat,
-      logItem[team === 2 ? 'warriorOne' : 'warriorTwo'].warrior,
-    );
-    const blocks = logItem[team === 1 ? 'warriorOne' : 'warriorTwo'].blocks;
-    return `${logItem.created} ${buildWarriorName(warriorOne)} ${content.join(
+    const attackWarriorKey = team === 1 ? 'warriorOne' : 'warriorTwo';
+    const blockWarriorKey = team === 2 ? 'warriorOne' : 'warriorTwo';
+    const attackWarrior = getWarrior(combat, logItem[attackWarriorKey].warrior);
+    const blockWarrior = getWarrior(combat, logItem[blockWarriorKey].warrior);
+
+    const blocks = logItem[blockWarriorKey].blocks;
+
+    return [
+      { time: logItem.created },
+      ' ',
+      { [attackWarriorKey]: buildWarriorName(attackWarrior) },
+      ' ',
+      content.join(', '),
+      ' ',
+      { [blockWarriorKey]: buildWarriorName(blockWarrior) },
+      ' on ',
+      { damage: strike.damage },
+      ` [${strike.hp.current}/${strike.hp.max}]`,
+      ' (',
+      { blocks: blocks.map(getBodyPart).join(' ') },
       ', ',
-    )} ${buildWarriorName(warriorTwo)} on ${strike.damage} (${blocks
-      .map(getBodyPart)
-      .join(' ')}, ${getBodyPart(strike.strike)})`;
+      { strikes: getBodyPart(strike.strike) },
+      ')',
+    ];
   }
 
   if (logItem.isDead) {
-    const warrior = findWarrior(combat, logItem.warrior);
-    return `${buildWarriorName(warrior)} is dead`;
+    const warrior = getWarrior(combat, logItem.warrior);
+    return [{ time: logItem.created }, ' ', { warriorOne: buildWarriorName(warrior) }, ' is dead'];
   } else if (logItem.isQuit) {
-    const warrior = findWarrior(combat, logItem.warrior);
-    return `${buildWarriorName(warrior)} is quit`;
+    const warrior = getWarrior(combat, logItem.warrior);
+    return [{ time: logItem.created }, ' ', { warriorTwo: buildWarriorName(warrior) }, ' is quit'];
   }
 
   return [
-    ...logItem.warriorOne.strikes.map(strike => build(1, strike, logItem)),
-    ...logItem.warriorTwo.strikes.map(strike => build(2, strike, logItem)),
-  ].join('\n');
+    logItem.warriorOne.strikes.map(strike => build(1, strike, logItem)),
+    logItem.warriorTwo.strikes.map(strike => build(2, strike, logItem)),
+  ];
+}
+
+export function getDamage(combat: CombatType, hero: HeroType): number {
+  let damage = 0;
+
+  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
+    let warrior;
+    if (warriorOne.warrior === hero.id) {
+      warrior = warriorOne;
+    } else if (warriorTwo.warrior === hero.id) {
+      warrior = warriorTwo;
+    }
+    if (warrior) {
+      damage += warrior.strikes.reduce((prev, item) => prev + item.damage, 0);
+    }
+  });
+
+  return damage;
+}
+
+export function isWin(combat: CombatType, hero: HeroType): boolean {
+  return combat.winTeam === getCombatWarrior(combat, hero.id).team;
+}
+
+export function isDraw(combat: CombatType): boolean {
+  return combat.winTeam === -1;
+}
+
+export function getExperience(combat: CombatType, hero: HeroType): number {
+  let experience = 0;
+
+  if (!isWin(combat, hero) || isDraw(combat)) return experience;
+
+  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
+    let warrior;
+    if (warriorOne.warrior === hero.id) {
+      warrior = warriorOne;
+    } else if (warriorTwo.warrior === hero.id) {
+      warrior = warriorTwo;
+    }
+    if (warrior) experience += warrior.experience;
+  });
+
+  return experience;
 }

@@ -3,8 +3,7 @@
 import { observable, action, computed, toJS } from 'mobx';
 
 import { getHero, saveHero, newCombat } from '../lib/crud-utils';
-import { countHp } from '../lib/utils';
-import { updateFeature } from '../lib/hero-utils';
+import { updateFeature, levelUp } from '../lib/hero-utils';
 
 import appStore from './app';
 
@@ -117,7 +116,7 @@ class Hero {
 
   @action
   async putInCombat(id: string) {
-    const combat = {
+    const combatData = {
       location: this.hero.location,
       warriors: [
         {
@@ -132,13 +131,13 @@ class Hero {
       ],
     };
 
-    await this.updateHp();
-    await newCombat(combat);
+    await newCombat(combatData, this.hero);
   }
 
-  async updateHp() {
-    this.hero.feature.hp = countHp(this.hero.feature.hp);
-    await this.save();
+  async addExperience(experience: number, save: boolean = true) {
+    this.hero.experience += experience;
+    levelUp(this.hero, appStore.initData);
+    if (save) await this.save();
   }
 
   async save() {
