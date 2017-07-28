@@ -1,13 +1,11 @@
 import React from 'react';
-
 import { StyleSheet, View } from 'react-native';
-
 import { StackNavigator } from 'react-navigation';
 
-import Header from './Header';
+import Header from './common/Header';
 
 import HeroScreen from './HeroScreen';
-import InventoryScreen from './InventoryScreen';
+import InventoryScreen from './Inventory/InventoryScreen';
 import IslandScreen from './IslandScreen';
 
 import appStore from '../stores/app';

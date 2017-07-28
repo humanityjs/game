@@ -14,7 +14,15 @@ import type {
   CombatType,
 } from './types';
 
-import { mapObjToArray, countHp } from './utils';
+import { mapObjToArray } from './utils';
+import { countHp } from './hero-utils';
+
+import {
+  COMBAT_INJURY_MIDDLE,
+  COMBAT_STATUS_FIGHT,
+  COMBAT_TYPE_TERRITORIAL,
+  COMBAT_TIMEOUT_LOW,
+} from './constants';
 
 export function login() {
   return LoginManager.logInWithReadPermissions(['public_profile', 'email']);
@@ -48,6 +56,7 @@ export function fetchMe(accessToken: string) {
 export function loginAndFetchData() {
   return login().then((result) => {
     if (result.isCancelled) return null;
+    // $FlowFixMe
     return fetchAccessToken().then(rresult => fetchMe(rresult.accessToken));
   });
 }
@@ -58,21 +67,25 @@ export function logout() {
 
 export async function getSkills(): Array<SkillType> {
   const skills = await db().child('skills').once('value');
+  // $FlowFixMe
   return skills.val();
 }
 
 export async function getThings(): Array<ThingType> {
   const things = await db().child('things').once('value');
+  // $FlowFixMe
   return things.val();
 }
 
 export async function getIslands(): Array<IslandType> {
   const islands = await db().child('islands').once('value');
+  // $FlowFixMe
   return islands.val();
 }
 
 export async function getTableExperience(): Array<TableExperienceType> {
   const tableExperience = await db().child('tableExperience').once('value');
+  // $FlowFixMe
   return tableExperience.val();
 }
 
@@ -94,12 +107,17 @@ export async function saveHero(hero: HeroType) {
   await db().child('heroes').child(hero.id).update(hero);
 }
 
-async function getWarrior(isBot: boolean, id: number) {
-  return isBot ? await getBot(id) : await getHero(id);
+async function getWarrior(isBot: boolean, id: string): HeroType | BotType {
+  const warrior = isBot ? await getBot(id) : await getHero(id);
+  return warrior;
 }
 
-export async function saveWarrior(isBot, warrior) {
-  isBot ? await saveBot(warrior) : await saveHero(warrior);
+export async function saveWarrior(isBot: boolean, warrior: HeroType | BotType) {
+  if (isBot) {
+    await saveBot(warrior);
+  } else {
+    await saveHero(warrior);
+  }
 }
 
 export async function getBotsOnIsland(x: number, y: number): Array<BotType> {
@@ -110,21 +128,22 @@ export async function getBotsOnIsland(x: number, y: number): Array<BotType> {
     .once('value');
 
   const bots = botsRef.val();
-  if (!bots) return [];
 
-  return mapObjToArray(bots).filter(item => item.location.coordinateY === y);
+  // $FlowFixMe
+  return !bots ? [] : mapObjToArray(bots).filter(item => item.location.coordinateY === y);
 }
 
 export async function newCombat(combat: CombatType, hero: HeroType) {
   const combatRef = await db().child('combats').push({
-    injury: 'middle',
-    timeout: 60,
-    type: 'territorial',
-    status: 'fight',
+    injury: COMBAT_INJURY_MIDDLE,
+    timeout: COMBAT_TIMEOUT_LOW,
+    type: COMBAT_TYPE_TERRITORIAL,
+    status: COMBAT_STATUS_FIGHT,
     created: new Date().getTime(),
     ...combat,
   });
 
+  // eslint-disable-next-line
   for (const item of combat.warriors) {
     let warrior;
     if (hero.id === item.warrior) {
@@ -136,12 +155,10 @@ export async function newCombat(combat: CombatType, hero: HeroType) {
     warrior.feature.hp = countHp(warrior.feature.hp);
     await saveWarrior(item.isBot, warrior);
   }
-
-  return combatRef;
 }
 
 export async function saveCombat(combat: CombatType) {
-  await db().child('combats').child(combat.id).set(combat);
+  await db().child('combats').child(combat.id).update(combat);
 }
 
 export async function getCombat(id: string, hero: HeroType): CombatType {
@@ -152,6 +169,7 @@ export async function getCombat(id: string, hero: HeroType): CombatType {
 
   combat.id = id;
 
+  // eslint-disable-next-line
   for (const item of combat.warriors) {
     if (item.warrior === hero.id) {
       item._warrior = hero;

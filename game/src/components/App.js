@@ -5,7 +5,7 @@ import Drawer from 'react-native-drawer';
 import { observer } from 'mobx-react';
 import { View, StyleSheet } from 'react-native';
 
-import Menu from './Menu';
+import Menu from './common/Menu';
 import LoginScreen from './LoginScreen';
 
 import InnerContainer from './InnerContainer';
@@ -63,6 +63,6 @@ export default observer(() =>
         <Stack ref={ref => appStore.setNavigationRef(ref, 'outer')} />
       </View>
     </Drawer>
-    {appStore.overlay ? <View style={styles.overlay} /> : null}
+    {appStore.overlay && <View style={styles.overlay} />}
   </View>,
 );

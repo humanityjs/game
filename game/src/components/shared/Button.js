@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import autobind from 'autobind-decorator';
 
 import Text from './Text';
 
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@autobind
 export default class extends Component {
   static propTypes = {
     style: View.propTypes.style,
@@ -29,11 +31,6 @@ export default class extends Component {
     disabled: PropTypes.bool,
   };
 
-  constructor() {
-    super();
-
-    this.onPress = this.onPress.bind(this);
-  }
   onPress() {
     const { disabled, onPress } = this.props;
 

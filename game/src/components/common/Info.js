@@ -4,13 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 import { capitalize, camelCase } from 'lodash';
 
-import IconButton from './shared/IconButton';
-import Text from './shared/Text';
+import IconButton from '../shared/IconButton';
+import Text from '../shared/Text';
 
-import { getFeatureParam } from '../lib/utils';
+import { getFeatureParam } from '../../lib/hero-utils';
 
-import heroStore from '../stores/hero';
-import appStore from '../stores/app';
+import heroStore from '../../stores/hero';
+import appStore from '../../stores/app';
 
 const styles = StyleSheet.create({
   infoBlock: {
@@ -52,7 +52,7 @@ class SkillsInfo extends Component {
                   onPress={() => heroStore.increaseSkill(skill.id)}
                   style={{ marginTop: 2, marginLeft: 8 }}
                 >
-                  <SvgUri width="14" height="14" source={require('../assets/images/plus.svg')} />
+                  <SvgUri width="14" height="14" source={require('../../assets/images/plus.svg')} />
                 </IconButton>
                 : null}
             </View>
@@ -73,7 +73,7 @@ class SkillsInfo extends Component {
             }}
             style={{ position: 'absolute', top: 10, right: 25 }}
           >
-            <SvgUri width="14" height="14" source={require('../assets/images/left.svg')} />
+            <SvgUri width="14" height="14" source={require('../../assets/images/left.svg')} />
           </IconButton>}
         {(this.page + 1) * perPage < skills.length &&
           <IconButton
@@ -82,7 +82,7 @@ class SkillsInfo extends Component {
             }}
             style={{ position: 'absolute', top: 10, right: 10 }}
           >
-            <SvgUri width="14" height="14" source={require('../assets/images/right.svg')} />
+            <SvgUri width="14" height="14" source={require('../../assets/images/right.svg')} />
           </IconButton>}
       </View>
     );
@@ -93,7 +93,7 @@ export default observer(() => {
   const { hero } = heroStore;
 
   const tableExperienceItem = appStore.initData.tableExperience.find(
-    item => item.experience > hero.experience,
+    item => item.level > hero.level,
   );
 
   return (
@@ -114,7 +114,7 @@ export default observer(() => {
                   onPress={() => heroStore.increaseParameter(item)}
                   style={{ marginTop: 2, marginLeft: 8 }}
                 >
-                  <SvgUri width="14" height="14" source={require('../assets/images/plus.svg')} />
+                  <SvgUri width="14" height="14" source={require('../../assets/images/plus.svg')} />
                 </IconButton>}
             </View>,
           )}
@@ -198,7 +198,7 @@ export default observer(() => {
                   onPress={() => heroStore.increaseAbility(item)}
                   style={{ marginTop: 2, marginLeft: 8 }}
                 >
-                  <SvgUri width="14" height="14" source={require('../assets/images/plus.svg')} />
+                  <SvgUri width="14" height="14" source={require('../../assets/images/plus.svg')} />
                 </IconButton>}
             </View>,
           )}

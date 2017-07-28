@@ -28,6 +28,7 @@ class Auth {
   @action
   async login() {
     const data = await loginAndFetchData();
+    // $FlowFixMe
     await AsyncStorage.setItem('Id', data.id);
     this.user = data;
     await this.prepare();

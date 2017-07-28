@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import autobind from 'autobind-decorator';
 
 import Text from './shared/Text';
 import IconButton from './shared/IconButton';
@@ -49,15 +50,37 @@ const MAP_DIMENSIONS = {
   height: 680 / SQUARE_WIDTH, // 698 // 678
 };
 
+async function onCombat(id) {
+  await heroStore.putInCombat(id);
+  appStore.navigate('Combat', 'outer');
+}
+
+function renderHeroesInfo() {
+  return (
+    <View style={styles.heroesInfo}>
+      <Text style={{ fontWeight: '400', marginBottom: 5 }}>Bots</Text>
+      {islandStore.bots.map(bot =>
+        <View key={bot.id} style={{ flexDirection: 'row' }}>
+          <Text>
+            {bot.login} [{bot.level}]
+          </Text>
+          <IconButton style={{ marginTop: 3, marginLeft: 5 }}>
+            <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+          </IconButton>
+          <IconButton style={{ marginTop: 3, marginLeft: 5 }} onPress={() => onCombat(bot.id)}>
+            <SvgUri width="14" height="14" source={require('../assets/images/fight.svg')} />
+          </IconButton>
+        </View>,
+      )}
+    </View>
+  );
+}
+
 @observer
-export default class extends Component {
+@autobind
+export default class IslandScreen extends Component {
   @observable moveTime = 0;
   moveInterval = null;
-  constructor() {
-    super();
-
-    this.onCancelMove = this.onCancelMove.bind(this);
-  }
   componentDidMount() {
     const { coordinateX, coordinateY } = heroStore.hero.location;
     islandStore.updateBots(coordinateX, coordinateY);
@@ -86,10 +109,6 @@ export default class extends Component {
     clearInterval(this.moveInterval);
     this.moveTime = 0;
   }
-  async onCombat(id) {
-    await heroStore.putInCombat(id);
-    appStore.navigate('Combat', 'outer');
-  }
   renderPositionInfo() {
     const { coordinateX, coordinateY } = heroStore.hero.location;
     return (
@@ -110,29 +129,6 @@ export default class extends Component {
       </View>
     );
   }
-  renderHeroesInfo() {
-    return (
-      <View style={styles.heroesInfo}>
-        <Text style={{ fontWeight: '400', marginBottom: 5 }}>Bots</Text>
-        {islandStore.bots.map(bot =>
-          <View key={bot.id} style={{ flexDirection: 'row' }}>
-            <Text>
-              {bot.login} [{bot.level}]
-            </Text>
-            <IconButton style={{ marginTop: 3, marginLeft: 5 }}>
-              <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
-            </IconButton>
-            <IconButton
-              style={{ marginTop: 3, marginLeft: 5 }}
-              onPress={() => this.onCombat(bot.id)}
-            >
-              <SvgUri width="14" height="14" source={require('../assets/images/fight.svg')} />
-            </IconButton>
-          </View>,
-        )}
-      </View>
-    );
-  }
   render() {
     const { hero } = heroStore;
     const { coordinateX, coordinateY } = hero.location;
@@ -148,9 +144,11 @@ export default class extends Component {
     const squares = [];
 
     /* eslint-disable no-continue */
-    for (let x = coordinateX - 1; x < coordinateX - 1 + 3; x += 1) {
+    const lineX = coordinateX - 1 + 3;
+    const lineY = coordinateY - 1 + 3;
+    for (let x = coordinateX - 1; x < lineX; x += 1) {
       if (x < 0 || x > ISLAND_DIMENSIONS.width) continue;
-      for (let y = coordinateY - 1; y < coordinateY - 1 + 3; y += 1) {
+      for (let y = coordinateY - 1; y < lineY; y += 1) {
         if (y < 0 || y > ISLAND_DIMENSIONS.height) continue;
         if (x === coordinateX && y === coordinateY) continue;
 
@@ -204,7 +202,7 @@ export default class extends Component {
           />
         </View>
         {this.renderPositionInfo()}
-        {this.renderHeroesInfo()}
+        {renderHeroesInfo()}
       </View>
     );
   }

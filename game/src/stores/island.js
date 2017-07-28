@@ -12,6 +12,7 @@ class Island {
   @action
   async updateBots(x: number, y: number) {
     const bots = await getBotsOnIsland(x, y);
+    // $FlowFixMe
     this.bots.replace(bots);
   }
 }

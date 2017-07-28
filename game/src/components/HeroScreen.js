@@ -1,9 +1,8 @@
 import React from 'react';
-
 import { StyleSheet, View } from 'react-native';
 
-import Body from './Body';
-import Info from './Info';
+import Body from './common/Body';
+import Info from './common/Info';
 
 import heroStore from '../stores/hero';
 

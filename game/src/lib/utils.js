@@ -1,45 +1,5 @@
 // @flow
-import { range } from 'lodash';
-
-import type { HpType, ThingType, IslandType, CombatType, HeroType, CombatLogType } from './types';
-
-export function countHp(hp: HpType): HpType {
-  const now = new Date().getTime();
-  const delay = 100;
-
-  let { current } = hp;
-  const { time, max } = hp;
-
-  if (current === max) {
-    return hp;
-  }
-
-  current += (now - time) / 1000 / (delay / max);
-
-  if (current > max) current = max;
-
-  current = parseInt(current, 10);
-
-  return { current, time: new Date().getTime(), max };
-}
-
-export function getFeatureParam(orig: number, feature: number): string {
-  let output = '';
-  if (orig - feature === 0) {
-    return output;
-  }
-
-  output += ' [';
-
-  if (feature > orig) {
-    output += '+';
-  }
-
-  output += feature - orig;
-
-  output += ']';
-  return output;
-}
+import type { ThingType, IslandType, TableExperienceType, HeroType } from './types';
 
 export function thingImageRequire(name: string) {
   switch (name) {
@@ -151,9 +111,11 @@ export function getMapMargin(
   // 5 - 4 / 2 = 3 | 3 < 4 true
   // 6 - 4 / 2 = 4 | 2 < 4 true
 
+  const widthDivided = mapDimensions.width / 2;
+  const heightDivided = mapDimensions.height / 2;
   const mapMargin = {
-    left: x - mapDimensions.width / 2,
-    top: y - mapDimensions.height / 2,
+    left: x - widthDivided,
+    top: y - heightDivided,
   };
 
   if (Math.floor(mapMargin.left) <= 0) {
@@ -183,136 +145,9 @@ export function mapObjToArray(obj: {}): Array<any> {
   return Object.keys(obj).map(key => ({ id: key, ...obj[key] }));
 }
 
-export function isAllDead(combat: CombatType, team: number) {
-  return combat.warriors.filter(warrior => warrior.team === team).every(warrior => warrior.isDead);
-}
-
-export function getBlockItems(startIndex: number, blockCount: number) {
-  const amount = 5;
-
-  return range(blockCount).map((item) => {
-    const mergedIndex = startIndex + item;
-    return mergedIndex >= amount ? mergedIndex - amount : mergedIndex;
-  });
-}
-
-export function getBodyPart(index: number) {
-  return ['Head', 'Breast', 'Belly', 'Groin', 'Legs'][index];
-}
-
-export function getCombatWarrior(combat: CombatType, id: string) {
-  return combat.warriors.find(item => item.warrior === id);
-}
-
-// armorBreak block blockBreak devastate dodge
-
-// WarriorOne[lvl] text WarriorOne[lvl] (strike) (block)
-
-// ButuzGOL[0] struck Fog[0] on -5 (all false)
-
-// break armor (armorBreak)
-// but blocked (block)
-// break block (blockBreak)
-// critical strike (devastate)
-// but dodged (dodge)
-
-export function getLogPart(combat: CombatType, logItem: CombatLogType) {
-  function getWarrior(combat, id) {
-    return getCombatWarrior(combat, id)._warrior;
-  }
-  function buildWarriorName(warrior) {
-    return warrior.login;
-  }
-
-  function build(team, strike, logItem) {
-    const content = [];
-    if (strike.armorBreak) content.push('break armor');
-    if (strike.block) content.push('but blocked');
-    if (strike.blockBreak) content.push('break block');
-    if (strike.devastate) content.push('critical strike');
-    if (strike.dodge) content.push('but dodged');
-    if (!content.length) content.push('strike');
-
-    const attackWarriorKey = team === 1 ? 'warriorOne' : 'warriorTwo';
-    const blockWarriorKey = team === 2 ? 'warriorOne' : 'warriorTwo';
-    const attackWarrior = getWarrior(combat, logItem[attackWarriorKey].warrior);
-    const blockWarrior = getWarrior(combat, logItem[blockWarriorKey].warrior);
-
-    const blocks = logItem[blockWarriorKey].blocks;
-
-    return [
-      { time: logItem.created },
-      ' ',
-      { [attackWarriorKey]: buildWarriorName(attackWarrior) },
-      ' ',
-      content.join(', '),
-      ' ',
-      { [blockWarriorKey]: buildWarriorName(blockWarrior) },
-      ' on ',
-      { damage: strike.damage },
-      ` [${strike.hp.current}/${strike.hp.max}]`,
-      ' (',
-      { blocks: blocks.map(getBodyPart).join(' ') },
-      ', ',
-      { strikes: getBodyPart(strike.strike) },
-      ')',
-    ];
-  }
-
-  if (logItem.isDead) {
-    const warrior = getWarrior(combat, logItem.warrior);
-    return [{ time: logItem.created }, ' ', { warriorOne: buildWarriorName(warrior) }, ' is dead'];
-  } else if (logItem.isQuit) {
-    const warrior = getWarrior(combat, logItem.warrior);
-    return [{ time: logItem.created }, ' ', { warriorTwo: buildWarriorName(warrior) }, ' is quit'];
-  }
-
-  return [
-    logItem.warriorOne.strikes.map(strike => build(1, strike, logItem)),
-    logItem.warriorTwo.strikes.map(strike => build(2, strike, logItem)),
-  ];
-}
-
-export function getDamage(combat: CombatType, hero: HeroType): number {
-  let damage = 0;
-
-  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
-    let warrior;
-    if (warriorOne.warrior === hero.id) {
-      warrior = warriorOne;
-    } else if (warriorTwo.warrior === hero.id) {
-      warrior = warriorTwo;
-    }
-    if (warrior) {
-      damage += warrior.strikes.reduce((prev, item) => prev + item.damage, 0);
-    }
-  });
-
-  return damage;
-}
-
-export function isWin(combat: CombatType, hero: HeroType): boolean {
-  return combat.winTeam === getCombatWarrior(combat, hero.id).team;
-}
-
-export function isDraw(combat: CombatType): boolean {
-  return combat.winTeam === -1;
-}
-
-export function getExperience(combat: CombatType, hero: HeroType): number {
-  let experience = 0;
-
-  if (!isWin(combat, hero) || isDraw(combat)) return experience;
-
-  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
-    let warrior;
-    if (warriorOne.warrior === hero.id) {
-      warrior = warriorOne;
-    } else if (warriorTwo.warrior === hero.id) {
-      warrior = warriorTwo;
-    }
-    if (warrior) experience += warrior.experience;
-  });
-
-  return experience;
+export function getTableExperienceItem(
+  tableExperience: Array<TableExperienceType>,
+  hero: HeroType,
+): TableExperienceType {
+  return tableExperience.find(item => item.level > hero.level);
 }

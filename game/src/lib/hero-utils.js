@@ -2,11 +2,31 @@
 
 import config from './config';
 
-import { countHp } from './utils';
+import type { HeroHpType, HeroType, InitDataType, ThingType } from './types';
 
-import type { HeroType, InitDataType, ThingType } from './types';
+import appStore from '../stores/app';
 
 const heroConfig = config.hero;
+
+export function countHp(hp: HeroHpType): HeroHpType {
+  const now = new Date().getTime();
+  const delay = 100;
+
+  let { current } = hp;
+  const { time, max } = hp;
+
+  if (current === max) {
+    return hp;
+  }
+
+  current += (now - time) / 1000 / (delay / max);
+
+  if (current > max) current = max;
+
+  current = parseInt(current, 10);
+
+  return { current, time: new Date().getTime(), max };
+}
 
 export function updateFeature(hero: HeroType, initData: InitDataType) {
   const { skills, things } = initData;
@@ -204,8 +224,8 @@ export function init(hero: HeroType) {
     created: new Date().getTime(),
   });
 
-  levelUp(hero);
-  updateFeature(hero);
+  levelUp(hero, appStore.initData);
+  updateFeature(hero, appStore.initData);
 }
 
 export function thingCanBeDressed(hero: HeroType, thing: ThingType): boolean {
@@ -221,4 +241,22 @@ export function thingCanBeDressed(hero: HeroType, thing: ThingType): boolean {
     (!thing.clubsNeed || thing.clubsNeed <= hero.clubs) &&
     (!thing.shieldsNeed || thing.shieldsNeed <= hero.shields)
   );
+}
+
+export function getFeatureParam(orig: number, feature: number): string {
+  let output = '';
+  if (orig - feature === 0) {
+    return output;
+  }
+
+  output += ' [';
+
+  if (feature > orig) {
+    output += '+';
+  }
+
+  output += feature - orig;
+
+  output += ']';
+  return output;
 }

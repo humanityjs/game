@@ -1,13 +1,5 @@
 /* flow */
 
-type SkillType = {
-  id: string,
-};
-
-export type ThingType = {
-  id: string,
-};
-
 type TableExperienceType = {
   id: string,
   level: number,
@@ -19,6 +11,67 @@ type TableExperienceType = {
   money: number,
 };
 
+type SkillFeature = {
+  // eslint-disable-next-line
+  feature: string, // strength|dexterity|intuition|health|swords|axes|knives|clubs|shields|protectionHead|protectionBreast|protectionBelly|protectionGroin|protectionLegs|damageMin|damageMax|accuracy|dodge|devastate|durability|blockBreak|armorBreak|hp|capacity|strikeCount|blockCount
+  plus: number,
+};
+
+type SkillType = {
+  id: string,
+  name: string,
+  features: Array<SkillFeature>,
+};
+
+export type ThingType = {
+  id: string,
+  name: string,
+  // eslint-disable-next-line
+  type: string, // sword|axe|knive|clubs|shield|helmet|armor|belt|pants|bracer|gloves|boots|ring|amulet
+  price: number,
+  isArt: boolean,
+  isBot: boolean,
+  stability: number,
+  weight: number,
+  image: string,
+
+  levelNeed: number,
+
+  strengthNeed: number,
+  dexterityNeed: number,
+  intuitionNeed: number,
+  healthNeed: number,
+
+  swordsNeed: number,
+  axesNeed: number,
+  knivesNeed: number,
+  clubsNeed: number,
+  shieldsNeed: number,
+
+  damageMin: number,
+  damageMax: number,
+
+  protectionHead: number,
+  protectionBreast: number,
+  protectionBelly: number,
+  protectionGroin: number,
+  protectionLegs: number,
+
+  accuracy: number,
+  dodge: number,
+  devastate: number,
+  durability: number,
+  blockBreak: number,
+  armorBreak: number,
+
+  hp: number,
+  strikeCount: number,
+  blockCount: number,
+
+  capacity: number,
+  takeTwoHands: boolean,
+};
+
 export type InitDataType = {
   skills: Array<SkillType>,
   things: Array<ThingType>,
@@ -27,6 +80,9 @@ export type InitDataType = {
 
 export type UserType = {
   id: string,
+  email: string,
+  name: string,
+  gender: string, // male|female
 };
 
 export type HeroThingType = {
@@ -37,7 +93,12 @@ export type HeroThingType = {
   stabilityLeft: number,
 };
 
-export type HpType = {
+type HeroSkillType = {
+  level: number,
+  skill: string,
+};
+
+export type HeroHpType = {
   current: number,
   time: number,
   max: number,
@@ -45,24 +106,89 @@ export type HpType = {
 
 export type HeroType = {
   id: string,
-  name: string,
+  login: string,
   things: Array<HeroThingType>,
-  hp: HpType,
+  hp: number,
   location: {
     island: string,
     coordinateX: number,
     coordinateY: number,
-    building: string,
   },
+  capacity: number,
+  experience: number,
+  money: number,
+  level: number,
+  image: string,
+  feature: {
+    capacity: {
+      current: number,
+      max: number,
+    },
+
+    accuracy: number,
+    devastate: number,
+    dodge: number,
+    durability: number,
+
+    strength: number,
+    dexterity: number,
+    intuition: number,
+    health: number,
+
+    swords: number,
+    axes: number,
+    knives: number,
+    clubs: number,
+    shields: number,
+
+    armorBreak: number,
+    blockBreak: number,
+
+    damageMax: number,
+    damageMin: number,
+
+    hp: HeroHpType,
+
+    protectionBelly: number,
+    protectionBreast: number,
+    protectionGroin: number,
+    protectionHead: number,
+    protectionLegs: number,
+
+    blockCount: number,
+    strikeCount: number,
+  },
+
+  numberOfWins: number,
+  numberOfLosses: number,
+  numberOfDraws: number,
+
+  strength: number,
+  dexterity: number,
+  intuition: number,
+  health: number,
+
+  swords: number,
+  axes: number,
+  knives: number,
+  clubs: number,
+  shields: number,
+
+  numberOfAbilities: number,
+  numberOfSkills: number,
+  numberOfParameters: number,
+
+  skills: Array<HeroSkillType>,
 };
 
 export type IslandType = {
   id: string,
+  name: string,
+  image: string,
+  disabledCoordinates: Array<Array<number>>,
 };
 
-export type BotType = {
-  id: string,
-};
+export type BotType = HeroType;
 
 type CombatWarriorType = {
   warrior: string,
@@ -72,17 +198,23 @@ type CombatWarriorType = {
   isQuit: boolean,
 };
 
+export type CombatLogWarriorStrikeType = {
+  strike: number,
+  block: boolean,
+  armorBreak: boolean,
+  blockBreak: boolean,
+  dodge: boolean,
+  devastate: boolean,
+  damage: number,
+  hp: {
+    current: number,
+    max: number,
+  },
+};
+
 type CombatLogWarrior = {
-  id: string,
-  strikes: Array<{
-    strike: number,
-    block: boolean,
-    armorBreak: boolean,
-    blockBreak: boolean,
-    dodge: boolean,
-    devastate: boolean,
-    damage: number,
-  }>,
+  warrior: string,
+  strikes: Array<CombatLogWarriorStrikeType>,
   blocks: Array<number>,
   experience: number,
 };
@@ -92,6 +224,8 @@ type CombatLogType = {
   warriorTwo: CombatLogWarrior,
   isDead: boolean,
   isQuit: boolean,
+  isStarted: boolean,
+  isFinished: boolean,
   created: Date,
 };
 

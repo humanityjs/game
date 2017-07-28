@@ -4,6 +4,7 @@ import { observable } from 'mobx';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { range } from 'lodash';
 import moment from 'moment';
+import autobind from 'autobind-decorator';
 
 import RadioForm, {
   RadioButton,
@@ -19,7 +20,7 @@ import appStore from '../stores/app';
 import combatStore from '../stores/combat';
 import heroStore from '../stores/hero';
 
-import FullBody from './FullBody';
+import FullBody from './common/FullBody';
 
 import {
   getDamage,
@@ -29,7 +30,8 @@ import {
   getExperience,
   isWin,
   isDraw,
-} from '../lib/utils';
+  isCombatFinished,
+} from '../lib/combat-utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -38,7 +40,111 @@ const styles = StyleSheet.create({
   },
 });
 
+async function onQuit() {
+  await heroStore.quit();
+  appStore.navigate('Inner', 'outer');
+}
+
+function renderLog() {
+  const { combat } = combatStore;
+
+  function renderLine(line) {
+    if (typeof line === 'string') {
+      return (
+        <Text>
+          {line}
+        </Text>
+      );
+    } else if (line.time) {
+      return (
+        <Text>
+          [{moment(line.time).format('hh:mm')}]
+        </Text>
+      );
+    } else if (line.warriorOne) {
+      return (
+        <Text style={{ color: '#1C57FF' }}>
+          {line.warriorOne}
+        </Text>
+      );
+    } else if (line.warriorTwo) {
+      return (
+        <Text style={{ color: '#E85349' }}>
+          {line.warriorTwo}
+        </Text>
+      );
+    } else if (line.damage) {
+      return (
+        <Text style={{ color: '#E0483E', fontWeight: 'bold' }}>
+          -{line.damage}
+        </Text>
+      );
+    }
+
+    return (
+      <Text>
+        {Object.values(line).join(' ')}
+      </Text>
+    );
+  }
+  return (
+    <ScrollView style={{ backgroundColor: '#EAEAEA', width: '100%', padding: 20 }}>
+      {combat.logs.reverse().map((log) => {
+        const part = getLogPart(combat, log);
+        if (!Array.isArray(part[0])) {
+          return (
+            <View key={log.created} style={{ marginBottom: 10, flexDirection: 'row' }}>
+              {part.map(renderLine)}
+            </View>
+          );
+        }
+        return (
+          <View style={{ marginBottom: 10 }}>
+            {part.map(item =>
+              item.map(iitem =>
+                <View style={{ flexDirection: 'row' }}>
+                  {iitem.map(renderLine)}
+                </View>,
+              ),
+            )}
+          </View>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+function renderWarriorsInfo() {
+  const { combat } = combatStore;
+
+  const renderItem = (item, team) =>
+    <View key={item.id} style={{ flexDirection: 'row' }}>
+      <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>
+        {item.login}
+      </Text>
+      <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+      <Text>
+        [{item.feature.hp.current} / {item.feature.hp.max}]
+      </Text>
+    </View>;
+
+  function renderWarriors(team) {
+    return combat.warriors
+      .filter(item => item.team === team)
+      .map(item => renderItem(item._warrior, team));
+  }
+
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      {renderWarriors(1)}
+      <Text> vs </Text>
+      {renderWarriors(2)}
+    </View>
+  );
+}
+
 @observer
+@autobind
 export default class CombatScreen extends Component {
   @observable attacks;
   @observable block;
@@ -46,13 +152,12 @@ export default class CombatScreen extends Component {
     super();
 
     this.attacks = new Array(heroStore.hero.feature.strikeCount);
-
-    this.onAttack = this.onAttack.bind(this);
-    this.onQuit = this.onQuit.bind(this);
   }
+
   componentDidMount() {
     if (!combatStore.combat) combatStore.fetch(heroStore.hero.combat);
   }
+
   onAttack() {
     combatStore.attack(
       combatStore.combat.warriors[1]._warrior.id,
@@ -60,76 +165,7 @@ export default class CombatScreen extends Component {
       getBlockItems(this.block, heroStore.hero.feature.blockCount),
     );
   }
-  async onQuit() {
-    await combatStore.quit();
-    appStore.navigate('Inner', 'outer');
-  }
-  renderLog() {
-    const { combat } = combatStore;
 
-    function renderLine(line) {
-      if (typeof line === 'string') {
-        return (
-          <Text>
-            {line}
-          </Text>
-        );
-      } else if (line.time) {
-        return (
-          <Text>
-            [{moment(line.time).format('hh:mm')}]
-          </Text>
-        );
-      } else if (line.warriorOne) {
-        return (
-          <Text style={{ color: '#1C57FF' }}>
-            {line.warriorOne}
-          </Text>
-        );
-      } else if (line.warriorTwo) {
-        return (
-          <Text style={{ color: '#E85349' }}>
-            {line.warriorTwo}
-          </Text>
-        );
-      } else if (line.damage) {
-        return (
-          <Text style={{ color: '#E0483E', fontWeight: 'bold' }}>
-            -{line.damage}
-          </Text>
-        );
-      }
-
-      return (
-        <Text>
-          {Object.values(line).join(' ')}
-        </Text>
-      );
-    }
-    return (
-      <ScrollView style={{ backgroundColor: '#EAEAEA', width: '100%', padding: 20 }}>
-        {combat.logs.reverse().map((log) => {
-          const part = getLogPart(combat, log);
-          if (!Array.isArray(part[0])) {
-            return (
-              <View key={log.created} style={{ marginBottom: 10, flexDirection: 'row' }}>
-                {part.map(renderLine)}
-              </View>
-            );
-          }
-          return (
-            <View style={{ marginBottom: 10 }}>
-              {part.map(item => (
-                item.map(iitem => (
-                  <View style={{ flexDirection: 'row' }}>{iitem.map(renderLine)}</View>
-                ))
-              ))}
-            </View>
-          );
-        })}
-      </ScrollView>
-    );
-  }
   renderActions() {
     const { hero } = heroStore;
 
@@ -201,40 +237,23 @@ export default class CombatScreen extends Component {
       </View>
     );
   }
-  renderWarriorsInfo() {
-    const { combat } = combatStore;
-
-    const renderItem = (item, team) =>
-      <View key={item.id} style={{ flexDirection: 'row' }}>
-        <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>
-          {item.login}
-        </Text>
-        <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
-        <Text>
-          [{item.feature.hp.current} / {item.feature.hp.max}]
-        </Text>
-      </View>;
-
-    function renderWarriors(team) {
-      return combat.warriors
-        .filter(item => item.team === team)
-        .map(item => renderItem(item._warrior, team));
-    }
-
-    return (
-      <View style={{ flexDirection: 'row' }}>
-        {renderWarriors(1)}
-        <Text> vs </Text>
-        {renderWarriors(2)}
-      </View>
-    );
-  }
   render() {
     const { combat } = combatStore;
     const { hero } = heroStore;
 
     if (!combat) return null;
-    const combatFinished = combat.status === 'afterfight' || combat.status === 'past';
+    const combatFinished = isCombatFinished(combat);
+
+    let afterCombatStatus;
+    if (combatFinished) {
+      if (isWin(combat, hero)) {
+        afterCombatStatus = 'You win.';
+      } else if (isDraw(combat)) {
+        afterCombatStatus = 'Draw.';
+      } else {
+        afterCombatStatus = 'You loose.';
+      }
+    }
 
     return (
       <View style={styles.container}>
@@ -245,14 +264,13 @@ export default class CombatScreen extends Component {
                   Damage {getDamage(combat, hero)}
               </Text>
               : <Text>
-                  Fight is finished.{' '}
-                {isWin(combat, hero) ? 'You win.' : isDraw(combat) ? 'Draw.' : 'You loose.'}{' '}
-                  Damage {getDamage(combat, hero)}. Expreince {getExperience(combat, hero)}.
+                  Fight is finished. {afterCombatStatus} Damage {getDamage(combat, hero)}. Expreince{' '}
+                {getExperience(combat, hero)}.
                 </Text>}
           </View>
           {combatFinished &&
             <View style={{ alignItems: 'center', marginTop: 5 }}>
-              <Button onPress={this.onQuit}>Quit</Button>
+              <Button onPress={onQuit}>Quit</Button>
             </View>}
         </View>
         <View>
@@ -277,10 +295,10 @@ export default class CombatScreen extends Component {
               />}
           </View>
           <View style={{ alignItems: 'center', marginTop: 10 }}>
-            {this.renderWarriorsInfo()}
+            {renderWarriorsInfo()}
           </View>
           <View style={{ height: 226, marginTop: 10 }}>
-            {this.renderLog()}
+            {renderLog()}
           </View>
         </View>
       </View>

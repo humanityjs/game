@@ -9,6 +9,7 @@
     "data": "babel-node ./data/index.js"
   },
   "dependencies": {
+    "autobind-decorator": "^2.1.0",
     "firebase": "^3.7.4",
     "lodash": "^4.17.4",
     "mobx": "^3.1.9",
@@ -38,9 +39,7 @@
     "flow-bin": "^0.42.0"
   },
   "rnpm": {
-    "assets": [
-      "./node_modules/npm-font-open-sans/fonts"
-    ]
+    "assets": ["./node_modules/npm-font-open-sans/fonts"]
   },
   "eslintConfig": {
     "parser": "babel-eslint",
@@ -51,7 +50,8 @@
       "react/require-default-props": 0,
       "no-underscore-dangle": 1,
       "global-require": 0,
-      "class-methods-use-this": 1
+      "no-await-in-loop": 1,
+      "no-mixed-operators": 1
     }
   }
 }

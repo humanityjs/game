@@ -39,37 +39,6 @@ export default {
 
       capacity: 10,
     },
-    features: [
-      'strength',
-      'dexterity',
-      'intuition',
-      'health',
-      'swords',
-      'axes',
-      'knives',
-      'clubs',
-      'shields',
-
-      'protectionHead',
-      'protectionBreast',
-      'protectionBelly',
-      'protectionGroin',
-      'protectionLegs',
-
-      'damageMin',
-      'damageMax',
-      'accuracy',
-      'dodge',
-      'devastate',
-      'durability',
-      'blockBreak',
-      'armorBreak',
-      'hp',
-      'capacity',
-
-      'strikeCount',
-      'blockCount',
-    ],
   },
   islandMoveTime: 5,
   combatRange: {

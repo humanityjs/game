@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 });
 
 @observer
-export default class extends Component {
+export default class LoginScreen extends Component {
   constructor() {
     super();
 

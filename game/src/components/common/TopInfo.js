@@ -2,9 +2,9 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { View, StyleSheet } from 'react-native';
 
-import Text from './shared/Text';
+import Text from '../shared/Text';
 
-import heroStore from '../stores/hero';
+import heroStore from '../../stores/hero';
 
 const styles = StyleSheet.create({
   container: {

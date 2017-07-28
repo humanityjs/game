@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { StyleSheet, View } from 'react-native';
+import autobind from 'autobind-decorator';
 
-import Text from './shared/Text';
+import Text from '../shared/Text';
 
-import { countHp } from '../lib/utils';
+import { countHp } from '../../lib/hero-utils';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@autobind
 export default class Hp extends Component {
   static propTypes = {
     warrior: PropTypes.shape(),
@@ -43,8 +45,6 @@ export default class Hp extends Component {
     this.state = { currentHp: current };
 
     this.maxHp = max;
-
-    this.setHp = this.setHp.bind(this);
   }
   componentDidMount() {
     this.countHp();

@@ -56,7 +56,7 @@ class App {
   }
 
   @action
-  toggleMenu(value: boolean): void {
+  toggleMenu(value: boolean) {
     if (value) {
       this.menuRef.open();
     } else {
@@ -65,7 +65,7 @@ class App {
   }
 
   @action
-  toggleOverlay(value: boolean): void {
+  toggleOverlay(value: boolean) {
     this.overlay = value;
   }
 }

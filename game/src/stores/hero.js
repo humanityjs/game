@@ -4,8 +4,10 @@ import { observable, action, computed, toJS } from 'mobx';
 
 import { getHero, saveHero, newCombat } from '../lib/crud-utils';
 import { updateFeature, levelUp } from '../lib/hero-utils';
+import { getExperience, outFromCombat } from '../lib/combat-utils';
 
 import appStore from './app';
+import combatStore from './combat';
 
 import type { UserType, HeroType, HeroThingType } from '../lib/types';
 
@@ -34,7 +36,6 @@ class Hero {
       // TODO: firebase is [] ignores so we should add
       if (!hero.things) hero.things = [];
       if (!hero.skills) hero.skills = [];
-      if (!hero.complects) hero.complects = [];
     }
 
     this.hero = hero;
@@ -69,9 +70,7 @@ class Hero {
     }
 
     heroSkill.level += 1;
-
     this.hero.numberOfSkills -= 1;
-
     updateFeature(this.hero, appStore.initData);
     await this.save();
   }
@@ -132,6 +131,18 @@ class Hero {
     };
 
     await newCombat(combatData, this.hero);
+  }
+
+  @action
+  async quit() {
+    const { combat } = combatStore;
+
+    const combatWarrior = combat.warriors.find(item => item.warrior === this.hero.id);
+
+    await this.addExperience(getExperience(combat, this.hero), false);
+    await outFromCombat(combat, combatWarrior);
+
+    await this.save();
   }
 
   async addExperience(experience: number, save: boolean = true) {

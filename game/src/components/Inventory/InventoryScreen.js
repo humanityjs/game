@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import Body from './Body';
+import Body from '../common/Body';
 import Inventory from './Inventory';
 
-import heroStore from '../stores/hero';
+import heroStore from '../../stores/hero';
 
 export default () =>
   <View style={{ flex: 1, flexDirection: 'row' }}>

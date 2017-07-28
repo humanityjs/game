@@ -3,10 +3,10 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 import { observer } from 'mobx-react';
 
-import heroStore from '../stores/hero';
-import appStore from '../stores/app';
+import heroStore from '../../stores/hero';
+import appStore from '../../stores/app';
 
-import { thingImageRequire, thingSlotImageRequire, getThing } from '../lib/utils';
+import { thingImageRequire, thingSlotImageRequire, getThing } from '../../lib/utils';
 
 const OFFSET = 4;
 const WIDTH = 76;
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     left: OFFSET,
     height: 105,
   },
-  pents: {
+  pants: {
     top: WIDTH + OFFSET * 4 + 100 + 105,
     left: OFFSET,
     height: 110,
@@ -110,7 +110,7 @@ function getSlotStyles(type) {
     case 'armor':
       return [styles.armor, styles.sideBlock, styles.block];
     case 'pants':
-      return [styles.pents, styles.sideBlock, styles.block];
+      return [styles.pants, styles.sideBlock, styles.block];
     case 'shield':
       return [styles.shield, styles.sideBlock, styles.block];
     case 'belt':
@@ -122,12 +122,12 @@ function getSlotStyles(type) {
   }
 }
 
-const Body = observer(({ warrior, undressEnabled }) =>
+const Body = observer(({ undressEnabled }) =>
   <View style={styles.wrapper}>
     <SvgUri
       width="305"
       height="305"
-      source={require('../assets/images/person.svg')}
+      source={require('../../assets/images/person.svg')}
       style={{ marginTop: 72, marginLeft: 10 }}
     />
     {[
@@ -171,7 +171,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/ring.svg')}
+          source={require('../../assets/images/ring.svg')}
           style={{ marginLeft: 2 }}
         />
       </View>
@@ -179,7 +179,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/ring.svg')}
+          source={require('../../assets/images/ring.svg')}
           style={{ marginLeft: 2 }}
         />
       </View>
@@ -187,7 +187,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/ring.svg')}
+          source={require('../../assets/images/ring.svg')}
           style={{ marginLeft: 2 }}
         />
       </View>
@@ -195,7 +195,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/ring.svg')}
+          source={require('../../assets/images/ring.svg')}
           style={{ marginLeft: 2 }}
         />
       </View>
@@ -205,7 +205,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/elixir.svg')}
+          source={require('../../assets/images/elixir.svg')}
           style={{ marginTop: 2 }}
         />
       </View>
@@ -213,7 +213,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/elixir.svg')}
+          source={require('../../assets/images/elixir.svg')}
           style={{ marginTop: 2 }}
         />
       </View>
@@ -221,7 +221,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/elixir.svg')}
+          source={require('../../assets/images/elixir.svg')}
           style={{ marginTop: 2 }}
         />
       </View>
@@ -229,7 +229,7 @@ const Body = observer(({ warrior, undressEnabled }) =>
         <SvgUri
           width="12"
           height="12"
-          source={require('../assets/images/elixir.svg')}
+          source={require('../../assets/images/elixir.svg')}
           style={{ marginTop: 2 }}
         />
       </View>

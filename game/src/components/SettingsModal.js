@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { View, Modal, StyleSheet } from 'react-native';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import autobind from 'autobind-decorator';
 
 import Text from './shared/Text';
 import Button from './shared/Button';
@@ -49,6 +50,7 @@ const FIELDS = [
 ];
 
 @observer
+@autobind
 class FieldValue extends Component {
   @observable value;
   static propTypes = {
@@ -60,8 +62,6 @@ class FieldValue extends Component {
     super();
 
     this.value = props.value;
-
-    this.onChangeValue = this.onChangeValue.bind(this);
   }
   onChangeValue(value) {
     this.value = value;

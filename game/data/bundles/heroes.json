@@ -19,31 +19,17 @@
         "thing": "0",
         "stabilityAll": 20,
         "stabilityLeft": 10,
-        "dressed": false,
-        "away": false
+        "dressed": false
       },
       {
         "id": "2",
         "thing": "1",
         "stabilityAll": 20,
         "stabilityLeft": 10,
-        "dressed": false,
-        "away": false
+        "dressed": false
       }
     ],
-    "complects": [
-      {
-        "id": "1",
-        "name": "first",
-        "thing": "0"
-      },
-      {
-        "id": "2",
-        "name": "second",
-        "thing": "2"
-      }
-    ],
-
+    
     "location": {
       "island": "0",
       "coordinateX": 30,
