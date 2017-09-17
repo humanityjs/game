@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Modal, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import autobind from 'autobind-decorator';
 
 import Text from './shared/Text';
-import Button from './shared/Button';
 import TextInput from './shared/TextInput';
+import Modal from './shared/Modal';
 
 import heroStore from '../stores/hero';
 
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 50,
   },
-  conatainer: {
+  container: {
     flex: 1,
     marginTop: 100,
     marginBottom: 100,
@@ -96,40 +96,24 @@ class FieldValue extends Component {
 export default observer(({ onHide }) => {
   const data = {};
   return (
-    <Modal animationType="slide" transparent visible>
-      <View style={styles.conatainer}>
-        <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Button
-            style={{ backgroundColor: 'transparent' }}
-            textStyle={{ color: '#333' }}
-            onPress={onHide}
-          >
-            CLOSE
-          </Button>
-          <Text style={{ fontSize: 17 }}>Edit Profile</Text>
-          <Button
-            style={{ backgroundColor: 'transparent' }}
-            textStyle={{ color: '#333' }}
-            onPress={() => heroStore.saveGeneral(data)}
-          >
-            SAVE
-          </Button>
-        </View>
-        <View style={{ marginTop: 10 }}>
-          {FIELDS.map(item =>
-            <View key={item.key} style={[styles.line, item.type === 'TEXTAREA' && { height: 150 }]}>
-              <Text style={{ paddingTop: 15 }}>
-                {item.label}
-              </Text>
-              <FieldValue
-                value={heroStore.hero[item.key]}
-                type={item.type}
-                onChange={value => (data[item.key] = value)}
-              />
-            </View>,
-          )}
-        </View>
-      </View>
+    <Modal
+      onHide={onHide}
+      onOk={() => heroStore.saveGeneral(data)}
+      okLabel="SAVE"
+      title="Edit Profile"
+    >
+      {FIELDS.map(item =>
+        <View key={item.key} style={[styles.line, item.type === 'TEXTAREA' && { height: 150 }]}>
+          <Text style={{ paddingTop: 15 }}>
+            {item.label}
+          </Text>
+          <FieldValue
+            value={heroStore.hero[item.key]}
+            type={item.type}
+            onChange={value => (data[item.key] = value)}
+          />
+        </View>,
+      )}
     </Modal>
   );
 });

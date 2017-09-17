@@ -1,10 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { StyleSheet, View } from 'react-native';
 import autobind from 'autobind-decorator';
+import SvgUri from 'react-native-svg-uri';
 
 import Text from '../shared/Text';
+import IconButton from '../shared/IconButton';
 
 import { countHp } from '../../lib/hero-utils';
+
+import appStore from '../../stores/app';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -37,6 +41,7 @@ const styles = StyleSheet.create({
 export default class Hp extends Component {
   static propTypes = {
     warrior: PropTypes.shape(),
+    showInfo: PropTypes.bool,
   };
   constructor(props) {
     super();
@@ -83,7 +88,7 @@ export default class Hp extends Component {
     this.setHp();
   }
   render() {
-    const { warrior } = this.props;
+    const { warrior, showInfo } = this.props;
     const { currentHp } = this.state;
 
     const { hp } = warrior.feature;
@@ -98,6 +103,10 @@ export default class Hp extends Component {
           <Text style={styles.level}>
             [{warrior.level}]
           </Text>
+          {showInfo &&
+            <IconButton onPress={() => appStore.toggleWarriorInfoModal(warrior, true)}>
+              <SvgUri width="14" height="14" source={require('../../assets/images/info.svg')} />
+            </IconButton>}
         </View>
         <View style={styles.hpWrapper}>
           <View style={[styles.hp, { width: `${hpReady * 100}%` }]} />

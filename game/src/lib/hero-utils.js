@@ -2,9 +2,20 @@
 
 import config from './config';
 
-import type { HeroHpType, HeroType, InitDataType, ThingType } from './types';
+import type {
+  HeroHpType,
+  HeroType,
+  HeroThingType,
+  BotType,
+  IslandType,
+  InitDataType,
+  TableExperienceType,
+  ThingType,
+} from './types';
 
 import appStore from '../stores/app';
+
+import { getIsland } from '../lib/utils';
 
 const heroConfig = config.hero;
 
@@ -162,9 +173,7 @@ export function updateFeature(hero: HeroType, initData: InitDataType) {
   };
 }
 
-export function levelUp(hero: HeroType, initData: InitDataType) {
-  const tableExperience = initData.tableExperience;
-
+export function levelUp(hero: HeroType, tableExperience: Array<TableExperienceType>) {
   const tableExperienceItems = tableExperience.filter(
     item => item.level > hero.level && item.experience <= hero.experience,
   );
@@ -224,7 +233,7 @@ export function init(hero: HeroType) {
     created: new Date().getTime(),
   });
 
-  levelUp(hero, appStore.initData);
+  levelUp(hero, appStore.initData.tableExperience);
   updateFeature(hero, appStore.initData);
 }
 
@@ -259,4 +268,18 @@ export function getFeatureParam(orig: number, feature: number): string {
 
   output += ']';
   return output;
+}
+
+export function isOnline(hero: HeroType): boolean {
+  return true;
+}
+
+export function getLocation(hero: HeroType, islands: Array<IslandType>): string {
+  const { location } = hero;
+  const island = getIsland(islands, location.island);
+  return `${island.name} ${location.coordinateX}:${location.coordinateY}`;
+}
+
+export function getDrassedThings(hero: HeroType | BotType): Array<HeroThingType> {
+  return hero.things.filter(item => item.dressed);
 }

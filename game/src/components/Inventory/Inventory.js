@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   itemWrapper: {
     width: '100%',
     backgroundColor: '#eaeaea',
-    padding: 20,
+    padding: 10,
     flexDirection: 'row',
   },
   itemTitle: {
@@ -48,21 +48,24 @@ const FILTERS = [
   { key: 'elixir', label: 'ELIXIR' },
 ];
 
-function renderItem(heroThing, index) {
-  const thing = getThing(appStore.initData.things, heroThing.thing);
-  const { hero } = heroStore;
+export function renderItem(warrior, heroThingOrId, index = 0) {
+  const isInfo = typeof heroThingOrId === 'string';
+  let heroThing;
+  let id;
+  if (isInfo) {
+    id = heroThingOrId;
+  } else {
+    heroThing = heroThingOrId;
+    id = heroThing.id;
+  }
+  const thing = getThing(appStore.initData.things, id);
 
   function rrenderItem(key, value, safe) {
     if (value === undefined || !value) return null;
 
     return (
       <Text key={key}>
-        {key}{' '}
-        {safe === false
-          ? <Text style={{ color: '#E85349' }}>
-            {value}
-          </Text>
-          : value}
+        {key} {safe === false ? <Text style={{ color: '#E85349' }}>{value}</Text> : value}
       </Text>
     );
   }
@@ -82,7 +85,7 @@ function renderItem(heroThing, index) {
     const key = item.replace('Need', '');
     const label = capitalize(key);
 
-    return rrenderItem(label, thing[item], hero[key] >= thing[item]);
+    return rrenderItem(label, thing[item], warrior[key] >= thing[item]);
   });
 
   const giveItems = [
@@ -120,46 +123,45 @@ function renderItem(heroThing, index) {
   });
 
   return (
-    <View key={heroThing.id} style={[styles.itemWrapper, index > 0 && { marginTop: 20 }]}>
+    <View key={id} style={[styles.itemWrapper, index > 0 && { marginTop: 20 }]}>
       <View>
-        <Text style={{ fontSize: 18 }}>
-          {thing.name}
-        </Text>
+        <Text style={{ fontSize: 18 }}>{thing.name}</Text>
         <View style={{ flexDirection: 'row' }}>
-          <Text>
-            Money {thing.price}
-          </Text>
-          <Text style={{ marginLeft: 10 }}>
-            Capacity {thing.capacity}
-          </Text>
+          <Text>Money {thing.price}</Text>
+          <Text style={{ marginLeft: 10 }}>Capacity {thing.capacity}</Text>
         </View>
         <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <View style={{ width: 80, alignItems: 'center', marginTop: 5 }}>
             <Image source={thingImageRequire(thing.image)} />
-            <Text style={{ marginTop: 5 }}>
-              {heroThing.stabilityLeft} / {heroThing.stabilityAll}
-            </Text>
+            {!isInfo && (
+              <Text style={{ marginTop: 5 }}>
+                {heroThing.stabilityLeft} / {heroThing.stabilityAll}
+              </Text>
+            )}
           </View>
           <View style={{ width: 170, marginLeft: 20 }}>
             <Text style={styles.itemTitle}>Requirments</Text>
-            {needItems}
+            <ScrollView style={{ height: 100 }}>{needItems}</ScrollView>
           </View>
           <View>
             <Text style={styles.itemTitle}>Description</Text>
-            {giveItems}
+            <ScrollView style={{ height: 100 }}>{giveItems}</ScrollView>
           </View>
         </View>
       </View>
-      <View style={{ top: 40, position: 'absolute', right: 20 }}>
-        {thingCanBeDressed(hero, thing) &&
-          <Button onPress={() => heroStore.dressUndressThing(true, heroThing.id)}>DRESS</Button>}
-        <Button
-          onPress={() => heroStore.removeThing(heroThing.id)}
-          style={{ backgroundColor: '#E85349', marginTop: 10 }}
-        >
-          REMOVE
-        </Button>
-      </View>
+      {!isInfo && (
+        <View style={{ top: 40, position: 'absolute', right: 20 }}>
+          {thingCanBeDressed(warrior, thing) && (
+            <Button onPress={() => heroStore.dressUndressThing(true, heroThing.id)}>DRESS</Button>
+          )}
+          <Button
+            onPress={() => heroStore.removeThing(heroThing.id)}
+            style={{ backgroundColor: '#E85349', marginTop: 10 }}
+          >
+            REMOVE
+          </Button>
+        </View>
+      )}
     </View>
   );
 }
@@ -198,7 +200,7 @@ export default class Inventory extends Component {
               const thing = getThing(appStore.initData.things, heroThing.thing);
               return thing.type === this.filter;
             })
-            .map(renderItem)}
+            .map((heroThing, index) => renderItem(heroStore.hero, heroThing, index))}
         </ScrollView>
       </View>
     );

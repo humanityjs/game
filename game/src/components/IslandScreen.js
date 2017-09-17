@@ -64,7 +64,10 @@ function renderHeroesInfo() {
           <Text>
             {bot.login} [{bot.level}]
           </Text>
-          <IconButton style={{ marginTop: 3, marginLeft: 5 }}>
+          <IconButton
+            onPress={() => appStore.toggleWarriorInfoModal(bot, true)}
+            style={{ marginTop: 3, marginLeft: 5 }}
+          >
             <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
           </IconButton>
           <IconButton style={{ marginTop: 3, marginLeft: 5 }} onPress={() => onCombat(bot.id)}>

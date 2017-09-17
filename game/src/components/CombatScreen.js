@@ -15,6 +15,7 @@ import SvgUri from 'react-native-svg-uri';
 
 import Text from './shared/Text';
 import Button from './shared/Button';
+import IconButton from './shared/IconButton';
 
 import appStore from '../stores/app';
 import combatStore from '../stores/combat';
@@ -122,7 +123,9 @@ function renderWarriorsInfo() {
       <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>
         {item.login}
       </Text>
-      <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+      <IconButton onPress={() => appStore.toggleWarriorInfoModal(item, true)}>
+        <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+      </IconButton>
       <Text>
         [{item.feature.hp.current} / {item.feature.hp.max}]
       </Text>
@@ -257,16 +260,16 @@ export default class CombatScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={{ position: 'absolute', width: '100%', top: 20, zIndex: 2 }}>
+        <View style={{ position: 'absolute', width: 300, left: '50%', marginLeft: -150, top: 20, zIndex: 2 }}>
           <View style={{ alignItems: 'center' }}>
             {!combatFinished
               ? <Text>
                   Damage {getDamage(combat, hero)}
               </Text>
-              : <Text>
-                  Fight is finished. {afterCombatStatus} Damage {getDamage(combat, hero)}. Expreince{' '}
-                {getExperience(combat, hero)}.
-                </Text>}
+              : [<Text>
+                  Fight is finished. {afterCombatStatus}
+                </Text>, <Text>Damage {getDamage(combat, hero)}. Expreince{' '}
+                {getExperience(combat, hero)}.</Text>]}
           </View>
           {combatFinished &&
             <View style={{ alignItems: 'center', marginTop: 5 }}>
@@ -283,8 +286,8 @@ export default class CombatScreen extends Component {
                 <View key="actions" style={{ marginTop: 50 }}>
                   {this.renderActions()}
                 </View>,
-                <View key="warrior-two-bod3y">
-                  <FullBody warrior={combat.warriors[1]._warrior} />
+                <View key="warrior-two-body" style={{ zIndex: 3 }}>
+                  <FullBody warrior={combat.warriors[1]._warrior} showInfo />
                 </View>,
               ]
               : <SvgUri

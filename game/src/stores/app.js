@@ -3,11 +3,12 @@ import { observable, action } from 'mobx';
 
 import { getSkills, getTableExperience, getThings, getIslands } from '../lib/crud-utils';
 
-import type { InitDataType } from '../lib/types';
+import type { InitDataType, HeroType, BotType } from '../lib/types';
 
 class App {
   @observable initData: InitDataType = {};
   @observable overlay: boolean = false;
+  @observable showHeroInfoModal: boolean = false;
   @observable
   currentNavs = {
     outer: null,
@@ -67,6 +68,19 @@ class App {
   @action
   toggleOverlay(value: boolean) {
     this.overlay = value;
+  }
+
+  @action
+  toggleWarriorInfoModal(warrior: HeroType | BotType, isBot: boolean) {
+    this.toggleOverlay(Boolean(warrior));
+    if (warrior) {
+      this.showHeroInfoModal = {
+        warrior,
+        isBot,
+      };
+    } else {
+      this.showHeroInfoModal = null;
+    }
   }
 }
 

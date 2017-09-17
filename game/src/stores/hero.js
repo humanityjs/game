@@ -3,7 +3,7 @@
 import { observable, action, computed, toJS } from 'mobx';
 
 import { getHero, saveHero, newCombat } from '../lib/crud-utils';
-import { updateFeature, levelUp } from '../lib/hero-utils';
+import { updateFeature, levelUp, getDrassedThings } from '../lib/hero-utils';
 import { getExperience, outFromCombat } from '../lib/combat-utils';
 
 import appStore from './app';
@@ -21,7 +21,7 @@ class Hero {
 
   @computed
   get dressedThings(): Array<HeroThingType> {
-    return this.hero.things.filter(item => item.dressed);
+    return getDrassedThings(this.hero);
   }
 
   @action

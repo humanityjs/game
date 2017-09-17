@@ -7,6 +7,7 @@ import heroStore from '../../stores/hero';
 import appStore from '../../stores/app';
 
 import { thingImageRequire, thingSlotImageRequire, getThing } from '../../lib/utils';
+import { getDrassedThings } from '../../lib/hero-utils';
 
 const OFFSET = 4;
 const WIDTH = 76;
@@ -122,7 +123,12 @@ function getSlotStyles(type) {
   }
 }
 
-const Body = observer(({ undressEnabled }) =>
+function onThingPressHandler(id, thingId, undressEnabled, onThingPress) {
+  if (undressEnabled) heroStore.dressUndressThing(false, id);
+  if (onThingPress) onThingPress(thingId);
+}
+
+const Body = observer(({ warrior, undressEnabled, onThingPress }) =>
   <View style={styles.wrapper}>
     <SvgUri
       width="305"
@@ -144,7 +150,7 @@ const Body = observer(({ undressEnabled }) =>
       'boots',
     ].map((type) => {
       let thing;
-      const heroThing = heroStore.dressedThings.find((item) => {
+      const heroThing = getDrassedThings(warrior).find((item) => {
         thing = getThing(appStore.initData.things, item.thing);
         return thing.type === type;
       });
@@ -154,9 +160,8 @@ const Body = observer(({ undressEnabled }) =>
           <SvgUri width="16" height="16" source={thingSlotImageRequire(type)} style={styles.icon} />
           {heroThing
             ? <TouchableOpacity
-              onPress={
-                  undressEnabled ? () => heroStore.dressUndressThing(false, heroThing.id) : null
-                }
+              onPress={() =>
+                  onThingPressHandler(heroThing.id, heroThing.thing, undressEnabled, onThingPress)}
               style={styles.slotThing}
             >
               <Image source={thingImageRequire(thing.image)} />
@@ -240,6 +245,7 @@ const Body = observer(({ undressEnabled }) =>
 Body.propTypes = {
   warrior: PropTypes.shape(),
   undressEnabled: PropTypes.bool,
+  onThingPress: PropTypes.func,
 };
 
 export default Body;

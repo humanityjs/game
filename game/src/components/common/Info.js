@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { StyleSheet, View } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
@@ -52,7 +52,11 @@ class SkillsInfo extends Component {
                   onPress={() => heroStore.increaseSkill(skill.id)}
                   style={{ marginTop: 2, marginLeft: 8 }}
                 >
-                  <SvgUri width="14" height="14" source={require('../../assets/images/plus.svg')} />
+                  <SvgUri
+                    width="14"
+                    height="14"
+                    source={require('../../assets/images/plus.svg')}
+                  />
                 </IconButton>
                 : null}
             </View>
@@ -89,77 +93,110 @@ class SkillsInfo extends Component {
   }
 }
 
+export function ParametersInfo({ warrior, noActions }) {
+  return (
+    <View style={[styles.infoBlock, { height: 170 }]}>
+      <Text style={styles.title}>Parameters</Text>
+      {['strength', 'dexterity', 'intuition', 'health'].map(item =>
+        <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
+          <Text style={{ width: 75 }}>
+            {capitalize(item)}
+          </Text>
+          <Text>
+            {warrior[item]} {getFeatureParam(warrior[item], warrior.feature[item])}
+          </Text>
+          {!noActions && warrior.numberOfParameters &&
+            <IconButton
+              onPress={() => heroStore.increaseParameter(item)}
+              style={{ marginTop: 2, marginLeft: 8 }}
+            >
+              <SvgUri width="14" height="14" source={require('../../assets/images/plus.svg')} />
+            </IconButton>}
+        </View>,
+      )}
+      {!noActions && warrior.numberOfParameters &&
+        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <Text>To increase</Text>
+          <Text style={{ marginLeft: 10 }}>
+            {warrior.numberOfParameters}
+          </Text>
+        </View>}
+    </View>
+  );
+}
+
+ParametersInfo.propTypes = {
+  warrior: PropTypes.shape(),
+  noActions: PropTypes.bool,
+};
+
+export function GeneralInfo({ warrior }) {
+  const tableExperienceItem = appStore.initData.tableExperience.find(
+    item => item.level > warrior.level,
+  );
+
+  return (
+    <View style={[styles.infoBlock, { height: 145 }]}>
+      <Text style={styles.title}>Info</Text>
+      {['wins', 'losses', 'draws'].map(item =>
+        <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
+          <Text style={{ width: 75 }}>
+            {capitalize(item)}
+          </Text>
+          <Text>
+            {warrior[`numberOf${capitalize(item)}`]}
+          </Text>
+        </View>,
+      )}
+      <View style={{ flexDirection: 'row', marginTop: 10 }}>
+        <Text>Experience</Text>
+        <Text style={{ marginLeft: 10 }}>
+          {warrior.experience} / {tableExperienceItem.experience}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+GeneralInfo.propTypes = {
+  warrior: PropTypes.shape(),
+};
+
+export function ModifiersInfo({ warrior }) {
+  return (
+    <View style={[styles.infoBlock, { height: 160 }]}>
+      <Text style={styles.title}>Modifiers</Text>
+      {['dodge', 'accuracy', 'devastate', 'block break', 'armor break'].map(item =>
+        <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
+          <Text style={{ width: 95 }}>
+            {capitalize(item)}
+          </Text>
+          <Text>
+            {warrior.feature[camelCase(item)]}%
+          </Text>
+        </View>,
+      )}
+    </View>
+  );
+}
+
+ModifiersInfo.propTypes = {
+  warrior: PropTypes.shape(),
+};
+
 export default observer(() => {
   const { hero } = heroStore;
-
-  const tableExperienceItem = appStore.initData.tableExperience.find(
-    item => item.level > hero.level,
-  );
 
   return (
     <View style={{ flexDirection: 'row' }}>
       <View>
-        <View style={[styles.infoBlock, { height: 170 }]}>
-          <Text style={styles.title}>Parameters</Text>
-          {['strength', 'dexterity', 'intuition', 'health'].map(item =>
-            <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>
-                {capitalize(item)}
-              </Text>
-              <Text>
-                {hero[item]} {getFeatureParam(hero[item], hero.feature[item])}
-              </Text>
-              {hero.numberOfParameters &&
-                <IconButton
-                  onPress={() => heroStore.increaseParameter(item)}
-                  style={{ marginTop: 2, marginLeft: 8 }}
-                >
-                  <SvgUri width="14" height="14" source={require('../../assets/images/plus.svg')} />
-                </IconButton>}
-            </View>,
-          )}
-          {hero.numberOfParameters &&
-            <View style={{ flexDirection: 'row', marginTop: 10 }}>
-              <Text>To increase</Text>
-              <Text style={{ marginLeft: 10 }}>
-                {hero.numberOfParameters}
-              </Text>
-            </View>}
-        </View>
-        <View style={[styles.infoBlock, { marginTop: 20, height: 145 }]}>
-          <Text style={styles.title}>Info</Text>
-          {['wins', 'losses', 'draws'].map(item =>
-            <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>
-                {capitalize(item)}
-              </Text>
-              <Text>
-                {hero[`numberOf${capitalize(item)}`]}
-              </Text>
-            </View>,
-          )}
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            <Text>Experience</Text>
-            <Text style={{ marginLeft: 10 }}>
-              {hero.experience} / {tableExperienceItem.experience}
-            </Text>
-          </View>
+        <ParametersInfo warrior={hero} />
+        <View style={{ marginTop: 20 }}>
+          <GeneralInfo warrior={hero} />
         </View>
       </View>
       <View style={{ marginLeft: 20 }}>
-        <View style={[styles.infoBlock, { height: 160 }]}>
-          <Text style={styles.title}>Modifiers</Text>
-          {['dodge', 'accuracy', 'devastate', 'block break', 'armor break'].map(item =>
-            <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 95 }}>
-                {capitalize(item)}
-              </Text>
-              <Text>
-                {hero.feature[camelCase(item)]}%
-              </Text>
-            </View>,
-          )}
-        </View>
+        <ModifiersInfo warrior={hero} />
         <View style={[styles.infoBlock, { marginTop: 20, height: 205 }]}>
           <Text style={styles.title}>Damage & Protection</Text>
           <View style={{ flexDirection: 'row', marginTop: 2 }}>

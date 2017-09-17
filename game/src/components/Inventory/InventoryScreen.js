@@ -9,7 +9,7 @@ import heroStore from '../../stores/hero';
 export default () =>
   <View style={{ flex: 1, flexDirection: 'row' }}>
     <View style={{ width: 324 }}>
-      <Body undressEnabled hero={heroStore.hero} />
+      <Body undressEnabled warrior={heroStore.hero} />
     </View>
     <View style={{ marginLeft: 20, width: 640 }}>
       <Inventory />
