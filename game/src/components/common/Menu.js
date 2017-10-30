@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import { View, StyleSheet } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
+import Icon from '../shared/Icon';
 import IconButton from '../shared/IconButton';
 
 import appStore from '../../stores/app';
@@ -44,9 +44,8 @@ export default class Menu extends Component {
           appStore.navigate('Hero');
           appStore.toggleMenu(false);
         },
-        image: require('../../assets/images/person-white.svg'),
-        height: 24,
-        width: 20,
+        image: 'person',
+        size: 20,
         active: !currentNav || currentNav === 'Hero',
       },
       {
@@ -55,9 +54,7 @@ export default class Menu extends Component {
           appStore.navigate('Inventory');
           appStore.toggleMenu(false);
         },
-        image: require('../../assets/images/bag.svg'),
-        height: 18,
-        width: 16,
+        image: 'bag',
         active: currentNav === 'Inventory',
       },
       {
@@ -66,7 +63,7 @@ export default class Menu extends Component {
           this.onShowSettingsModal();
           appStore.toggleMenu(false);
         },
-        image: require('../../assets/images/cog.svg'),
+        image: 'cog',
       },
       {
         key: 4,
@@ -75,24 +72,24 @@ export default class Menu extends Component {
           authStore.logout();
           appStore.navigate('Login', 'outer');
         },
-        image: require('../../assets/images/logout.svg'),
+        image: 'logout',
       },
     ];
 
     return (
       <View>
         <View style={[styles.item]}>
-          <SvgUri width="24" height="32" source={require('../../assets/images/logo-white.svg')} />
+          <Icon size={24} color="#ffffff" name="logo" />
         </View>
-        {items.map(item =>
+        {items.map(item => (
           <IconButton
             key={item.key}
             style={[styles.item, item.active && { backgroundColor: '#21C064' }]}
             onPress={item.onPress}
           >
-            <SvgUri width={item.width || 16} height={item.height || 16} source={item.image} />
-          </IconButton>,
-        )}
+            <Icon size={item.size || 16} color="#ffffff" name={item.image} />
+          </IconButton>
+        ))}
         {this.showSettingsModal && <SettingsModal onHide={this.onHideSettingsModal} />}
       </View>
     );

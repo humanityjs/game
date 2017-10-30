@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import moment from 'moment';
 import { observable } from 'mobx';
@@ -19,20 +20,19 @@ import { ParametersInfo, GeneralInfo, ModifiersInfo } from './common/Info';
 import { isOnline, getLocation } from '../lib/hero-utils';
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: 'black',
-    opacity: 0.5,
-    zIndex: 2,
-  },
+  overlay,
 });
 
 const ThingInfoModal = ({ id, warrior, onHide }) => (
-  <Modal style={{ flex: 0, width: 450, height: 190, left: 237, top: 100 }}>
+  <Modal
+    style={{
+      flex: 0,
+      width: 450,
+      height: 190,
+      left: 237,
+      top: 100,
+    }}
+  >
     {renderThingItem(warrior, id)}
     <Button
       style={{
@@ -52,7 +52,7 @@ const ThingInfoModal = ({ id, warrior, onHide }) => (
 
 ThingInfoModal.propTypes = {
   id: PropTypes.string,
-  warrior: PropTypes.shape(),
+  warrior: PropTypes.shape({}),
   onHide: PropTypes.func,
 };
 
@@ -102,7 +102,12 @@ export default class HeroInfoModal extends Component {
           {!isBot && (
             <View style={{ width: '100%' }}>
               <ScrollView
-                style={{ backgroundColor: '#EAEAEA', margin: 20, height: 200, padding: 10 }}
+                style={{
+                  backgroundColor: '#EAEAEA',
+                  margin: 20,
+                  height: 200,
+                  padding: 10,
+                }}
               >
                 <Text>Date of registration: {moment(warrior.created).format('LL')}</Text>
                 <View style={{ flexDirection: 'row' }}>

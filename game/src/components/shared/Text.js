@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, Text } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -9,10 +10,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const TextWrapper = ({ style, children }) =>
-  <Text style={[styles.base, style]}>
-    {children}
-  </Text>;
+const TextWrapper = ({ style, children }) => <Text style={[styles.base, style]}>{children}</Text>;
 
 TextWrapper.propTypes = {
   style: Text.propTypes.style,

@@ -1,12 +1,14 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 import { observer } from 'mobx-react';
+
+import Icon from '../shared/Icon';
 
 import heroStore from '../../stores/hero';
 import appStore from '../../stores/app';
 
-import { thingImageRequire, thingSlotImageRequire, getThing } from '../../lib/utils';
+import { thingImageRequire, getThing } from '../../lib/utils';
 import { getDrassedThings } from '../../lib/hero-utils';
 
 const OFFSET = 4;
@@ -128,14 +130,9 @@ function onThingPressHandler(id, thingId, undressEnabled, onThingPress) {
   if (onThingPress) onThingPress(thingId);
 }
 
-const Body = observer(({ warrior, undressEnabled, onThingPress }) =>
+const Body = observer(({ warrior, undressEnabled, onThingPress }) => (
   <View style={styles.wrapper}>
-    <SvgUri
-      width="305"
-      height="305"
-      source={require('../../assets/images/person.svg')}
-      style={{ marginTop: 72, marginLeft: 10 }}
-    />
+    <Icon size={305} name="person" style={{ marginTop: 72, marginLeft: 10 }} />
     {[
       'gloves',
       'helmet',
@@ -157,93 +154,53 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) =>
 
       return (
         <View key={type} style={getSlotStyles(type)}>
-          <SvgUri width="16" height="16" source={thingSlotImageRequire(type)} style={styles.icon} />
-          {heroThing
-            ? <TouchableOpacity
+          <Icon size={16} name={type} style={styles.icon} />
+          {heroThing ? (
+            <TouchableOpacity
               onPress={() =>
-                  onThingPressHandler(heroThing.id, heroThing.thing, undressEnabled, onThingPress)}
+                onThingPressHandler(heroThing.id, heroThing.thing, undressEnabled, onThingPress)}
               style={styles.slotThing}
             >
               <Image source={thingImageRequire(thing.image)} />
             </TouchableOpacity>
-            : null}
+          ) : null}
         </View>
       );
     })}
 
     <View style={styles.rings}>
       <View style={[styles.ring, styles.block, { top: 0, left: 0 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
+        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
       </View>
       <View style={[styles.ring, styles.block, { top: 0, left: 40 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
+        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
       </View>
       <View style={[styles.ring, styles.block, { top: 40, left: 0 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
+        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
       </View>
       <View style={[styles.ring, styles.block, { top: 40, left: 40 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/ring.svg')}
-          style={{ marginLeft: 2 }}
-        />
+        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
       </View>
     </View>
     <View style={styles.elixirs}>
       <View style={[styles.elixir, styles.block, { left: 0 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
+        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
       </View>
       <View style={[styles.elixir, styles.block, { left: 40 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
+        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
       </View>
       <View style={[styles.elixir, styles.block, { left: 80 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
+        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
       </View>
       <View style={[styles.elixir, styles.block, { left: 120 }]}>
-        <SvgUri
-          width="12"
-          height="12"
-          source={require('../../assets/images/elixir.svg')}
-          style={{ marginTop: 2 }}
-        />
+        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
       </View>
     </View>
-  </View>,
-);
+  </View>
+));
 
 Body.propTypes = {
-  warrior: PropTypes.shape(),
+  warrior: PropTypes.shape({}),
   undressEnabled: PropTypes.bool,
   onThingPress: PropTypes.func,
 };

@@ -1,8 +1,9 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import Picker from 'react-native-picker';
-import SvgUri from 'react-native-svg-uri';
 
+import Icon from './Icon';
 import Text from './Text';
 
 const styles = StyleSheet.create({
@@ -47,7 +48,7 @@ export default class extends Component {
     };
   }
   onPickerConfirm(value) {
-    const key = this.props.data.find(item => item.label === value[0]).key;
+    const { key } = this.props.data.find(item => item.label === value[0]);
     this.setState({ value: key });
     this.props.onChange(key);
   }
@@ -75,15 +76,8 @@ export default class extends Component {
 
     return (
       <TouchableOpacity onPress={this.showPicker} style={[styles.picker, style]}>
-        <Text style={styles.text}>
-          {this.getLebel() || placeholder || ''}
-        </Text>
-        <SvgUri
-          width="18"
-          height="12"
-          style={styles.arrow}
-          source={require('../../assets/images/down.svg')}
-        />
+        <Text style={styles.text}>{this.getLebel() || placeholder || ''}</Text>
+        <Icon size={18} style={styles.arrow} name="down" />
       </TouchableOpacity>
     );
   }

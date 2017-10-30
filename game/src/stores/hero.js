@@ -147,7 +147,7 @@ class Hero {
 
   async addExperience(experience: number, save: boolean = true) {
     this.hero.experience += experience;
-    levelUp(this.hero, appStore.initData);
+    levelUp(this.hero, appStore.initData.tableExperience);
     if (save) await this.save();
   }
 

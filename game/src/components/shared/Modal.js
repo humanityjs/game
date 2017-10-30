@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Modal, StyleSheet } from 'react-native';
 
 import Text from './Text';
@@ -25,7 +26,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const ModalWrapper = ({ onHide, children, onOk, okLabel, title, style }) => (
+const ModalWrapper = ({
+  onHide, children, onOk, okLabel, title, style,
+}) => (
   <Modal animationType="slide" transparent visible>
     <View style={[styles.container, style]}>
       {onHide || title || onOk ? (

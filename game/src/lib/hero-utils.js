@@ -174,9 +174,8 @@ export function updateFeature(hero: HeroType, initData: InitDataType) {
 }
 
 export function levelUp(hero: HeroType, tableExperience: Array<TableExperienceType>) {
-  const tableExperienceItems = tableExperience.filter(
-    item => item.level > hero.level && item.experience <= hero.experience,
-  );
+  const tableExperienceItems = tableExperience
+    .filter(item => item.level > hero.level && item.experience <= hero.experience);
 
   if (!tableExperienceItems.length) return;
 
@@ -270,7 +269,7 @@ export function getFeatureParam(orig: number, feature: number): string {
   return output;
 }
 
-export function isOnline(hero: HeroType): boolean {
+export function isOnline(): boolean {
   return true;
 }
 

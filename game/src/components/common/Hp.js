@@ -1,8 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import autobind from 'autobind-decorator';
-import SvgUri from 'react-native-svg-uri';
 
+import Icon from '../shared/Icon';
 import Text from '../shared/Text';
 import IconButton from '../shared/IconButton';
 
@@ -97,16 +98,13 @@ export default class Hp extends Component {
     return (
       <View style={styles.wrapper}>
         <View style={styles.nameWrapper}>
-          <Text style={styles.name}>
-            {warrior.login}{' '}
-          </Text>
-          <Text style={styles.level}>
-            [{warrior.level}]
-          </Text>
-          {showInfo &&
+          <Text style={styles.name}>{warrior.login} </Text>
+          <Text style={styles.level}>[{warrior.level}]</Text>
+          {showInfo && (
             <IconButton onPress={() => appStore.toggleWarriorInfoModal(warrior, true)}>
-              <SvgUri width="14" height="14" source={require('../../assets/images/info.svg')} />
-            </IconButton>}
+              <Icon size={14} name="info" />
+            </IconButton>
+          )}
         </View>
         <View style={styles.hpWrapper}>
           <View style={[styles.hp, { width: `${hpReady * 100}%` }]} />

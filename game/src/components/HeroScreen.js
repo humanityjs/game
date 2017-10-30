@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default () =>
+export default () => (
   <View style={styles.container}>
     <View style={{ width: 324 }}>
       <Body warrior={heroStore.hero} />
@@ -21,4 +21,5 @@ export default () =>
     <View style={{ marginLeft: 20, width: 640 }}>
       <Info />
     </View>
-  </View>;
+  </View>
+);

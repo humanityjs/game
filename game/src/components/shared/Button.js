@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import autobind from 'autobind-decorator';
 
@@ -39,16 +40,16 @@ export default class extends Component {
     onPress();
   }
   render() {
-    const { style, disabled, textStyle, children } = this.props;
+    const {
+      style, disabled, textStyle, children,
+    } = this.props;
 
     return (
       <TouchableOpacity
         onPress={this.onPress}
         style={[styles.button, style, disabled && styles.disabled]}
       >
-        <Text style={[styles.text, textStyle]}>
-          {children}
-        </Text>
+        <Text style={[styles.text, textStyle]}>{children}</Text>
       </TouchableOpacity>
     );
   }

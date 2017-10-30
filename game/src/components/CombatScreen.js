@@ -11,7 +11,8 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
-import SvgUri from 'react-native-svg-uri';
+
+import Icon from './shared/Icon';
 
 import Text from './shared/Text';
 import Button from './shared/Button';
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#F2F2F2',
   },
 });
 
@@ -51,42 +53,18 @@ function renderLog() {
 
   function renderLine(line) {
     if (typeof line === 'string') {
-      return (
-        <Text>
-          {line}
-        </Text>
-      );
+      return <Text>{line}</Text>;
     } else if (line.time) {
-      return (
-        <Text>
-          [{moment(line.time).format('hh:mm')}]
-        </Text>
-      );
+      return <Text>[{moment(line.time).format('hh:mm')}]</Text>;
     } else if (line.warriorOne) {
-      return (
-        <Text style={{ color: '#1C57FF' }}>
-          {line.warriorOne}
-        </Text>
-      );
+      return <Text style={{ color: '#1C57FF' }}>{line.warriorOne}</Text>;
     } else if (line.warriorTwo) {
-      return (
-        <Text style={{ color: '#E85349' }}>
-          {line.warriorTwo}
-        </Text>
-      );
+      return <Text style={{ color: '#E85349' }}>{line.warriorTwo}</Text>;
     } else if (line.damage) {
-      return (
-        <Text style={{ color: '#E0483E', fontWeight: 'bold' }}>
-          -{line.damage}
-        </Text>
-      );
+      return <Text style={{ color: '#E0483E', fontWeight: 'bold' }}>-{line.damage}</Text>;
     }
 
-    return (
-      <Text>
-        {Object.values(line).join(' ')}
-      </Text>
-    );
+    return <Text>{Object.values(line).join(' ')}</Text>;
   }
   return (
     <ScrollView style={{ backgroundColor: '#EAEAEA', width: '100%', padding: 20 }}>
@@ -102,12 +80,9 @@ function renderLog() {
         return (
           <View style={{ marginBottom: 10 }}>
             {part.map(item =>
-              item.map(iitem =>
-                <View style={{ flexDirection: 'row' }}>
-                  {iitem.map(renderLine)}
-                </View>,
-              ),
-            )}
+              item.map(iitem => (
+                <View style={{ flexDirection: 'row' }}>{iitem.map(renderLine)}</View>
+              )))}
           </View>
         );
       })}
@@ -118,18 +93,17 @@ function renderLog() {
 function renderWarriorsInfo() {
   const { combat } = combatStore;
 
-  const renderItem = (item, team) =>
+  const renderItem = (item, team) => (
     <View key={item.id} style={{ flexDirection: 'row' }}>
-      <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>
-        {item.login}
-      </Text>
+      <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>{item.login}</Text>
       <IconButton onPress={() => appStore.toggleWarriorInfoModal(item, true)}>
-        <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+        <Icon size={14} name="info" />
       </IconButton>
       <Text>
         [{item.feature.hp.current} / {item.feature.hp.max}]
       </Text>
-    </View>;
+    </View>
+  );
 
   function renderWarriors(team) {
     return combat.warriors
@@ -195,26 +169,33 @@ export default class CombatScreen extends Component {
     };
 
     return (
-      <View style={{ backgroundColor: '#EAEAEA', height: 255, width: 280, padding: 10 }}>
+      <View
+        style={{
+          backgroundColor: '#EAEAEA',
+          height: 255,
+          width: 280,
+          padding: 10,
+        }}
+      >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text>Attack</Text>
             <RadioForm animation style={{ marginTop: 5 }}>
-              {attackItems.map(item =>
+              {attackItems.map(item => (
                 <RadioButton labelHorizontal key={item.value}>
-                  {range(hero.feature.strikeCount).map(number =>
+                  {range(hero.feature.strikeCount).map(number => (
                     <RadioButtonInput
                       key={number}
                       obj={item}
                       index={item.value + number}
                       isSelected={this.attacks[number] === item.value}
                       onPress={() => onSelectAttack(number, item.value)}
-                    />,
-                  )}
+                    />
+                  ))}
 
                   <RadioButtonLabel obj={item} index={item.value} labelHorizontal />
-                </RadioButton>,
-              )}
+                </RadioButton>
+              ))}
             </RadioForm>
           </View>
 
@@ -223,7 +204,9 @@ export default class CombatScreen extends Component {
             <RadioForm
               initial={null}
               radio_props={blockItems}
-              onPress={value => (this.block = value)}
+              onPress={(value) => {
+                this.block = value;
+              }}
               style={{ marginTop: 5 }}
             />
           </View>
@@ -260,29 +243,41 @@ export default class CombatScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={{ position: 'absolute', width: 300, left: '50%', marginLeft: -150, top: 20, zIndex: 2 }}>
+        <View
+          style={{
+            position: 'absolute',
+            width: 300,
+            left: '50%',
+            marginLeft: -150,
+            top: 20,
+            zIndex: 2,
+          }}
+        >
           <View style={{ alignItems: 'center' }}>
-            {!combatFinished
-              ? <Text>
-                  Damage {getDamage(combat, hero)}
-              </Text>
-              : [<Text>
-                  Fight is finished. {afterCombatStatus}
-                </Text>, <Text>Damage {getDamage(combat, hero)}. Expreince{' '}
-                {getExperience(combat, hero)}.</Text>]}
+            {!combatFinished ? (
+              <Text>Damage {getDamage(combat, hero)}</Text>
+            ) : (
+              [
+                <Text>Fight is finished. {afterCombatStatus}</Text>,
+                <Text>
+                  Damage {getDamage(combat, hero)}. Expreince {getExperience(combat, hero)}.
+                </Text>,
+              ]
+            )}
           </View>
-          {combatFinished &&
+          {combatFinished && (
             <View style={{ alignItems: 'center', marginTop: 5 }}>
               <Button onPress={onQuit}>Quit</Button>
-            </View>}
+            </View>
+          )}
         </View>
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
               <FullBody warrior={combat.warriors[0]._warrior} />
             </View>
-            {!combatFinished
-              ? [
+            {!combatFinished ? (
+              [
                 <View key="actions" style={{ marginTop: 50 }}>
                   {this.renderActions()}
                 </View>,
@@ -290,19 +285,12 @@ export default class CombatScreen extends Component {
                   <FullBody warrior={combat.warriors[1]._warrior} showInfo />
                 </View>,
               ]
-              : <SvgUri
-                style={{ marginTop: 60, marginRight: 40 }}
-                width="400"
-                height="400"
-                source={require('../assets/images/dragon.svg')}
-              />}
+            ) : (
+              <Icon style={{ marginTop: 60, marginRight: 40 }} size={400} name="dragon" />
+            )}
           </View>
-          <View style={{ alignItems: 'center', marginTop: 10 }}>
-            {renderWarriorsInfo()}
-          </View>
-          <View style={{ height: 226, marginTop: 10 }}>
-            {renderLog()}
-          </View>
+          <View style={{ alignItems: 'center', marginTop: 10 }}>{renderWarriorsInfo()}</View>
+          <View style={{ height: 226, marginTop: 10 }}>{renderLog()}</View>
         </View>
       </View>
     );

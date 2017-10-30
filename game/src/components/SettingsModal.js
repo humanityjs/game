@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -102,18 +103,18 @@ export default observer(({ onHide }) => {
       okLabel="SAVE"
       title="Edit Profile"
     >
-      {FIELDS.map(item =>
+      {FIELDS.map(item => (
         <View key={item.key} style={[styles.line, item.type === 'TEXTAREA' && { height: 150 }]}>
-          <Text style={{ paddingTop: 15 }}>
-            {item.label}
-          </Text>
+          <Text style={{ paddingTop: 15 }}>{item.label}</Text>
           <FieldValue
             value={heroStore.hero[item.key]}
             type={item.type}
-            onChange={value => (data[item.key] = value)}
+            onChange={(value) => {
+              data[item.key] = value;
+            }}
           />
-        </View>,
-      )}
+        </View>
+      ))}
     </Modal>
   );
 });

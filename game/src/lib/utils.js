@@ -14,33 +14,6 @@ export function thingImageRequire(name: string) {
   }
 }
 
-export function thingSlotImageRequire(type: string) {
-  switch (type) {
-    case 'gloves':
-      return require('../assets/images/gloves.svg');
-    case 'helmet':
-      return require('../assets/images/helmet.svg');
-    case 'amulet':
-      return require('../assets/images/amulet.svg');
-    case 'bracer':
-      return require('../assets/images/bracer.svg');
-    case 'sword':
-      return require('../assets/images/sword.svg');
-    case 'armor':
-      return require('../assets/images/armor.svg');
-    case 'pants':
-      return require('../assets/images/pants.svg');
-    case 'shield':
-      return require('../assets/images/shield.svg');
-    case 'belt':
-      return require('../assets/images/belt.svg');
-    case 'boots':
-      return require('../assets/images/boots.svg');
-    default:
-      return null;
-  }
-}
-
 export function islandImageRequire(name: string) {
   switch (name) {
     case '1.png':

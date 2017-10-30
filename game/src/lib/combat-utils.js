@@ -1,6 +1,6 @@
 // @flow
 
-import { random, range } from 'lodash';
+import { random, range } from "lodash";
 
 import type {
   CombatType,
@@ -9,17 +9,24 @@ import type {
   CombatLogType,
   CombatWarriorType,
   CombatLogWarriorStrikeType,
-  InitDataType,
-} from './types';
+  InitDataType
+} from "./types";
 
-import { BODY_PARTS, COMBAT_STATUS_AFTER_FIGHT, COMBAT_STATUS_PAST } from './constants';
-import { getTableExperienceItem } from './utils';
+import {
+  BODY_PARTS,
+  COMBAT_STATUS_AFTER_FIGHT,
+  COMBAT_STATUS_PAST
+} from "./constants";
+import { getTableExperienceItem } from "./utils";
 
-import { saveWarrior } from '../lib/crud-utils';
+import { saveWarrior } from "../lib/crud-utils";
 
-import config from '../lib/config';
+import config from "../lib/config";
 
-export function getCombatWarrior(combat: CombatType, id: string): CombatWarriorType {
+export function getCombatWarrior(
+  combat: CombatType,
+  id: string
+): CombatWarriorType {
   return combat.warriors.find(item => item.warrior === id);
 }
 
@@ -35,7 +42,10 @@ export function getBodyPart(index: number): string {
   return BODY_PARTS[index];
 }
 
-export function getLogPart(combat: CombatType, logItem: CombatLogType): Array<any> {
+export function getLogPart(
+  combat: CombatType,
+  logItem: CombatLogType
+): Array<any> {
   // armorBreak block blockBreak devastate dodge
 
   // WarriorOne[lvl] text WarriorOne[lvl] (strike) (block)
@@ -59,64 +69,82 @@ export function getLogPart(combat: CombatType, logItem: CombatLogType): Array<an
   function build(
     team: number,
     strike: CombatLogWarriorStrikeType,
-    llogItem: CombatLogType,
+    llogItem: CombatLogType
   ): Array<any> {
     const content = [];
-    if (strike.armorBreak) content.push('break armor');
-    if (strike.block) content.push('but blocked');
-    if (strike.blockBreak) content.push('break block');
-    if (strike.devastate) content.push('critical strike');
-    if (strike.dodge) content.push('but dodged');
-    if (!content.length) content.push('strike');
+    if (strike.armorBreak) content.push("break armor");
+    if (strike.block) content.push("but blocked");
+    if (strike.blockBreak) content.push("break block");
+    if (strike.devastate) content.push("critical strike");
+    if (strike.dodge) content.push("but dodged");
+    if (!content.length) content.push("strike");
 
-    const attackWarriorKey = team === 1 ? 'warriorOne' : 'warriorTwo';
-    const blockWarriorKey = team === 2 ? 'warriorOne' : 'warriorTwo';
-    const attackWarrior = getWarrior(combat, llogItem[attackWarriorKey].warrior);
+    const attackWarriorKey = team === 1 ? "warriorOne" : "warriorTwo";
+    const blockWarriorKey = team === 2 ? "warriorOne" : "warriorTwo";
+    const attackWarrior = getWarrior(
+      combat,
+      llogItem[attackWarriorKey].warrior
+    );
     const blockWarrior = getWarrior(combat, llogItem[blockWarriorKey].warrior);
 
-    const blocks = llogItem[blockWarriorKey].blocks;
+    const { blocks } = llogItem[blockWarriorKey];
 
     return [
       { time: logItem.created },
-      ' ',
+      " ",
       { [attackWarriorKey]: buildWarriorName(attackWarrior) },
-      ' ',
-      content.join(', '),
-      ' ',
+      " ",
+      content.join(", "),
+      " ",
       { [blockWarriorKey]: buildWarriorName(blockWarrior) },
-      ' on ',
+      " on ",
       { damage: strike.damage },
       ` [${strike.hp.current}/${strike.hp.max}]`,
-      ' (',
-      { blocks: blocks.map(getBodyPart).join(' ') },
-      ', ',
+      " (",
+      { blocks: blocks.map(getBodyPart).join(" ") },
+      ", ",
       { strikes: getBodyPart(strike.strike) },
-      ')',
+      ")"
     ];
   }
 
   if (logItem.isDead) {
     const warrior = getWarrior(combat, logItem.warrior);
-    return [{ time: logItem.created }, ' ', { warriorOne: buildWarriorName(warrior) }, ' is dead'];
+    return [
+      { time: logItem.created },
+      " ",
+      { warriorOne: buildWarriorName(warrior) },
+      " is dead"
+    ];
   } else if (logItem.isQuit) {
     const warrior = getWarrior(combat, logItem.warrior);
-    return [{ time: logItem.created }, ' ', { warriorTwo: buildWarriorName(warrior) }, ' is quit'];
+    return [
+      { time: logItem.created },
+      " ",
+      { warriorTwo: buildWarriorName(warrior) },
+      " is quit"
+    ];
   }
 
   return [
     logItem.warriorOne.strikes.map(strike => build(1, strike, logItem)),
-    logItem.warriorTwo.strikes.map(strike => build(2, strike, logItem)),
+    logItem.warriorTwo.strikes.map(strike => build(2, strike, logItem))
   ];
 }
 
 export function isAllDead(combat: CombatType, team: number): boolean {
-  return combat.warriors.filter(warrior => warrior.team === team).every(warrior => warrior.isDead);
+  return combat.warriors
+    .filter(warrior => warrior.team === team)
+    .every(warrior => warrior.isDead);
 }
 
-export function getBlockItems(startIndex: number, blockCount: number): Array<number> {
+export function getBlockItems(
+  startIndex: number,
+  blockCount: number
+): Array<number> {
   const amount = BODY_PARTS.length;
 
-  return range(blockCount).map((item) => {
+  return range(blockCount).map(item => {
     const mergedIndex = startIndex + item;
     return mergedIndex >= amount ? mergedIndex - amount : mergedIndex;
   });
@@ -125,17 +153,19 @@ export function getBlockItems(startIndex: number, blockCount: number): Array<num
 export function getDamage(combat: CombatType, hero: HeroType): number {
   let damage = 0;
 
-  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
-    let warrior;
-    if (warriorOne.warrior === hero.id) {
-      warrior = warriorOne;
-    } else if (warriorTwo.warrior === hero.id) {
-      warrior = warriorTwo;
-    }
-    if (warrior) {
-      damage += warrior.strikes.reduce((prev, item) => prev + item.damage, 0);
-    }
-  });
+  combat.logs
+    .filter(item => item.warriorOne)
+    .forEach(({ warriorOne, warriorTwo }) => {
+      let warrior;
+      if (warriorOne.warrior === hero.id) {
+        warrior = warriorOne;
+      } else if (warriorTwo.warrior === hero.id) {
+        warrior = warriorTwo;
+      }
+      if (warrior) {
+        damage += warrior.strikes.reduce((prev, item) => prev + item.damage, 0);
+      }
+    });
 
   return damage;
 }
@@ -145,20 +175,25 @@ export function getExperience(combat: CombatType, hero: HeroType): number {
 
   if (!isWin(combat, hero) || isDraw(combat)) return experience;
 
-  combat.logs.filter(item => item.warriorOne).forEach(({ warriorOne, warriorTwo }) => {
-    let warrior;
-    if (warriorOne.warrior === hero.id) {
-      warrior = warriorOne;
-    } else if (warriorTwo.warrior === hero.id) {
-      warrior = warriorTwo;
-    }
-    if (warrior) experience += warrior.experience;
-  });
+  combat.logs
+    .filter(item => item.warriorOne)
+    .forEach(({ warriorOne, warriorTwo }) => {
+      let warrior;
+      if (warriorOne.warrior === hero.id) {
+        warrior = warriorOne;
+      } else if (warriorTwo.warrior === hero.id) {
+        warrior = warriorTwo;
+      }
+      if (warrior) experience += warrior.experience;
+    });
 
   return experience;
 }
 
-export async function outFromCombat(ccombat: CombatType, wwarrior: CombatWarriorType) {
+export async function outFromCombat(
+  ccombat: CombatType,
+  wwarrior: CombatWarriorType
+) {
   const combat = ccombat;
   const warrior = wwarrior;
 
@@ -166,22 +201,22 @@ export async function outFromCombat(ccombat: CombatType, wwarrior: CombatWarrior
   combat.logs.push({
     warrior: warrior.warrior,
     isQuit: true,
-    created: new Date().getTime(),
+    created: new Date().getTime()
   });
 
   const warriorPatch = {
     combat: null,
     feature: {
       ...warrior._warrior.feature,
-      hp: { ...warrior._warrior.feature.hp, time: new Date().getTime() },
-    },
+      hp: { ...warrior._warrior.feature.hp, time: new Date().getTime() }
+    }
   };
 
   Object.assign(warrior._warrior, warriorPatch);
 
   await saveWarrior(warrior.isBot, {
     id: warrior.warrior,
-    ...warriorPatch,
+    ...warriorPatch
   });
 
   if (!combat.warriors.some(item => item.warrior.isOut)) {
@@ -195,12 +230,15 @@ export async function attack(
   initData: InitDataType,
   warriorId: string,
   strikes: Array<number>,
-  blocks: Array<number>,
+  blocks: Array<number>
 ) {
   const combat = ccombat;
   const warrior = getCombatWarrior(combat, warriorId)._warrior;
 
-  const tableExperienceItem = getTableExperienceItem(initData.tableExperience, hero);
+  const tableExperienceItem = getTableExperienceItem(
+    initData.tableExperience,
+    hero
+  );
 
   // dodge уворот
   // accuracy точность
@@ -211,10 +249,10 @@ export async function attack(
   const updateHpWarriors = [];
 
   const log = {
-    created: new Date().getTime(),
+    created: new Date().getTime()
   };
 
-  range(1, 3).forEach((team) => {
+  range(1, 3).forEach(team => {
     const teamOne = team === 1;
 
     let setStrikes;
@@ -237,22 +275,26 @@ export async function attack(
     const strikesLog = [];
     let damageBamp = 0;
 
-    setStrikes.forEach((strike) => {
+    setStrikes.forEach(strike => {
       const block = setBlocks.includes(strike);
-      const dodge = range(attackWarrior.feature.accuracy - blockWarrior.feature.dodge).includes(
-        random(config.combatRange.accuracy),
-      );
+
+      const dodge = range(
+        attackWarrior.feature.accuracy - blockWarrior.feature.dodge
+      ).includes(random(config.combatRange.accuracy));
       const devastate = range(
-        attackWarrior.feature.devastate - blockWarrior.feature.durability,
+        attackWarrior.feature.devastate - blockWarrior.feature.durability
       ).includes(random(config.combatRange.devastate));
       const blockBreak = range(attackWarrior.feature.blockBreak).includes(
-        random(config.combatRange.blockBreak),
+        random(config.combatRange.blockBreak)
       );
       const armorBreak = range(attackWarrior.feature.armorBreak).includes(
-        random(config.combatRange.armorBreak),
+        random(config.combatRange.armorBreak)
       );
 
-      const damage = random(attackWarrior.feature.damageMin, attackWarrior.feature.damageMax);
+      const damage = random(
+        attackWarrior.feature.damageMin,
+        attackWarrior.feature.damageMax
+      );
 
       let protection = 0;
       switch (strike) {
@@ -276,7 +318,8 @@ export async function attack(
 
       let strikeDamage;
       if (!armorBreak) {
-        strikeDamage = damage - damage * (protection / config.combatRange.damage / 100.0);
+        strikeDamage =
+          damage - damage * (protection / config.combatRange.damage / 100.0);
       } else {
         strikeDamage = damage;
       }
@@ -325,16 +368,16 @@ export async function attack(
         damage: strikeDamage,
         hp: {
           current,
-          max,
-        },
+          max
+        }
       });
     });
 
-    log[`warrior${teamOne ? 'One' : 'Two'}`] = {
+    log[`warrior${teamOne ? "One" : "Two"}`] = {
       warrior: attackWarrior.id,
       strikes: strikesLog,
       blocks,
-      experience: tableExperienceItem.coefficient * damageBamp,
+      experience: tableExperienceItem.coefficient * damageBamp
     };
   });
 
@@ -344,15 +387,15 @@ export async function attack(
   for (const item of updateHpWarriors) {
     await saveWarrior(item.isBot, {
       id: item.warrior,
-      feature: { ...item._warrior.feature, hp: item._warrior.feature.hp },
+      feature: { ...item._warrior.feature, hp: item._warrior.feature.hp }
     });
   }
 
-  deadWarriors.forEach((wwarrior) => {
+  deadWarriors.forEach(wwarrior => {
     combat.logs.push({
       warrior: wwarrior.warrior,
       isDead: true,
-      created: new Date().getTime(),
+      created: new Date().getTime()
     });
   });
 
@@ -383,5 +426,8 @@ export async function attack(
 }
 
 export function isCombatFinished(combat: CombatType): boolean {
-  return combat.status === COMBAT_STATUS_AFTER_FIGHT || combat.status === COMBAT_STATUS_PAST;
+  return (
+    combat.status === COMBAT_STATUS_AFTER_FIGHT ||
+    combat.status === COMBAT_STATUS_PAST
+  );
 }

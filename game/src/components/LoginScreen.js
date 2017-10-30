@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import SvgUri from 'react-native-svg-uri';
 import { observer } from 'mobx-react';
 import { observe } from 'mobx';
 
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 
 import Button from './shared/Button';
+import Icon from './shared/Icon';
 
 import authStore from '../stores/auth';
 import appStore from '../stores/app';
@@ -27,6 +27,13 @@ const styles = StyleSheet.create({
     left: 0,
     backgroundColor: 'black',
     opacity: 0.5,
+  },
+  loginButton: {
+    backgroundColor: '#4267B2',
+    width: 320,
+    height: 60,
+    marginTop: 20,
+    paddingTop: 18,
   },
   loading: {
     flex: 1,
@@ -54,14 +61,9 @@ export default class LoginScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={{ marginTop: -255, alignItems: 'center' }}>
-          <SvgUri width="192" height="255" source={require('../assets/images/logo.svg')} />
+          <Icon size={192} name="logo" />
           <Button
-            style={{
-              backgroundColor: '#4267B2',
-              width: 320,
-              height: 60,
-              paddingTop: 18,
-            }}
+            style={styles.loginButton}
             textStyle={{
               fontSize: 15,
             }}
@@ -71,10 +73,11 @@ export default class LoginScreen extends Component {
           </Button>
         </View>
 
-        {authStore.isLoggedIn &&
+        {authStore.isLoggedIn && (
           <View style={styles.overlay}>
             <ActivityIndicator style={styles.loading} />
-          </View>}
+          </View>
+        )}
       </View>
     );
   }

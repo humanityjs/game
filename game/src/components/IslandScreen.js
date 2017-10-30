@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import autobind from 'autobind-decorator';
 
+import Icon from './shared/Icon';
 import Text from './shared/Text';
 import IconButton from './shared/IconButton';
 
@@ -59,7 +59,7 @@ function renderHeroesInfo() {
   return (
     <View style={styles.heroesInfo}>
       <Text style={{ fontWeight: '400', marginBottom: 5 }}>Bots</Text>
-      {islandStore.bots.map(bot =>
+      {islandStore.bots.map(bot => (
         <View key={bot.id} style={{ flexDirection: 'row' }}>
           <Text>
             {bot.login} [{bot.level}]
@@ -68,13 +68,13 @@ function renderHeroesInfo() {
             onPress={() => appStore.toggleWarriorInfoModal(bot, true)}
             style={{ marginTop: 3, marginLeft: 5 }}
           >
-            <SvgUri width="14" height="14" source={require('../assets/images/info.svg')} />
+            <Icon size={14} name="info" />
           </IconButton>
           <IconButton style={{ marginTop: 3, marginLeft: 5 }} onPress={() => onCombat(bot.id)}>
-            <SvgUri width="14" height="14" source={require('../assets/images/fight.svg')} />
+            <Icon size={14} name="fight" />
           </IconButton>
-        </View>,
-      )}
+        </View>
+      ))}
     </View>
   );
 }
@@ -119,16 +119,14 @@ export default class IslandScreen extends Component {
         <Text>
           Position {coordinateX}:{coordinateY}
         </Text>
-        {this.moveTime
-          ? <View style={{ flexDirection: 'row' }}>
-            <Text>
-                Left: {this.moveTime}
-            </Text>
+        {this.moveTime ? (
+          <View style={{ flexDirection: 'row' }}>
+            <Text>Left: {this.moveTime}</Text>
             <IconButton style={{ marginTop: 4, marginLeft: 5 }} onPress={this.onCancelMove}>
-              <SvgUri width="12" height="12" source={require('../assets/images/cross.svg')} />
+              <Icon size={12} name="cross" />
             </IconButton>
           </View>
-          : null}
+        ) : null}
       </View>
     );
   }
@@ -155,10 +153,9 @@ export default class IslandScreen extends Component {
         if (y < 0 || y > ISLAND_DIMENSIONS.height) continue;
         if (x === coordinateX && y === coordinateY) continue;
 
-        squares.push(
-          <TouchableOpacity
-            key={`${x}-${y}`}
-            style={{
+        squares.push(<TouchableOpacity
+          key={`${x}-${y}`}
+          style={{
               backgroundColor: 'white',
               opacity: 0.2,
               position: 'absolute',
@@ -167,10 +164,9 @@ export default class IslandScreen extends Component {
               width: SQUARE_WIDTH,
               height: SQUARE_WIDTH,
             }}
-            onPress={() => this.onMove(x, y)}
-            title={`X: ${x} Y: ${y}`}
-          />,
-        );
+          onPress={() => this.onMove(x, y)}
+          title={`X: ${x} Y: ${y}`}
+        />);
       }
     }
     /* eslint-enable no-continue */
@@ -193,10 +189,9 @@ export default class IslandScreen extends Component {
             source={islandImageRequire(island.image)}
           />
           {squares}
-          <SvgUri
-            width="24"
-            height="24"
-            source={require('../assets/images/person.svg')}
+          <Icon
+            size={24}
+            name="person"
             style={{
               position: 'absolute',
               top: coordinateY * SQUARE_WIDTH - mapOffset.top - 8,

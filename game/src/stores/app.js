@@ -41,9 +41,9 @@ class App {
   navigate(name: string, type: string = 'inner') {
     if (name === this.currentNavs[type]) return;
 
+    // eslint-disable-next-line
     const exists = this.navigationRefs[type]._navigation.state.routes.find(
-      item => item.routeName === name,
-    );
+      item => item.routeName === name);
 
     if (exists && name === 'Hero') {
       this.navigationRefs[type]._navigation.goBack('Hero');

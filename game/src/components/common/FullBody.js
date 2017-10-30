@@ -1,10 +1,11 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
 import Hp from './Hp';
 import Body from './Body';
 
-const FullBody = ({ warrior, showInfo, onThingPress }) =>
+const FullBody = ({ warrior, showInfo, onThingPress }) => (
   <View>
     <View>
       <Hp warrior={warrior} showInfo={showInfo} />
@@ -12,10 +13,11 @@ const FullBody = ({ warrior, showInfo, onThingPress }) =>
     <View style={{ marginTop: 10 }}>
       <Body warrior={warrior} onThingPress={onThingPress} />
     </View>
-  </View>;
+  </View>
+);
 
 FullBody.propTypes = {
-  warrior: PropTypes.shape(),
+  warrior: PropTypes.shape({}),
   showInfo: PropTypes.bool,
   onThingPress: PropTypes.func,
 };

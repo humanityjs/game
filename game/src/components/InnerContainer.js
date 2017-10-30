@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { observer } from 'mobx-react';
@@ -8,8 +8,6 @@ import Header from './common/Header';
 import HeroScreen from './HeroScreen';
 import InventoryScreen from './Inventory/InventoryScreen';
 import IslandScreen from './IslandScreen';
-
-import HeroInfoModal from './HeroInfoModal';
 
 import appStore from '../stores/app';
 
@@ -36,9 +34,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(() =>
+export default observer(() => (
   <View style={styles.container}>
     <Header />
     <Stack ref={ref => appStore.setNavigationRef(ref, 'inner')} />
-  </View>,
-);
+  </View>
+));

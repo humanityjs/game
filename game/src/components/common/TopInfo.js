@@ -17,15 +17,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(() =>
+export default observer(() => (
   <View style={styles.container}>
     <Text>Money</Text>
-    <Text style={{ marginLeft: 5 }}>
-      {heroStore.hero.money}
-    </Text>
+    <Text style={{ marginLeft: 5 }}>{heroStore.hero.money}</Text>
     <Text style={{ marginLeft: 10 }}>Capacity</Text>
     <Text style={{ marginLeft: 5 }}>
       {`${heroStore.hero.feature.capacity.current}/${heroStore.hero.feature.capacity.max}`}
     </Text>
-  </View>,
-);
+  </View>
+));

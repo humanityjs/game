@@ -56,6 +56,7 @@ export function renderItem(warrior, heroThingOrId, index = 0) {
     id = heroThingOrId;
   } else {
     heroThing = heroThingOrId;
+    // eslint-disable-next-line
     id = heroThing.id;
   }
   const thing = getThing(appStore.initData.things, id);
@@ -183,7 +184,9 @@ export default class Inventory extends Component {
           data={FILTERS}
           placeholder="FILTER"
           titleText="Select Filter"
-          onChange={value => (this.filter = value)}
+          onChange={(value) => {
+            this.filter = value;
+          }}
         />
       </View>
     );
