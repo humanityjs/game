@@ -9,7 +9,7 @@ import heroStore from '../../stores/hero';
 import appStore from '../../stores/app';
 
 import { thingImageRequire, getThing } from '../../lib/utils';
-import { getDrassedThings } from '../../lib/hero-utils';
+import { getDrassedThings } from '../../lib/warrior-utils';
 
 const OFFSET = 4;
 const WIDTH = 76;
@@ -147,7 +147,7 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) => (
       'boots',
     ].map((type) => {
       let thing;
-      const heroThing = getDrassedThings(warrior).find((item) => {
+      const warriorThing = getDrassedThings(warrior).find((item) => {
         thing = getThing(appStore.initData.things, item.thing);
         return thing.type === type;
       });
@@ -155,10 +155,15 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) => (
       return (
         <View key={type} style={getSlotStyles(type)}>
           <Icon size={16} name={type} style={styles.icon} />
-          {heroThing ? (
+          {warriorThing ? (
             <TouchableOpacity
               onPress={() =>
-                onThingPressHandler(heroThing.id, heroThing.thing, undressEnabled, onThingPress)}
+                onThingPressHandler(
+                  warriorThing.id,
+                  warriorThing.thing,
+                  undressEnabled,
+                  onThingPress,
+                )}
               style={styles.slotThing}
             >
               <Image source={thingImageRequire(thing.image)} />

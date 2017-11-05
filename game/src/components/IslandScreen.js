@@ -65,7 +65,7 @@ function renderHeroesInfo() {
             {bot.login} [{bot.level}]
           </Text>
           <IconButton
-            onPress={() => appStore.toggleWarriorInfoModal(bot, true)}
+            onPress={() => appStore.toggleWarriorInfoModal(bot)}
             style={{ marginTop: 3, marginLeft: 5 }}
           >
             <Icon size={14} name="info" />

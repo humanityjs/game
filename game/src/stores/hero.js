@@ -2,17 +2,17 @@
 
 import { observable, action, computed, toJS } from 'mobx';
 
-import { getHero, saveHero, newCombat } from '../lib/crud-utils';
-import { updateFeature, levelUp, getDrassedThings } from '../lib/hero-utils';
+import { getWarrior, saveWarrior, newCombat } from '../lib/api-calls';
+import { updateFeature, levelUp, getDrassedThings } from '../lib/warrior-utils';
 import { getExperience, outFromCombat } from '../lib/combat-utils';
 
 import appStore from './app';
 import combatStore from './combat';
 
-import type { UserType, HeroType, HeroThingType } from '../lib/types';
+import type { UserType, WarriorType, HeroThingType } from '../lib/types';
 
 class Hero {
-  @observable hero: HeroType = null;
+  @observable hero: WarriorType = null;
 
   @computed
   get undressedThings(): Array<HeroThingType> {
@@ -26,7 +26,7 @@ class Hero {
 
   @action
   async fetch(data: UserType) {
-    const hero = await getHero(data.id);
+    const hero = await getWarrior(data.id);
 
     if (!hero) {
       // hero = data;
@@ -101,7 +101,7 @@ class Hero {
   }
 
   @action
-  async saveGeneral(data: HeroType) {
+  async saveGeneral(data: WarriorType) {
     Object.assign(this.hero, data);
     await this.save();
   }
@@ -152,7 +152,7 @@ class Hero {
   }
 
   async save() {
-    await saveHero(toJS(this.hero));
+    await saveWarrior(toJS(this.hero));
   }
 }
 

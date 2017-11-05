@@ -8,7 +8,7 @@ import IconButton from '../shared/IconButton';
 import Text from '../shared/Text';
 import Icon from '../shared/Icon';
 
-import { getFeatureParam } from '../../lib/hero-utils';
+import { getFeatureParam } from '../../lib/warrior-utils';
 
 import heroStore from '../../stores/hero';
 import appStore from '../../stores/app';
@@ -97,23 +97,23 @@ export function ParametersInfo({ warrior, noActions }) {
             {warrior[item]} {getFeatureParam(warrior[item], warrior.feature[item])}
           </Text>
           {!noActions &&
-          warrior.numberOfParameters && (
-            <IconButton
-              onPress={() => heroStore.increaseParameter(item)}
-              style={{ marginTop: 2, marginLeft: 8 }}
-            >
-              <Icon size={14} name="plus" />
-            </IconButton>
-          )}
+            warrior.numberOfParameters && (
+              <IconButton
+                onPress={() => heroStore.increaseParameter(item)}
+                style={{ marginTop: 2, marginLeft: 8 }}
+              >
+                <Icon size={14} name="plus" />
+              </IconButton>
+            )}
         </View>
       ))}
       {!noActions &&
-      warrior.numberOfParameters && (
-        <View style={{ flexDirection: 'row', marginTop: 10 }}>
-          <Text>To increase</Text>
-          <Text style={{ marginLeft: 10 }}>{warrior.numberOfParameters}</Text>
-        </View>
-      )}
+        warrior.numberOfParameters && (
+          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+            <Text>To increase</Text>
+            <Text style={{ marginLeft: 10 }}>{warrior.numberOfParameters}</Text>
+          </View>
+        )}
     </View>
   );
 }
@@ -124,7 +124,9 @@ ParametersInfo.propTypes = {
 };
 
 export function GeneralInfo({ warrior }) {
-  const tableExperienceItem = appStore.initData.tableExperience
+  const tableExperienceItem = appStore
+    .initData
+    .tableExperience
     .find(item => item.level > warrior.level);
 
   return (

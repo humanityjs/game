@@ -3,7 +3,7 @@
 import { observable, computed, action } from 'mobx';
 import { AsyncStorage } from 'react-native';
 
-import { loginAndFetchData, logout } from '../lib/crud-utils';
+import { loginAndFetchData, logout } from '../lib/api-calls';
 import appStore from './app';
 import heroStore from './hero';
 import combatStore from './combat';

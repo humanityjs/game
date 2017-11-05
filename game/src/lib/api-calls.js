@@ -5,17 +5,16 @@ import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 're
 import db from './db';
 
 import type {
-  HeroType,
+  WarriorType,
   SkillType,
   ThingType,
   TableExperienceType,
   IslandType,
-  BotType,
   CombatType,
 } from './types';
 
 import { mapObjToArray } from './utils';
-import { countHp } from './hero-utils';
+import { countHp } from './warrior-utils';
 
 import {
   COMBAT_INJURY_MIDDLE,
@@ -33,6 +32,7 @@ export function fetchAccessToken() {
 }
 
 export function fetchMe(accessToken: string) {
+  // $FlowFixMe
   return new Promise((resolve, reject) => {
     const infoRequest = new GraphRequest(
       '/me',
@@ -54,16 +54,11 @@ export function fetchMe(accessToken: string) {
 }
 
 export function loginAndFetchData() {
-  return login()
-    .then((result) => {
-      console.log('999');
-      if (result.isCancelled) return null;
-      // $FlowFixMe
-      return fetchAccessToken().then(rresult => fetchMe(rresult.accessToken));
-    })
-    .catch((err) => {
-      console.log('6666444', err);
-    });
+  return login().then((result) => {
+    if (result.isCancelled) return null;
+    // $FlowFixMe
+    return fetchAccessToken().then(rresult => fetchMe(rresult.accessToken));
+  });
 }
 
 export function logout() {
@@ -102,63 +97,37 @@ export async function getTableExperience(): Array<TableExperienceType> {
   return tableExperience.val();
 }
 
-export async function getHero(id: string): HeroType {
-  const hero = await db()
-    .child('heroes')
+export async function getWarrior(id: string): WarriorType {
+  const warrior = await db()
+    .child('warriors')
     .child(id)
     .once('value');
-  return hero.val();
+  return warrior.val();
 }
 
-export async function getBot(id: string): BotType {
-  const hero = await db()
-    .child('bots')
-    .child(id)
-    .once('value');
-  return hero.val();
-}
-
-async function saveBot(bot: BotType) {
+export async function saveWarrior(warrior: WarriorType) {
   await db()
-    .child('bots')
-    .child(bot.id)
-    .update(bot);
+    .child('warriors')
+    .child(warrior.id)
+    .update(warrior);
 }
 
-export async function saveHero(hero: HeroType) {
-  await db()
-    .child('heroes')
-    .child(hero.id)
-    .update(hero);
-}
-
-async function getWarrior(isBot: boolean, id: string): HeroType | BotType {
-  const warrior = isBot ? await getBot(id) : await getHero(id);
-  return warrior;
-}
-
-export async function saveWarrior(isBot: boolean, warrior: HeroType | BotType) {
-  if (isBot) {
-    await saveBot(warrior);
-  } else {
-    await saveHero(warrior);
-  }
-}
-
-export async function getBotsOnIsland(x: number, y: number): Array<BotType> {
-  const botsRef = await db()
-    .child('bots')
+export async function getBotsOnIsland(x: number, y: number): Array<WarriorType> {
+  const warriorsRef = await db()
+    .child('warriors')
     .orderByChild('location/coordinateX')
     .equalTo(x)
     .once('value');
 
-  const bots = botsRef.val();
+  const warriors = warriorsRef.val();
 
   // $FlowFixMe
-  return !bots ? [] : mapObjToArray(bots).filter(item => item.location.coordinateY === y);
+  return !warriors
+    ? []
+    : mapObjToArray(warriors).filter(item => item.isBot && item.location.coordinateY === y);
 }
 
-export async function newCombat(combat: CombatType, hero: HeroType) {
+export async function newCombat(combat: CombatType, warrior: WarriorType) {
   const combatRef = await db()
     .child('combats')
     .push({
@@ -172,15 +141,15 @@ export async function newCombat(combat: CombatType, hero: HeroType) {
 
   // eslint-disable-next-line
   for (const item of combat.warriors) {
-    let warrior;
-    if (hero.id === item.warrior) {
-      warrior = hero;
+    let itemWarrior;
+    if (warrior.id === item.warrior) {
+      itemWarrior = warrior;
     } else {
-      warrior = await getWarrior(item.isBot, item.warrior);
+      itemWarrior = await getWarrior(item.warrior);
     }
-    warrior.combat = combatRef.key;
-    warrior.feature.hp = countHp(warrior.feature.hp);
-    await saveWarrior(item.isBot, warrior);
+    itemWarrior.combat = combatRef.key;
+    itemWarrior.feature.hp = countHp(itemWarrior.feature.hp);
+    await saveWarrior(itemWarrior);
   }
 }
 
@@ -191,7 +160,7 @@ export async function saveCombat(combat: CombatType) {
     .update(combat);
 }
 
-export async function getCombat(id: string, hero: HeroType): CombatType {
+export async function getCombat(id: string, warrior: WarriorType): CombatType {
   let combat = await db()
     .child('combats')
     .child(id)
@@ -204,10 +173,10 @@ export async function getCombat(id: string, hero: HeroType): CombatType {
 
   // eslint-disable-next-line
   for (const item of combat.warriors) {
-    if (item.warrior === hero.id) {
-      item._warrior = hero;
+    if (item.warrior === warrior.id) {
+      item._warrior = warrior;
     } else {
-      item._warrior = await getWarrior(item.isBot, item.warrior);
+      item._warrior = await getWarrior(item.warrior);
     }
   }
 

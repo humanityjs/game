@@ -11,7 +11,7 @@ import Text from '../shared/Text';
 import appStore from '../../stores/app';
 import heroStore from '../../stores/hero';
 
-import { thingCanBeDressed } from '../../lib/hero-utils';
+import { thingCanBeDressed } from '../../lib/warrior-utils';
 import { thingImageRequire, getThing } from '../../lib/utils';
 
 const styles = StyleSheet.create({
@@ -48,16 +48,16 @@ const FILTERS = [
   { key: 'elixir', label: 'ELIXIR' },
 ];
 
-export function renderItem(warrior, heroThingOrId, index = 0) {
-  const isInfo = typeof heroThingOrId === 'string';
-  let heroThing;
+export function renderItem(warrior, warriorThingOrId, index = 0) {
+  const isInfo = typeof warriorThingOrId === 'string';
+  let warriorThing;
   let id;
   if (isInfo) {
-    id = heroThingOrId;
+    id = warriorThingOrId;
   } else {
-    heroThing = heroThingOrId;
+    warriorThing = warriorThingOrId;
     // eslint-disable-next-line
-    id = heroThing.id;
+    id = warriorThing.id;
   }
   const thing = getThing(appStore.initData.things, id);
 
@@ -136,7 +136,7 @@ export function renderItem(warrior, heroThingOrId, index = 0) {
             <Image source={thingImageRequire(thing.image)} />
             {!isInfo && (
               <Text style={{ marginTop: 5 }}>
-                {heroThing.stabilityLeft} / {heroThing.stabilityAll}
+                {warriorThing.stabilityLeft} / {warriorThing.stabilityAll}
               </Text>
             )}
           </View>
@@ -153,10 +153,12 @@ export function renderItem(warrior, heroThingOrId, index = 0) {
       {!isInfo && (
         <View style={{ top: 40, position: 'absolute', right: 20 }}>
           {thingCanBeDressed(warrior, thing) && (
-            <Button onPress={() => heroStore.dressUndressThing(true, heroThing.id)}>DRESS</Button>
+            <Button onPress={() => heroStore.dressUndressThing(true, warriorThing.id)}>
+              DRESS
+            </Button>
           )}
           <Button
-            onPress={() => heroStore.removeThing(heroThing.id)}
+            onPress={() => heroStore.removeThing(warriorThing.id)}
             style={{ backgroundColor: '#E85349', marginTop: 10 }}
           >
             REMOVE

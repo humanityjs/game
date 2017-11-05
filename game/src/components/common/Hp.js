@@ -7,7 +7,7 @@ import Icon from '../shared/Icon';
 import Text from '../shared/Text';
 import IconButton from '../shared/IconButton';
 
-import { countHp } from '../../lib/hero-utils';
+import { countHp } from '../../lib/warrior-utils';
 
 import appStore from '../../stores/app';
 
@@ -101,7 +101,7 @@ export default class Hp extends Component {
           <Text style={styles.name}>{warrior.login} </Text>
           <Text style={styles.level}>[{warrior.level}]</Text>
           {showInfo && (
-            <IconButton onPress={() => appStore.toggleWarriorInfoModal(warrior, true)}>
+            <IconButton onPress={() => appStore.toggleWarriorInfoModal(warrior)}>
               <Icon size={14} name="info" />
             </IconButton>
           )}

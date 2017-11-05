@@ -5,7 +5,7 @@ import type { CombatType } from '../lib/types';
 import appStore from './app';
 import heroStore from './hero';
 
-import { getCombat, saveCombat } from '../lib/crud-utils';
+import { getCombat, saveCombat } from '../lib/api-calls';
 
 import { attack } from '../lib/combat-utils';
 

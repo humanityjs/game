@@ -1,5 +1,5 @@
 // @flow
-import type { ThingType, IslandType, TableExperienceType, HeroType } from './types';
+import type { ThingType, IslandType, TableExperienceType, WarriorType } from './types';
 
 export function thingImageRequire(name: string) {
   switch (name) {
@@ -120,7 +120,7 @@ export function mapObjToArray(obj: {}): Array<any> {
 
 export function getTableExperienceItem(
   tableExperience: Array<TableExperienceType>,
-  hero: HeroType,
+  warrior: WarriorType,
 ): TableExperienceType {
-  return tableExperience.find(item => item.level > hero.level);
+  return tableExperience.find(item => item.level > warrior.level);
 }

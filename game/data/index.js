@@ -6,8 +6,7 @@ const data = [
   { ref: db().child('islands'), data: require('./bundles/islands.json') },
   { ref: db().child('skills'), data: require('./bundles/skills.json') },
   { ref: db().child('things'), data: require('./bundles/things.json') },
-  { ref: db().child('heroes'), data: require('./bundles/heroes.json') },
-  { ref: db().child('bots'), data: require('./bundles/bots.json') },
+  { ref: db().child('warriors'), data: require('./bundles/warriors.json') },
   { ref: db().child('combats'), data: require('./bundles/combats.json') },
 ];
 

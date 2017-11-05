@@ -85,7 +85,7 @@ export type UserType = {
   gender: string, // male|female
 };
 
-export type HeroThingType = {
+export type WarriorThingType = {
   id: string,
   thing: string,
   dressed: boolean,
@@ -93,22 +93,23 @@ export type HeroThingType = {
   stabilityLeft: number,
 };
 
-type HeroSkillType = {
+type WarriorSkillType = {
   level: number,
   skill: string,
 };
 
-export type HeroHpType = {
+export type WarriorHpType = {
   current: number,
   time: number,
   max: number,
 };
 
-export type HeroType = {
+export type WarriorType = {
   id: string,
   login: string,
-  things: Array<HeroThingType>,
+  things: Array<WarriorThingType>,
   hp: number,
+  isBot: boolean,
   location: {
     island: string,
     coordinateX: number,
@@ -147,7 +148,7 @@ export type HeroType = {
     damageMax: number,
     damageMin: number,
 
-    hp: HeroHpType,
+    hp: WarriorHpType,
 
     protectionBelly: number,
     protectionBreast: number,
@@ -178,7 +179,7 @@ export type HeroType = {
   numberOfSkills: number,
   numberOfParameters: number,
 
-  skills: Array<HeroSkillType>,
+  skills: Array<WarriorSkillType>,
 };
 
 export type IslandType = {
@@ -188,12 +189,9 @@ export type IslandType = {
   disabledCoordinates: Array<Array<number>>,
 };
 
-export type BotType = HeroType;
-
 type CombatWarriorType = {
   warrior: string,
   team: number,
-  isBot: boolean,
   isDead: boolean,
   isQuit: boolean,
 };
@@ -238,7 +236,7 @@ export type CombatType = {
   type: string, // duel|group|chaotic|territorial
   timeOut: number, // 60|120|180
   injury: string, // low|middle|top
-  location: HeroType.location,
+  location: WarriorType.location,
   created: Date,
   finished: Date,
 };

@@ -4,7 +4,7 @@ import { observable, action } from 'mobx';
 
 import type { BotType } from '../lib/types';
 
-import { getBotsOnIsland } from '../lib/crud-utils';
+import { getBotsOnIsland } from '../lib/api-calls';
 
 class Island {
   @observable bots: Array<BotType> = [];

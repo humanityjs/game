@@ -17,7 +17,7 @@ import appStore from '../stores/app';
 
 import { ParametersInfo, GeneralInfo, ModifiersInfo } from './common/Info';
 
-import { isOnline, getLocation } from '../lib/hero-utils';
+import { isOnline, getLocation } from '../lib/warrior-utils';
 
 const styles = StyleSheet.create({
   overlay,
@@ -57,16 +57,16 @@ ThingInfoModal.propTypes = {
 };
 
 @observer
-export default class HeroInfoModal extends Component {
+export default class WarriorInfoModal extends Component {
   @observable showThingInfoModal = false;
   thingId = null;
   static propTypes = {
     warrior: PropTypes.shape(),
-    isBot: PropTypes.bool,
   };
   render() {
-    const { warrior, isBot } = this.props;
+    const { warrior } = this.props;
     const online = isOnline(warrior);
+    const { isBot } = warrior;
 
     return (
       <Modal>
@@ -129,7 +129,7 @@ export default class HeroInfoModal extends Component {
             zIndex: 2,
           }}
           textStyle={{ color: '#333' }}
-          onPress={() => appStore.toggleWarriorInfoModal(false)}
+          onPress={() => appStore.toggleWarriorInfoModal()}
         >
           CLOSE
         </Button>

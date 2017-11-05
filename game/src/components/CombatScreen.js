@@ -96,7 +96,7 @@ function renderWarriorsInfo() {
   const renderItem = (item, team) => (
     <View key={item.id} style={{ flexDirection: 'row' }}>
       <Text style={{ color: team === 1 ? '#1C57FF' : '#E85349' }}>{item.login}</Text>
-      <IconButton onPress={() => appStore.toggleWarriorInfoModal(item, true)}>
+      <IconButton onPress={() => appStore.toggleWarriorInfoModal(item)}>
         <Icon size={14} name="info" />
       </IconButton>
       <Text>

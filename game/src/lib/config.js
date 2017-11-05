@@ -6,7 +6,7 @@ export default {
       apiKey: 'AIzaSyDxlqtfV70hd-tC6c7msqYzO1gbZ5jHIM0',
     },
   },
-  hero: {
+  warrior: {
     default: {
       money: 0.0,
       moneyArt: 0.0,
