@@ -106,6 +106,7 @@ export async function getWarrior(id: string): WarriorType {
 }
 
 export async function saveWarrior(warrior: WarriorType) {
+  console.log('!!!', warrior);
   await db()
     .child('warriors')
     .child(warrior.id)

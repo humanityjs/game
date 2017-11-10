@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { TabNavigator } from 'react-navigation';
 import { observer } from 'mobx-react';
 
 import Header from './common/Header';
@@ -11,19 +11,17 @@ import IslandScreen from './IslandScreen';
 
 import appStore from '../stores/app';
 
-const stackNavigatorConfig = {
-  initialRouteName: 'Island',
-  headerMode: 'none',
-  cardStyle: { shadowOpacity: 0, backgroundColor: '#F2F2F2' },
+const tabNavigatorConfig = {
+  initialRouteName: 'Hero',
 };
 
-const Stack = StackNavigator(
+const Stack = TabNavigator(
   {
-    Hero: { screen: HeroScreen, navigationOptions: { gesturesEnabled: false } },
-    Inventory: { screen: InventoryScreen, navigationOptions: { gesturesEnabled: false } },
-    Island: { screen: IslandScreen, navigationOptions: { gesturesEnabled: false } },
+    Hero: { screen: HeroScreen },
+    Inventory: { screen: InventoryScreen },
+    Island: { screen: IslandScreen },
   },
-  stackNavigatorConfig,
+  tabNavigatorConfig,
 );
 
 const styles = StyleSheet.create({
@@ -37,6 +35,10 @@ const styles = StyleSheet.create({
 export default observer(() => (
   <View style={styles.container}>
     <Header />
-    <Stack ref={ref => appStore.setNavigationRef(ref, 'inner')} />
+    <Stack
+      ref={(ref) => {
+        appStore.setNavigationRef(ref, 'inner');
+      }}
+    />
   </View>
 ));

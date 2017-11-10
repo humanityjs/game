@@ -178,7 +178,7 @@ export async function outFromCombat(ccombat: CombatType, wwarrior: CombatWarrior
 
   Object.assign(warrior._warrior, warriorPatch);
 
-  await saveWarrior(warrior.isBot, {
+  await saveWarrior({
     id: warrior.warrior,
     ...warriorPatch,
   });

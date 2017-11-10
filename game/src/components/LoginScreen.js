@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { observe } from 'mobx';
 
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, AsyncStorage } from 'react-native';
 
 import Button from './shared/Button';
 import Icon from './shared/Icon';
@@ -10,7 +9,6 @@ import Icon from './shared/Icon';
 import authStore from '../stores/auth';
 import appStore from '../stores/app';
 import heroStore from '../stores/hero';
-import combatStore from '../stores/combat';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,15 +17,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F2F2F2',
   },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: 'black',
-    opacity: 0.5,
-  },
   loginButton: {
     backgroundColor: '#4267B2',
     width: 320,
@@ -35,27 +24,35 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingTop: 18,
   },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });
+
+function postLogin() {
+  appStore.toggleLoading(false);
+  if (heroStore.hero.combat) {
+    appStore.navigate('Combat', 'outer', 'reset');
+    return;
+  }
+  appStore.navigate('Inner', 'outer', 'reset');
+}
+
+async function init() {
+  const id = await AsyncStorage.getItem('Id');
+  if (!id) return;
+  appStore.toggleLoading(true);
+  await authStore.init();
+  postLogin();
+}
+
+async function onLogin() {
+  appStore.toggleLoading(true);
+  await authStore.login();
+  postLogin();
+}
 
 @observer
 export default class LoginScreen extends Component {
-  constructor() {
-    super();
-
-    observe(heroStore, 'hero', () => {
-      if (heroStore.hero.combat) {
-        observe(combatStore, 'combat', () => {
-          appStore.navigate('Combat', 'outer');
-        });
-        return;
-      }
-      appStore.navigate('Inner', 'outer');
-    });
+  componentDidMount() {
+    init();
   }
   render() {
     return (
@@ -67,17 +64,11 @@ export default class LoginScreen extends Component {
             textStyle={{
               fontSize: 15,
             }}
-            onPress={authStore.login}
+            onPress={onLogin}
           >
             Sign In with FaceBook
           </Button>
         </View>
-
-        {authStore.isLoggedIn && (
-          <View style={styles.overlay}>
-            <ActivityIndicator style={styles.loading} />
-          </View>
-        )}
       </View>
     );
   }

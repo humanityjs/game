@@ -70,7 +70,7 @@ export default class Menu extends Component {
         onPress: () => {
           appStore.toggleMenu(false);
           authStore.logout();
-          appStore.navigate('Login', 'outer');
+          appStore.navigate('Login', 'outer', 'reset');
         },
         image: 'logout',
       },

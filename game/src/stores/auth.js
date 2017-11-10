@@ -6,20 +6,20 @@ import { AsyncStorage } from 'react-native';
 import { loginAndFetchData, logout } from '../lib/api-calls';
 import appStore from './app';
 import heroStore from './hero';
-import combatStore from './combat';
 
 import type { UserType } from '../lib/types';
 
 class Auth {
   @observable user: UserType = null;
 
-  constructor() {
-    AsyncStorage.getItem('Id').then((id) => {
-      if (!id) return;
-      this.user = { id };
-      this.prepare();
-    });
+  async init() {
+    const id = await AsyncStorage.getItem('Id');
+    if (!id) return;
+
+    this.user = { id };
+    await this.prepare();
   }
+
   @computed
   get isLoggedIn(): boolean {
     return Boolean(this.user);
@@ -44,9 +44,6 @@ class Auth {
   async prepare() {
     await appStore.fetchInitData();
     await heroStore.fetch(this.user);
-    if (heroStore.hero.combat) {
-      await combatStore.fetch(heroStore.hero.combat);
-    }
   }
 }
 

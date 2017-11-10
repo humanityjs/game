@@ -10,7 +10,7 @@ import { getCombat, saveCombat } from '../lib/api-calls';
 import { attack } from '../lib/combat-utils';
 
 class Combat {
-  @observable combat: CombatType;
+  @observable combat: CombatType = null;
 
   @action
   async fetch(id) {

@@ -3,7 +3,7 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import Drawer from 'react-native-drawer';
 import { observer } from 'mobx-react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 
 import Menu from './common/Menu';
 import LoginScreen from './LoginScreen';
@@ -53,6 +53,11 @@ export const overlay = {
 
 const styles = StyleSheet.create({
   overlay,
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default observer(() => {
@@ -76,7 +81,11 @@ export default observer(() => {
           <Stack ref={ref => appStore.setNavigationRef(ref, 'outer')} />
         </View>
       </Drawer>
-      {appStore.overlay && <View style={styles.overlay} />}
+      {appStore.overlay && (
+        <View style={styles.overlay}>
+          {appStore.loading && <ActivityIndicator style={styles.loading} />}
+        </View>
+      )}
       {warriorInfo && <WarriorInfoModal warrior={warriorInfo} />}
     </View>
   );

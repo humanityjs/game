@@ -143,6 +143,8 @@ class Hero {
     await outFromCombat(combat, combatWarrior);
 
     await this.save();
+
+    combatStore.combat = null;
   }
 
   async addExperience(experience: number, save: boolean = true) {

@@ -45,7 +45,13 @@ const styles = StyleSheet.create({
 
 async function onQuit() {
   await heroStore.quit();
-  appStore.navigate('Inner', 'outer');
+  appStore.navigate('Inner', 'outer', 'reset');
+}
+
+async function init() {
+  appStore.toggleLoading(true);
+  await combatStore.fetch(heroStore.hero.combat);
+  appStore.toggleLoading(false);
 }
 
 function renderLog() {
@@ -121,7 +127,6 @@ function renderWarriorsInfo() {
 }
 
 @observer
-@autobind
 export default class CombatScreen extends Component {
   @observable attacks;
   @observable block;
@@ -132,9 +137,10 @@ export default class CombatScreen extends Component {
   }
 
   componentDidMount() {
-    if (!combatStore.combat) combatStore.fetch(heroStore.hero.combat);
+    init();
   }
 
+  @autobind
   onAttack() {
     combatStore.attack(
       combatStore.combat.warriors[1]._warrior.id,
@@ -227,7 +233,7 @@ export default class CombatScreen extends Component {
     const { combat } = combatStore;
     const { hero } = heroStore;
 
-    if (!combat) return null;
+    if (!combat) return <View style={styles.container} />;
     const combatFinished = isCombatFinished(combat);
 
     let afterCombatStatus;
