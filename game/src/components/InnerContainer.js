@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TabNavigator } from 'react-navigation';
-import { observer } from 'mobx-react';
 
 import Header from './common/Header';
 
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(() => (
+export default () => (
   <View style={styles.container}>
     <Header />
     <Stack
@@ -41,4 +40,4 @@ export default observer(() => (
       }}
     />
   </View>
-));
+);

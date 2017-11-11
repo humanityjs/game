@@ -139,7 +139,6 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) => (
       'amulet',
       'bracer',
       'sword',
-      'arms',
       'armor',
       'shield',
       'pants',

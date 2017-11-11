@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 import { StyleSheet, View } from 'react-native';
 import { capitalize, camelCase } from 'lodash';
 
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
 
 @observer
 class SkillsInfo extends Component {
-  @observer page = 0;
+  @observable page = 0;
   render() {
     const { hero } = heroStore;
     const { skills } = appStore.initData;
@@ -87,6 +88,7 @@ class SkillsInfo extends Component {
 }
 
 export function ParametersInfo({ warrior, noActions }) {
+  const canIncrease = Boolean(!noActions && warrior.numberOfParameters);
   return (
     <View style={[styles.infoBlock, { height: 170 }]}>
       <Text style={styles.title}>Parameters</Text>
@@ -96,24 +98,22 @@ export function ParametersInfo({ warrior, noActions }) {
           <Text>
             {warrior[item]} {getFeatureParam(warrior[item], warrior.feature[item])}
           </Text>
-          {!noActions &&
-            warrior.numberOfParameters && (
-              <IconButton
-                onPress={() => heroStore.increaseParameter(item)}
-                style={{ marginTop: 2, marginLeft: 8 }}
-              >
-                <Icon size={14} name="plus" />
-              </IconButton>
-            )}
+          {canIncrease ? (
+            <IconButton
+              onPress={() => heroStore.increaseParameter(item)}
+              style={{ marginTop: 2, marginLeft: 8 }}
+            >
+              <Icon size={14} name="plus" />
+            </IconButton>
+          ) : null}
         </View>
       ))}
-      {!noActions &&
-        warrior.numberOfParameters && (
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            <Text>To increase</Text>
-            <Text style={{ marginLeft: 10 }}>{warrior.numberOfParameters}</Text>
-          </View>
-        )}
+      {canIncrease && (
+        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <Text>To increase</Text>
+          <Text style={{ marginLeft: 10 }}>{warrior.numberOfParameters}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -124,10 +124,7 @@ ParametersInfo.propTypes = {
 };
 
 export function GeneralInfo({ warrior }) {
-  const tableExperienceItem = appStore
-    .initData
-    .tableExperience
-    .find(item => item.level > warrior.level);
+  const tableExperienceItem = appStore.initData.tableExperience.find(item => item.level > warrior.level);
 
   return (
     <View style={[styles.infoBlock, { height: 145 }]}>

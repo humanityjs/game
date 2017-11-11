@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import autobind from 'autobind-decorator';
+import { observer } from 'mobx-react';
 
 import Icon from '../shared/Icon';
 import Text from '../shared/Text';
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@observer
 @autobind
 export default class Hp extends Component {
   static propTypes = {
