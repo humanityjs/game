@@ -27,6 +27,7 @@
     "react-navigation": "^1.0.0-beta.19"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-jest": "21.2.0",
     "babel-plugin-flow-react-proptypes": "^7.0.1",
@@ -41,10 +42,7 @@
     "flow-bin": "^0.57.3"
   },
   "rnpm": {
-    "assets": [
-      "./node_modules/npm-font-open-sans/fonts",
-      "./src/assets/fonts"
-    ]
+    "assets": ["./node_modules/npm-font-open-sans/fonts", "./src/assets/fonts"]
   },
   "eslintConfig": {
     "parser": "babel-eslint",
@@ -57,7 +55,8 @@
       "no-underscore-dangle": 1,
       "global-require": 0,
       "no-await-in-loop": 1,
-      "no-mixed-operators": 1
+      "no-mixed-operators": 1,
+      "no-param-reassign": 1
     }
   }
 }

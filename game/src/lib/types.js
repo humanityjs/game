@@ -27,7 +27,7 @@ export type ThingType = {
   id: string,
   name: string,
   // eslint-disable-next-line
-  type: string, // sword|axe|knive|clubs|shield|helmet|armor|belt|pants|bracer|gloves|boots|ring|amulet
+  type: string, // sword|axe|knive|clubs|shield|helmet|armor|belt|pants|bracer|gloves|boots|ring|amulet|elixir
   price: number,
   isArt: boolean,
   isBot: boolean,
@@ -48,28 +48,41 @@ export type ThingType = {
   clubsNeed: number,
   shieldsNeed: number,
 
-  damageMin: number,
-  damageMax: number,
-
-  protectionHead: number,
-  protectionBreast: number,
-  protectionBelly: number,
-  protectionGroin: number,
-  protectionLegs: number,
-
   accuracy: number,
   dodge: number,
   devastate: number,
   durability: number,
-  blockBreak: number,
+
+  strength: number,
+  dexterity: number,
+  intuition: number,
+  health: number,
+
+  swords: number,
+  axes: number,
+  knives: number,
+  clubs: number,
+  shields: number,
+
   armorBreak: number,
+  blockBreak: number,
+
+  damageMin: number,
+  damageMax: number,
+
+  protectionBelly: number,
+  protectionBreast: number,
+  protectionGroin: number,
+  protectionHead: number,
+  protectionLegs: number,
 
   hp: number,
+  capacity: number,
+
   strikeCount: number,
   blockCount: number,
 
-  capacity: number,
-  takeTwoHands: boolean,
+  isTwoHands: boolean,
 };
 
 export type InitDataType = {
@@ -108,57 +121,16 @@ export type WarriorType = {
   id: string,
   login: string,
   things: Array<WarriorThingType>,
-  hp: number,
   isBot: boolean,
   location: {
     island: string,
     coordinateX: number,
     coordinateY: number,
   },
-  capacity: number,
   experience: number,
   money: number,
   level: number,
   image: string,
-  feature: {
-    capacity: {
-      current: number,
-      max: number,
-    },
-
-    accuracy: number,
-    devastate: number,
-    dodge: number,
-    durability: number,
-
-    strength: number,
-    dexterity: number,
-    intuition: number,
-    health: number,
-
-    swords: number,
-    axes: number,
-    knives: number,
-    clubs: number,
-    shields: number,
-
-    armorBreak: number,
-    blockBreak: number,
-
-    damageMax: number,
-    damageMin: number,
-
-    hp: WarriorHpType,
-
-    protectionBelly: number,
-    protectionBreast: number,
-    protectionGroin: number,
-    protectionHead: number,
-    protectionLegs: number,
-
-    blockCount: number,
-    strikeCount: number,
-  },
 
   numberOfWins: number,
   numberOfLosses: number,
@@ -180,6 +152,45 @@ export type WarriorType = {
   numberOfParameters: number,
 
   skills: Array<WarriorSkillType>,
+
+  feature: {
+    strength: number,
+    dexterity: number,
+    intuition: number,
+    health: number,
+
+    accuracy: number,
+    devastate: number,
+    dodge: number,
+    durability: number,
+
+    swords: number,
+    axes: number,
+    knives: number,
+    clubs: number,
+    shields: number,
+
+    protectionBelly: number,
+    protectionBreast: number,
+    protectionGroin: number,
+    protectionHead: number,
+    protectionLegs: number,
+
+    damageMax: number,
+    damageMin: number,
+
+    blockBreak: number,
+    armorBreak: number,
+
+    blockCount: number,
+    strikeCount: number,
+
+    hp: WarriorHpType,
+    capacity: {
+      current: number,
+      max: number,
+    },
+  },
 };
 
 export type IslandType = {

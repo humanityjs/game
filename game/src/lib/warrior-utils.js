@@ -14,7 +14,9 @@ import type {
 
 import appStore from '../stores/app';
 
-import { getIsland } from '../lib/utils';
+import { getIsland, getThing, getSkill, isArm } from './utils';
+
+import { THING_TYPES, THING_NEED_ITEMS, THING_GIVE_ITEMS } from './constants';
 
 const warriorConfig = config.warrior;
 
@@ -38,14 +40,25 @@ export function countHp(hp: WarriorHpType): WarriorHpType {
   return { current, time: new Date().getTime(), max };
 }
 
+export function getDressedThings(warrior: WarriorType): Array<WarriorThingType> {
+  return warrior.things.filter(item => item.dressed);
+}
+
 export function updateFeature(warrior: WarriorType, initData: InitDataType) {
   const { skills, things } = initData;
+  const wwarrior = warrior;
+  if (!warrior.feature) wwarrior.feature = {};
   const { feature } = warrior;
 
   feature.strength = warrior.strength;
   feature.dexterity = warrior.dexterity;
   feature.intuition = warrior.intuition;
   feature.health = warrior.health;
+
+  feature.accuracy = 0;
+  feature.dodge = 0;
+  feature.devastate = 0;
+  feature.durability = 0;
 
   feature.swords = warrior.swords;
   feature.axes = warrior.axes;
@@ -62,16 +75,11 @@ export function updateFeature(warrior: WarriorType, initData: InitDataType) {
   feature.damageMin = 0;
   feature.damageMax = 0;
 
-  feature.accuracy = 0;
-  feature.dodge = 0;
-  feature.devastate = 0;
-  feature.durability = 0;
-
   feature.blockBreak = 0;
   feature.armorBreak = 0;
 
-  feature.strikeCount = warriorConfig.default.strikeCount;
   feature.blockCount = warriorConfig.default.blockCount;
+  feature.strikeCount = warriorConfig.default.strikeCount;
 
   const hp = feature.hp
     ? countHp(feature.hp)
@@ -80,7 +88,8 @@ export function updateFeature(warrior: WarriorType, initData: InitDataType) {
       max: 0,
       time: new Date().getTime(),
     };
-  const capacity = feature.capacity || {
+
+  const capacity = {
     current: 0,
     max: 0,
   };
@@ -90,59 +99,28 @@ export function updateFeature(warrior: WarriorType, initData: InitDataType) {
 
   // Skills
   warrior.skills.forEach((warriorSkill) => {
-    const skill = skills.find(item => item.id === warriorSkill.skill);
-    skill.features.forEach((skillFeature) => {
+    getSkill(skills, warriorSkill.skill).features.forEach((skillFeature) => {
       feature[skillFeature.name] += warriorSkill.level * skillFeature.plus;
     });
   });
 
   // Things
-  warrior.things.filter(item => item.dressed).forEach((warriorThing) => {
-    const thing = things.find(item => item.id === warriorThing.id);
-    [
-      'strengthGive',
-      'dexterityGive',
-      'intuitionGive',
-      'healthGive',
-      'swordsGive',
-      'axesGive',
-      'knivesGive',
-      'clubsGive',
-      'shieldsGive',
-
-      'damageMin',
-      'damageMax',
-
-      'protectionHead',
-      'protectionBreast',
-      'protectionBelly',
-      'protectionGroin',
-      'protectionLegs',
-
-      'accuracy',
-      'dodge',
-      'devastate',
-      'durability',
-
-      'blockBreak',
-      'armorBreak',
-
-      'hp',
-      'capacity',
-
-      'strikeCount',
-      'blockCount',
-    ].forEach((attr) => {
+  getDressedThings(warrior).forEach((warriorThing) => {
+    const thing = getThing(things, warriorThing.thing);
+    THING_GIVE_ITEMS.forEach((attr) => {
       if (!thing[attr]) return;
-      feature[attr.replace('Give', '')] += thing[attr];
+      feature[attr] += thing[attr];
     });
   });
 
+  warrior.things.forEach((warriorThing) => {
+    const thing = getThing(things, warriorThing.thing);
+    if (thing.weight) capacity.current += thing.weight;
+  });
+
   // Strike count
-  const count = warrior.things.filter(item => item.dressed).filter((warriorThing) => {
-    const thing = things.find(item => item.id === warriorThing.id);
-    return warriorThing.dressed && ['sword', 'axe', 'knive', 'clubs'].indexOf(thing.type) !== -1;
-  }).length;
+  const count = getDressedThings(warrior).filter(warriorThing =>
+    isArm(getThing(things, warriorThing.thing).type)).length;
 
   if (count === 2) feature.strikeCount += 1;
 
@@ -195,10 +173,9 @@ export function init(warrior: WarriorType) {
     login: 'Empty',
     level: -1,
     experience: 0,
+
     money: warriorConfig.default.money,
     moneyArt: warriorConfig.default.moneyArt,
-    hp: warriorConfig.default.hp,
-    capacity: warriorConfig.default.capacity,
 
     numberOfWins: 0,
     numberOfLosses: 0,
@@ -220,13 +197,11 @@ export function init(warrior: WarriorType) {
 
     skills: [],
     things: [],
-    complects: [],
 
     location: {
       island: '0',
       coordinateX: 30,
       coordinateY: 30,
-      building: null,
     },
 
     created: new Date().getTime(),
@@ -236,28 +211,23 @@ export function init(warrior: WarriorType) {
   updateFeature(warrior, appStore.initData);
 }
 
+export function thingAttrValid(attr: string, thing: ThingType, warrior: WarriorType): boolean {
+  const key = attr.replace('Need', '');
+  const warriorPropValue = key === 'level' ? warrior[key] : warrior.feature[key];
+  return thing[attr] === undefined || thing[attr] <= warriorPropValue;
+}
+
 export function thingCanBeDressed(warrior: WarriorType, thing: ThingType): boolean {
-  return (
-    (!thing.levelNeed || thing.levelNeed <= warrior.level) &&
-    (!thing.strengthNeed || thing.strengthNeed <= warrior.strength) &&
-    (!thing.dexterityNeed || thing.dexterityNeed <= warrior.dexterity) &&
-    (!thing.intuitionNeed || thing.intuitionNeed <= warrior.intuition) &&
-    (!thing.healthNeed || thing.healthNeed <= warrior.health) &&
-    (!thing.swordsNeed || thing.swordsNeed <= warrior.swords) &&
-    (!thing.axesNeed || thing.axesNeed <= warrior.axes) &&
-    (!thing.knivesNeed || thing.knivesNeed <= warrior.knives) &&
-    (!thing.clubsNeed || thing.clubsNeed <= warrior.clubs) &&
-    (!thing.shieldsNeed || thing.shieldsNeed <= warrior.shields)
-  );
+  return THING_NEED_ITEMS.every(attr => thingAttrValid(attr, thing, warrior));
 }
 
 export function getFeatureParam(orig: number, feature: number): string {
-  let output = '';
-  if (orig - feature === 0) {
+  let output = feature;
+  if (orig === feature) {
     return output;
   }
 
-  output += ' [';
+  output += ` (${orig}`;
 
   if (feature > orig) {
     output += '+';
@@ -265,7 +235,7 @@ export function getFeatureParam(orig: number, feature: number): string {
 
   output += feature - orig;
 
-  output += ']';
+  output += ')';
   return output;
 }
 
@@ -279,6 +249,70 @@ export function getLocation(warrior: WarriorType, islands: Array<IslandType>): s
   return `${island.name} ${location.coordinateX}:${location.coordinateY}`;
 }
 
-export function getDrassedThings(warrior: WarriorType): Array<WarriorThingType> {
-  return warrior.things.filter(item => item.dressed);
+export function dressUndressThing(
+  dress: boolean,
+  warriorThingId: string,
+  warrior: WarriorType,
+  things: Array<ThingType>,
+) {
+  const warriorThing = warrior.things.find(item => item.id === warriorThingId);
+
+  if (dress) {
+    const arms = [];
+    const rings = [];
+    const elixirs = [];
+
+    const thing = getThing(things, warriorThing.thing);
+    getDressedThings(warrior).forEach((item) => {
+      const dressedThing = getThing(things, item.thing);
+      if (isArm(dressedThing.type, true)) {
+        arms.push({
+          warriorThing: item,
+          thing: dressedThing,
+        });
+      } else if (dressedThing.type === THING_TYPES.RING) {
+        rings.push(item);
+      } else if (dressedThing.type === THING_TYPES.ELIXIR) {
+        elixirs.push(item);
+      }
+    });
+
+    if (isArm(thing.type, true)) {
+      if (thing.isTwoHands) {
+        arms.forEach((item) => {
+          item.warriorThing.dressed = false;
+        });
+      } else if (arms.length === 2 || (arms.length === 1 && arms[0].thing.isTwoHands)) {
+        arms[0].warriorThing.dressed = false;
+      }
+    }
+    if (thing.type === THING_TYPES.RING && rings.length === 4) {
+      rings[0].dressed = false;
+    }
+    if (thing.type === THING_TYPES.ELIXIR && elixirs.length === 4) {
+      elixirs[0].dressed = false;
+    }
+  }
+
+  warriorThing.dressed = dress;
+}
+
+export function getThingsByType(
+  type: string,
+  warrior: WarriorType,
+  things: Array<ThingType>,
+): Array<{ warriorThing: WarrionThingType, thing: ThingType }> {
+  const result = [];
+
+  getDressedThings(warrior).forEach((item) => {
+    const thing = getThing(things, item.thing);
+    if (thing.type === type) {
+      result.push({
+        warriorThing: item,
+        thing,
+      });
+    }
+  });
+
+  return result;
 }

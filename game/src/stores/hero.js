@@ -3,7 +3,7 @@
 import { observable, action, computed, toJS } from 'mobx';
 
 import { getWarrior, saveWarrior, newCombat } from '../lib/api-calls';
-import { updateFeature, levelUp, getDrassedThings } from '../lib/warrior-utils';
+import { updateFeature, levelUp, getDressedThings, dressUndressThing } from '../lib/warrior-utils';
 import { getExperience, outFromCombat } from '../lib/combat-utils';
 
 import appStore from './app';
@@ -21,7 +21,7 @@ class Hero {
 
   @computed
   get dressedThings(): Array<HeroThingType> {
-    return getDrassedThings(this.hero);
+    return getDressedThings(this.hero);
   }
 
   @action
@@ -83,9 +83,9 @@ class Hero {
   }
 
   @action
-  async dressUndressThing(dress: boolean, id: string) {
-    const heroThing = this.hero.things.find(item => item.id === id);
-    heroThing.dressed = dress;
+  async dressUndressThing(dress: boolean, id: string, things: Array<ThingType>) {
+    dressUndressThing(dress, id, this.hero, things);
+
     updateFeature(this.hero, appStore.initData);
     await this.save();
   }

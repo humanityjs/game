@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { StyleSheet, View, ScrollView, Image } from 'react-native';
-import { capitalize } from 'lodash';
+import { StyleSheet, View, ScrollView, Image, AlertIOS } from 'react-native';
+import { capitalize, startCase } from 'lodash';
 
 import Button from '../shared/Button';
 import Picker from '../shared/Picker';
@@ -11,8 +11,10 @@ import Text from '../shared/Text';
 import appStore from '../../stores/app';
 import heroStore from '../../stores/hero';
 
-import { thingCanBeDressed } from '../../lib/warrior-utils';
+import { thingCanBeDressed, thingAttrValid } from '../../lib/warrior-utils';
 import { thingImageRequire, getThing } from '../../lib/utils';
+
+import { THING_NEED_ITEMS, THING_GIVE_ITEMS } from '../../lib/constants';
 
 const styles = StyleSheet.create({
   itemWrapper: {
@@ -56,80 +58,41 @@ export function renderItem(warrior, warriorThingOrId, index = 0) {
     id = warriorThingOrId;
   } else {
     warriorThing = warriorThingOrId;
-    // eslint-disable-next-line
-    id = warriorThing.id;
+    id = warriorThing.thing;
   }
   const thing = getThing(appStore.initData.things, id);
 
-  function rrenderItem(key, value, safe) {
+  function rrenderItem(key, value, valid) {
     if (value === undefined || !value) return null;
 
     return (
       <Text key={key}>
-        {key} {safe === false ? <Text style={{ color: '#E85349' }}>{value}</Text> : value}
+        {key} {valid === false ? <Text style={{ color: '#E85349' }}>{value}</Text> : value}
       </Text>
     );
   }
 
-  const needItems = [
-    'levelNeed',
-    'strengthNeed',
-    'dexterityNeed',
-    'intuitionNeed',
-    'healthNeed',
-    'swordsNeed',
-    'axesNeed',
-    'knivesNeed',
-    'clubsNeed',
-    'shieldsNeed',
-  ].map((item) => {
-    const key = item.replace('Need', '');
-    const label = capitalize(key);
-
-    return rrenderItem(label, thing[item], warrior[key] >= thing[item]);
+  const needItems = THING_NEED_ITEMS.map((attr) => {
+    const label = capitalize(attr.replace('Need', ''));
+    return rrenderItem(label, thing[attr], thingAttrValid(attr, thing, warrior));
   });
 
-  const giveItems = [
-    'strengthGive',
-    'dexterityGive',
-    'intuitionGive',
-    'healthGive',
-    'swordsGive',
-    'axesGive',
-    'knivesGive',
-    'clubsGive',
-    'shieldsGive',
-    'damageMin',
-    'damageMax',
-    'protectionHead',
-    'protectionBreast',
-    'protectionBelly',
-    'protectionGroin',
-    'protectionLegs',
-    'accuracy',
-    'dodge',
-    'devastate',
-    'durability',
-    'blockBreak',
-    'armorBreak',
-    'hp',
-    'strikeCount',
-    'blockCount',
-    'capacity',
-    'isTwoHands',
-    'timeDuration',
-  ].map((item) => {
-    const label = capitalize(item.replace('Give', ''));
+  const infoItems = THING_GIVE_ITEMS.map((item) => {
+    const label = startCase(item);
     return rrenderItem(label, thing[item] > 0 ? `+${thing[item]}` : null);
   });
 
+  if (thing.isTwoHands) {
+    infoItems.push(rrenderItem('Two Hands', 'Yes'));
+  }
+
   return (
-    <View key={id} style={[styles.itemWrapper, index > 0 && { marginTop: 20 }]}>
+    <View key={index + id} style={[styles.itemWrapper, index > 0 && { marginTop: 20 }]}>
       <View>
         <Text style={{ fontSize: 18 }}>{thing.name}</Text>
         <View style={{ flexDirection: 'row' }}>
           <Text>Money {thing.price}</Text>
-          <Text style={{ marginLeft: 10 }}>Capacity {thing.capacity}</Text>
+          <Text style={{ marginLeft: 10 }}>Weight {thing.weight}</Text>
         </View>
         <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <View style={{ width: 80, alignItems: 'center', marginTop: 5 }}>
@@ -146,19 +109,27 @@ export function renderItem(warrior, warriorThingOrId, index = 0) {
           </View>
           <View>
             <Text style={styles.itemTitle}>Description</Text>
-            <ScrollView style={{ height: 100 }}>{giveItems}</ScrollView>
+            <ScrollView style={{ height: 100 }}>{infoItems}</ScrollView>
           </View>
         </View>
       </View>
       {!isInfo && (
         <View style={{ top: 40, position: 'absolute', right: 20 }}>
           {thingCanBeDressed(warrior, thing) && (
-            <Button onPress={() => heroStore.dressUndressThing(true, warriorThing.id)}>
+            <Button
+              onPress={() =>
+                heroStore.dressUndressThing(true, warriorThing.id, appStore.initData.things)}
+            >
               DRESS
             </Button>
           )}
           <Button
-            onPress={() => heroStore.removeThing(warriorThing.id)}
+            onPress={() => {
+              AlertIOS.alert('Remove Thing', 'Are you sure ?', [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Yes', onPress: () => heroStore.removeThing(warriorThing.id) },
+              ]);
+            }}
             style={{ backgroundColor: '#E85349', marginTop: 10 }}
           >
             REMOVE
@@ -203,6 +174,7 @@ export default class Inventory extends Component {
             .filter((heroThing) => {
               if (this.filter === null || this.filter === 'all') return true;
               const thing = getThing(appStore.initData.things, heroThing.thing);
+
               return thing.type === this.filter;
             })
             .map((heroThing, index) => renderItem(heroStore.hero, heroThing, index))}

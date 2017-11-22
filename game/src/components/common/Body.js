@@ -2,20 +2,25 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { observer } from 'mobx-react';
+import { range } from 'lodash';
 
 import Icon from '../shared/Icon';
 
 import heroStore from '../../stores/hero';
 import appStore from '../../stores/app';
 
-import { thingImageRequire, getThing } from '../../lib/utils';
-import { getDrassedThings } from '../../lib/warrior-utils';
+import { thingImageRequire, getThing, isArm } from '../../lib/utils';
+import { getDressedThings, getThingsByType } from '../../lib/warrior-utils';
+import { THING_TYPES } from '../../lib/constants';
 
 const OFFSET = 4;
 const WIDTH = 76;
 const WWIDTH = 324;
 const WHEIGHT = 411;
 const RIGHT = WWIDTH - WIDTH - OFFSET;
+
+const ARMS = 'arms';
+const ARMS_SHIELD = 'arms-shield';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -35,7 +40,7 @@ const styles = StyleSheet.create({
   sideBlock: {
     width: WIDTH,
   },
-  sword: {
+  [ARMS]: {
     top: WIDTH + OFFSET * 2,
     left: OFFSET,
     height: 100,
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
     left: OFFSET,
     height: 110,
   },
-  shield: {
+  [ARMS_SHIELD]: {
     top: WIDTH + OFFSET * 2,
     left: RIGHT,
     height: 100,
@@ -108,14 +113,14 @@ function getSlotStyles(type) {
       return [styles.topBlock, styles.block, { left: WIDTH * 2 + OFFSET * 3 }];
     case 'bracer':
       return [styles.topBlock, styles.block, { left: WIDTH * 3 + OFFSET * 4 }];
-    case 'sword':
-      return [styles.sword, styles.sideBlock, styles.block];
+    case ARMS:
+      return [styles.arms, styles.sideBlock, styles.block];
     case 'armor':
       return [styles.armor, styles.sideBlock, styles.block];
     case 'pants':
       return [styles.pants, styles.sideBlock, styles.block];
-    case 'shield':
-      return [styles.shield, styles.sideBlock, styles.block];
+    case ARMS_SHIELD:
+      return [styles[ARMS_SHIELD], styles.sideBlock, styles.block];
     case 'belt':
       return [styles.belt, styles.sideBlock, styles.block];
     case 'boots':
@@ -130,78 +135,125 @@ function onThingPressHandler(id, thingId, undressEnabled, onThingPress) {
   if (onThingPress) onThingPress(thingId);
 }
 
-const Body = observer(({ warrior, undressEnabled, onThingPress }) => (
-  <View style={styles.wrapper}>
-    <Icon size={305} name="person" style={{ marginTop: 72, marginLeft: 10 }} />
-    {[
-      'gloves',
-      'helmet',
-      'amulet',
-      'bracer',
-      'sword',
-      'armor',
-      'shield',
-      'pants',
-      'belt',
-      'boots',
-    ].map((type) => {
-      let thing;
-      const warriorThing = getDrassedThings(warrior).find((item) => {
-        thing = getThing(appStore.initData.things, item.thing);
-        return thing.type === type;
-      });
+const Body = observer(({ warrior, undressEnabled, onThingPress }) => {
+  const { things } = appStore.initData;
+  const dressedThings = getDressedThings(warrior);
+  let alreadyArmDressed;
 
-      return (
-        <View key={type} style={getSlotStyles(type)}>
-          <Icon size={16} name={type} style={styles.icon} />
-          {warriorThing ? (
-            <TouchableOpacity
-              onPress={() =>
-                onThingPressHandler(
-                  warriorThing.id,
-                  warriorThing.thing,
-                  undressEnabled,
-                  onThingPress,
-                )}
-              style={styles.slotThing}
-            >
-              <Image source={thingImageRequire(thing.image)} />
-            </TouchableOpacity>
-          ) : null}
-        </View>
-      );
-    })}
+  const rings = getThingsByType(THING_TYPES.RING, warrior, things);
+  const elixirs = getThingsByType(THING_TYPES.ELIXIR, warrior, things);
+  return (
+    <View style={styles.wrapper}>
+      <Icon size={305} name="person" style={{ marginTop: 72, marginLeft: 10 }} />
+      {[
+        'gloves',
+        'helmet',
+        'amulet',
+        'bracer',
+        ARMS,
+        'armor',
+        ARMS_SHIELD,
+        'pants',
+        'belt',
+        'boots',
+      ].map((type) => {
+        let thing;
+        const warriorThing = dressedThings.find((item) => {
+          thing = getThing(things, item.thing);
+          const isArmResult = isArm(thing.type);
+          if (isArmResult && !alreadyArmDressed) alreadyArmDressed = item.id;
+          return (
+            thing.type === type ||
+            (type === ARMS && isArmResult) ||
+            (type === ARMS_SHIELD && thing.type === THING_TYPES.SHIELD) ||
+            (type === ARMS_SHIELD &&
+              isArmResult &&
+              alreadyArmDressed &&
+              alreadyArmDressed !== item.id)
+          );
+        });
 
-    <View style={styles.rings}>
-      <View style={[styles.ring, styles.block, { top: 0, left: 0 }]}>
-        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
+        return (
+          <View key={type} style={getSlotStyles(type)}>
+            <Icon size={16} name={type} style={styles.icon} />
+            {warriorThing ? (
+              <TouchableOpacity
+                onPress={() =>
+                  onThingPressHandler(
+                    warriorThing.id,
+                    warriorThing.thing,
+                    undressEnabled,
+                    onThingPress,
+                  )}
+                style={styles.slotThing}
+              >
+                <Image source={thingImageRequire(thing.image)} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        );
+      })}
+
+      <View style={styles.rings}>
+        {range(4).map((item) => {
+          const position = [
+            { top: 0, left: 0 },
+            { top: 0, left: 40 },
+            { top: 40, left: 0 },
+            { top: 40, left: 40 },
+          ][item];
+
+          const ring = rings[item];
+          return (
+            <View key={item} style={[styles.ring, styles.block, position]}>
+              <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
+              {ring ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    onThingPressHandler(
+                      ring.warriorThing.id,
+                      ring.warriorThing.thing,
+                      undressEnabled,
+                      onThingPress,
+                    )}
+                  style={styles.slotThing}
+                >
+                  <Image source={thingImageRequire(ring.thing.image)} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          );
+        })}
       </View>
-      <View style={[styles.ring, styles.block, { top: 0, left: 40 }]}>
-        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
-      </View>
-      <View style={[styles.ring, styles.block, { top: 40, left: 0 }]}>
-        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
-      </View>
-      <View style={[styles.ring, styles.block, { top: 40, left: 40 }]}>
-        <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
+      <View style={styles.elixirs}>
+        {range(4).map((item) => {
+          const position = [{ left: 0 }, { left: 40 }, { left: 80 }, { left: 120 }][item];
+
+          const elixir = elixirs[item];
+          return (
+            <View key={item} style={[styles.elixir, styles.block, position]}>
+              <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
+              {elixir ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    onThingPressHandler(
+                      elixir.warriorThing.id,
+                      elixir.warriorThing.thing,
+                      undressEnabled,
+                      onThingPress,
+                    )}
+                  style={styles.slotThing}
+                >
+                  <Image source={thingImageRequire(elixir.thing.image)} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          );
+        })}
       </View>
     </View>
-    <View style={styles.elixirs}>
-      <View style={[styles.elixir, styles.block, { left: 0 }]}>
-        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
-      </View>
-      <View style={[styles.elixir, styles.block, { left: 40 }]}>
-        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
-      </View>
-      <View style={[styles.elixir, styles.block, { left: 80 }]}>
-        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
-      </View>
-      <View style={[styles.elixir, styles.block, { left: 120 }]}>
-        <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
-      </View>
-    </View>
-  </View>
-));
+  );
+});
 
 Body.propTypes = {
   warrior: PropTypes.shape({}),

@@ -1,5 +1,7 @@
 // @flow
-import type { ThingType, IslandType, TableExperienceType, WarriorType } from './types';
+import type { ThingType, IslandType, TableExperienceType, WarriorType, SkillType } from './types';
+
+import { THING_TYPES } from './constants';
 
 export function thingImageRequire(name: string) {
   switch (name) {
@@ -9,6 +11,32 @@ export function thingImageRequire(name: string) {
       return require('../assets/things/armor.png');
     case 'helmet.png':
       return require('../assets/things/helmet.png');
+    case 'amulet.png':
+      return require('../assets/things/amulet.png');
+    case 'axe.png':
+      return require('../assets/things/axe.png');
+    case 'belt.png':
+      return require('../assets/things/belt.png');
+    case 'boots.png':
+      return require('../assets/things/boots.png');
+    case 'bracer.png':
+      return require('../assets/things/bracer.png');
+    case 'clubs.png':
+      return require('../assets/things/clubs.png');
+    case 'knive.png':
+      return require('../assets/things/knive.png');
+    case 'pants.png':
+      return require('../assets/things/pants.png');
+    case 'ring.png':
+      return require('../assets/things/ring.png');
+    case 'shield.png':
+      return require('../assets/things/shield.png');
+    case 'sword.png':
+      return require('../assets/things/sword.png');
+    case 'elixir.png':
+      return require('../assets/things/elixir.png');
+    case 'swordtwohands.png':
+      return require('../assets/things/swordtwohands.png');
     default:
       return null;
   }
@@ -114,6 +142,10 @@ export function getIsland(islands: Array<IslandType>, id: string): IslandType {
   return islands.find(item => item.id === id);
 }
 
+export function getSkill(skills: Array<SkillType>, id: string): SkillType {
+  return skills.find(item => item.id === id);
+}
+
 export function mapObjToArray(obj: {}): Array<any> {
   return Object.keys(obj).map(key => ({ id: key, ...obj[key] }));
 }
@@ -123,4 +155,11 @@ export function getTableExperienceItem(
   warrior: WarriorType,
 ): TableExperienceType {
   return tableExperience.find(item => item.level > warrior.level);
+}
+
+export function isArm(type: string, shieldInclude: boolean): boolean {
+  return (
+    [THING_TYPES.SWORD, THING_TYPES.AXE, THING_TYPES.CLUBS, THING_TYPES.KNIVE].includes(type) ||
+    (shieldInclude && type === THING_TYPES.SHIELD)
+  );
 }

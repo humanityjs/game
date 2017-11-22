@@ -96,7 +96,7 @@ export function ParametersInfo({ warrior, noActions }) {
         <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
           <Text style={{ width: 75 }}>{capitalize(item)}</Text>
           <Text>
-            {warrior[item]} {getFeatureParam(warrior[item], warrior.feature[item])}
+            {getFeatureParam(warrior[item], warrior.feature[item])}
           </Text>
           {canIncrease ? (
             <IconButton

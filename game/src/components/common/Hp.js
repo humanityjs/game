@@ -101,7 +101,9 @@ export default class Hp extends Component {
       <View style={styles.wrapper}>
         <View style={styles.nameWrapper}>
           <Text style={styles.name}>{warrior.login} </Text>
-          <Text style={styles.level}>[{warrior.level}]</Text>
+          <Text style={styles.level}>
+            [{warrior.level}] [{currentHp} / {hp.max}]
+          </Text>
           {showInfo && (
             <IconButton onPress={() => appStore.toggleWarriorInfoModal(warrior)}>
               <Icon size={14} name="info" />
