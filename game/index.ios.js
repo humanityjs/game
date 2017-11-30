@@ -1,14 +1,16 @@
 // Next steps
-// 1. bugs 7
+// 1.
 // 2. data
 // - skills
 // - island
 // - bots
 // - things
 // - table exp
-// 3. after fight bonus
-// - money
-// - things
+// 3. additional
+// - after fight bonus
+// -- money
+// -- things
+// - login
 // 3. testing
 // - accessories
 // - coefficient

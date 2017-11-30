@@ -15,7 +15,7 @@ import { overlay } from './App';
 
 import appStore from '../stores/app';
 
-import { ParametersInfo, GeneralInfo, ModifiersInfo } from './common/Info';
+import { ParametersInfo, GeneralInfo, ModifiersInfo, DamageProtectionInfo } from './common/Info';
 
 import { isOnline, getLocation } from '../lib/warrior-utils';
 
@@ -90,6 +90,7 @@ export default class WarriorInfoModal extends Component {
 
             <View style={{ marginLeft: 20 }}>
               <ModifiersInfo warrior={warrior} />
+              <DamageProtectionInfo warrior={warrior} />
             </View>
           </View>
           <View style={{ marginTop: 20, flexDirection: 'row', alignSelf: 'center' }}>

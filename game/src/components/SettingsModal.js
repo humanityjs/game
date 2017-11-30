@@ -51,7 +51,6 @@ const FIELDS = [
 ];
 
 @observer
-@autobind
 class FieldValue extends Component {
   @observable value;
   static propTypes = {
@@ -64,6 +63,7 @@ class FieldValue extends Component {
 
     this.value = props.value;
   }
+  @autobind
   onChangeValue(value) {
     this.value = value;
     this.props.onChange(value);
@@ -99,7 +99,10 @@ export default observer(({ onHide }) => {
   return (
     <Modal
       onHide={onHide}
-      onOk={() => heroStore.saveGeneral(data)}
+      onOk={() => {
+        heroStore.saveGeneral(data);
+        onHide();
+      }}
       okLabel="SAVE"
       title="Edit Profile"
     >

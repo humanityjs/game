@@ -138,8 +138,7 @@
     "protectionLegs": 31,
     "hp": 32,
     "capacity": 33,
-    "strikeCount": 2,
-    "blockCount": 2,
+    "blockCount": 1,
 
     "isTwoHands": true
   },

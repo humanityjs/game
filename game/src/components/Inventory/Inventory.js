@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { observable } from 'mobx';
+import { observable, observe } from 'mobx';
 import { observer } from 'mobx-react';
 import { StyleSheet, View, ScrollView, Image, AlertIOS } from 'react-native';
 import { capitalize, startCase } from 'lodash';
@@ -118,7 +118,8 @@ export function renderItem(warrior, warriorThingOrId, index = 0) {
           {thingCanBeDressed(warrior, thing) && (
             <Button
               onPress={() =>
-                heroStore.dressUndressThing(true, warriorThing.id, appStore.initData.things)}
+                heroStore.dressUndressThing(true, warriorThing.id, appStore.initData.things)
+              }
             >
               DRESS
             </Button>
@@ -143,6 +144,20 @@ export function renderItem(warrior, warriorThingOrId, index = 0) {
 @observer
 export default class Inventory extends Component {
   @observable filter = null;
+  pickerRef = null;
+  observerNavDisposer = null;
+  overlayDisposer = null;
+  componentDidMount() {
+    const hidePicker = () => {
+      this.pickerRef.hidePicker();
+    };
+    this.observerNavDisposer = observe(appStore.currentNavs, 'inner', hidePicker);
+    this.overlayDisposer = observe(appStore, 'overlay', hidePicker);
+  }
+  componentWillUnmount() {
+    this.observerNavDisposer();
+    this.overlayDisposer();
+  }
   renderActions() {
     return (
       <View style={{ flexDirection: 'row' }}>
@@ -153,6 +168,9 @@ export default class Inventory extends Component {
           UNDRESS
         </Button>
         <Picker
+          ref={(ref) => {
+            this.pickerRef = ref;
+          }}
           style={{ marginLeft: 20 }}
           data={FILTERS}
           placeholder="FILTER"

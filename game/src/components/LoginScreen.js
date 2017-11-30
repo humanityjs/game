@@ -10,12 +10,14 @@ import authStore from '../stores/auth';
 import appStore from '../stores/app';
 import heroStore from '../stores/hero';
 
+import { BACKGROUND_COLOR } from '../lib/styles-constants';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F2',
+    backgroundColor: BACKGROUND_COLOR,
   },
   loginButton: {
     backgroundColor: '#4267B2',

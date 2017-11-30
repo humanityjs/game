@@ -3,42 +3,48 @@
 import { observable, action, computed, toJS } from 'mobx';
 
 import { getWarrior, saveWarrior, newCombat } from '../lib/api-calls';
-import { updateFeature, levelUp, getDressedThings, dressUndressThing } from '../lib/warrior-utils';
+import {
+  updateFeature,
+  levelUp,
+  getDressedThings,
+  dressUndressThing,
+  init as initHero,
+} from '../lib/warrior-utils';
 import { getExperience, outFromCombat } from '../lib/combat-utils';
 
 import appStore from './app';
 import combatStore from './combat';
 
-import type { UserType, WarriorType, HeroThingType } from '../lib/types';
+import type { UserType, WarriorType, WarriorThingType, ThingType } from '../lib/types';
 
 class Hero {
   @observable hero: WarriorType = null;
 
   @computed
-  get undressedThings(): Array<HeroThingType> {
+  get undressedThings(): Array<WarriorThingType> {
     return this.hero.things.filter(item => !item.dressed);
   }
 
   @computed
-  get dressedThings(): Array<HeroThingType> {
+  get dressedThings(): Array<WarriorThingType> {
     return getDressedThings(this.hero);
   }
 
   @action
   async fetch(data: UserType) {
-    const hero = await getWarrior(data.id);
+    let hero = await getWarrior(data.id);
 
     if (!hero) {
-      // hero = data;
-      // heroInit(hero);
-      // ref.set(hero);
+      hero = data;
+      initHero(hero);
+      this.hero = hero;
+      await this.save();
     } else {
       // TODO: firebase is [] ignores so we should add
       if (!hero.things) hero.things = [];
       if (!hero.skills) hero.skills = [];
+      this.hero = hero;
     }
-
-    this.hero = hero;
   }
 
   @action

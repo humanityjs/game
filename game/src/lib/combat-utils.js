@@ -12,7 +12,7 @@ import type {
 } from './types';
 
 import { BODY_PARTS, COMBAT_STATUS_AFTER_FIGHT, COMBAT_STATUS_PAST } from './constants';
-import { getTableExperienceItem } from './utils';
+import { getTableExperienceItem, getBots } from './utils';
 
 import { saveWarrior } from '../lib/api-calls';
 
@@ -84,7 +84,7 @@ export function getLogPart(combat: CombatType, logItem: CombatLogType): Array<an
       ' ',
       { [blockWarriorKey]: buildWarriorName(blockWarrior) },
       ' on ',
-      { damage: strike.damage },
+      { damage: strike.damage, devastate: strike.devastate },
       ` [${strike.hp.current}/${strike.hp.max}]`,
       ' (',
       { blocks: blocks.map(getBodyPart).join(' ') },
@@ -204,7 +204,7 @@ export async function attack(
   // dodge уворот
   // accuracy точность
   // devastate крит
-  // durability
+  // durability стойкость
 
   const deadWarriors = [];
   const updateHpWarriors = [];
@@ -239,40 +239,42 @@ export async function attack(
     setStrikes.forEach((strike) => {
       const block = setBlocks.includes(strike);
 
-      const dodge = range(attackWarrior.feature.accuracy - blockWarrior.feature.dodge)
-        .includes(random(config.combatRange.accuracy));
-      const devastate = range(attackWarrior.feature.devastate - blockWarrior.feature.durability)
-        .includes(random(config.combatRange.devastate));
-      const blockBreak = range(attackWarrior.feature.blockBreak)
-        .includes(random(config.combatRange.blockBreak));
-      const armorBreak = range(attackWarrior.feature.armorBreak)
-        .includes(random(config.combatRange.armorBreak));
+      /* eslint-disable */
+      const dodge = range(blockWarrior.feature.dodge - attackWarrior.feature.accuracy).includes(
+        random(config.combatRange.accuracy),
+      );
+      const devastate = range(
+        attackWarrior.feature.devastate - blockWarrior.feature.durability,
+      ).includes(random(config.combatRange.devastate));
+      const blockBreak = range(attackWarrior.feature.blockBreak).includes(
+        random(config.combatRange.blockBreak),
+      );
+      const armorBreak = range(attackWarrior.feature.armorBreak).includes(
+        random(config.combatRange.armorBreak),
+      );
+      /* eslint-enable */
 
       const damage = random(attackWarrior.feature.damageMin, attackWarrior.feature.damageMax);
 
-      let protection = 0;
-      switch (strike) {
-        case 0:
-          protection = blockWarrior.feature.protectionHead;
-          break;
-        case 1:
-          protection = blockWarrior.feature.protectionBreast;
-          break;
-        case 2:
-          protection = blockWarrior.feature.protectionBelly;
-          break;
-        case 3:
-          protection = blockWarrior.feature.protectionGroin;
-          break;
-        case 4:
-          protection = blockWarrior.feature.protectionLegs;
-          break;
-        default:
-      }
+      const {
+        protectionHead,
+        protectionBreast,
+        protectionBelly,
+        protectionGroin,
+        protectionLegs,
+      } = blockWarrior.feature;
+
+      const protection = {
+        0: protectionHead,
+        1: protectionBreast,
+        2: protectionBelly,
+        3: protectionGroin,
+        4: protectionLegs,
+      }[strike];
 
       let strikeDamage;
       if (!armorBreak) {
-        strikeDamage = damage - damage * (protection / config.combatRange.damage / 100.0);
+        strikeDamage = damage - damage * Math.round(protection / config.combatRange.damage / 100.0);
       } else {
         strikeDamage = damage;
       }
@@ -338,7 +340,7 @@ export async function attack(
 
   // eslint-disable-next-line
   for (const item of updateHpWarriors) {
-    await saveWarrior(item.isBot, {
+    await saveWarrior({
       id: item.warrior,
       feature: { ...item._warrior.feature, hp: item._warrior.feature.hp },
     });
@@ -368,10 +370,8 @@ export async function attack(
     combat.finished = new Date().getTime();
 
     // eslint-disable-next-line
-    for (const wwarrior of updateHpWarriors) {
-      if (wwarrior.isBot) {
-        await outFromCombat(combat, wwarrior);
-      }
+    for (const item of getBots(combat.warriors)) {
+      await outFromCombat(combat, item);
     }
 
     combat.status = COMBAT_STATUS_AFTER_FIGHT;

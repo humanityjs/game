@@ -192,7 +192,7 @@
     },
 
     "gender": "male",
-    "health": 3,
+    "health": 30,
     "id": "10208146182239568",
     "intuition": 3,
     "knives": 0,
@@ -252,7 +252,7 @@
     },
 
     "gender": "male",
-    "health": 3,
+    "health": 30,
     "id": "10208146182239777",
     "intuition": 3,
     "knives": 0,
@@ -312,7 +312,7 @@
     },
 
     "gender": "male",
-    "health": 3,
+    "health": 3000,
     "id": "10208146182239561",
     "intuition": 3,
     "knives": 0,

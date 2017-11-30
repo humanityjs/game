@@ -135,6 +135,26 @@ function onThingPressHandler(id, thingId, undressEnabled, onThingPress) {
   if (onThingPress) onThingPress(thingId);
 }
 
+function thingImage(warriorThing, thing, onThingPress, undressEnabled) {
+  if (warriorThing) {
+    const thingImageComp = <Image source={thingImageRequire(thing.image)} />;
+    return onThingPress || undressEnabled ? (
+      <TouchableOpacity
+        onPress={() =>
+          onThingPressHandler(warriorThing.id, warriorThing.thing, undressEnabled, onThingPress)
+        }
+        style={styles.slotThing}
+      >
+        {thingImageComp}
+      </TouchableOpacity>
+    ) : (
+      <View style={styles.slotThing}>{thingImageComp}</View>
+    );
+  }
+
+  return null;
+}
+
 const Body = observer(({ warrior, undressEnabled, onThingPress }) => {
   const { things } = appStore.initData;
   const dressedThings = getDressedThings(warrior);
@@ -176,20 +196,7 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) => {
         return (
           <View key={type} style={getSlotStyles(type)}>
             <Icon size={16} name={type} style={styles.icon} />
-            {warriorThing ? (
-              <TouchableOpacity
-                onPress={() =>
-                  onThingPressHandler(
-                    warriorThing.id,
-                    warriorThing.thing,
-                    undressEnabled,
-                    onThingPress,
-                  )}
-                style={styles.slotThing}
-              >
-                <Image source={thingImageRequire(thing.image)} />
-              </TouchableOpacity>
-            ) : null}
+            {thingImage(warriorThing, thing, onThingPress, undressEnabled)}
           </View>
         );
       })}
@@ -203,24 +210,11 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) => {
             { top: 40, left: 40 },
           ][item];
 
-          const ring = rings[item];
+          const { warriorThing, thing } = rings[item] || {};
           return (
             <View key={item} style={[styles.ring, styles.block, position]}>
               <Icon size={12} name="ring" style={{ marginLeft: 2 }} />
-              {ring ? (
-                <TouchableOpacity
-                  onPress={() =>
-                    onThingPressHandler(
-                      ring.warriorThing.id,
-                      ring.warriorThing.thing,
-                      undressEnabled,
-                      onThingPress,
-                    )}
-                  style={styles.slotThing}
-                >
-                  <Image source={thingImageRequire(ring.thing.image)} />
-                </TouchableOpacity>
-              ) : null}
+              {thingImage(warriorThing, thing, onThingPress, undressEnabled)}
             </View>
           );
         })}
@@ -229,24 +223,11 @@ const Body = observer(({ warrior, undressEnabled, onThingPress }) => {
         {range(4).map((item) => {
           const position = [{ left: 0 }, { left: 40 }, { left: 80 }, { left: 120 }][item];
 
-          const elixir = elixirs[item];
+          const { warriorThing, thing } = elixirs[item] || {};
           return (
             <View key={item} style={[styles.elixir, styles.block, position]}>
               <Icon size={12} name="elixir" style={{ marginTop: 2 }} />
-              {elixir ? (
-                <TouchableOpacity
-                  onPress={() =>
-                    onThingPressHandler(
-                      elixir.warriorThing.id,
-                      elixir.warriorThing.thing,
-                      undressEnabled,
-                      onThingPress,
-                    )}
-                  style={styles.slotThing}
-                >
-                  <Image source={thingImageRequire(elixir.thing.image)} />
-                </TouchableOpacity>
-              ) : null}
+              {thingImage(warriorThing, thing, onThingPress, undressEnabled)}
             </View>
           );
         })}

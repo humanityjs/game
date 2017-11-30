@@ -10,8 +10,11 @@ import IslandScreen from './IslandScreen';
 
 import appStore from '../stores/app';
 
+import { BACKGROUND_COLOR } from '../lib/styles-constants';
+
 const tabNavigatorConfig = {
   initialRouteName: 'Hero',
+  tabBarComponent: () => null,
 };
 
 const Stack = TabNavigator(
@@ -27,7 +30,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: BACKGROUND_COLOR,
   },
 });
 

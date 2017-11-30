@@ -40,6 +40,8 @@ export default {
       hp: 10,
 
       capacity: 10,
+
+      arms: 10,
     },
   },
   islandMoveTime: 5,

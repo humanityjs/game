@@ -16,6 +16,8 @@ import WarriorInfoModal from './WarriorInfoModal';
 import authStore from '../stores/auth';
 import appStore from '../stores/app';
 
+import { BACKGROUND_COLOR } from '../lib/styles-constants';
+
 import startLogging from '../lib/mobx-logger';
 
 startLogging();
@@ -63,6 +65,8 @@ const styles = StyleSheet.create({
 export default observer(() => {
   const warriorInfo = appStore.showWarriorInfoModal;
 
+  const menuDisabled = !authStore.isLoggedIn || appStore.currentNavs.outer === 'Combat';
+
   return (
     <View style={{ flex: 1 }}>
       <Drawer
@@ -74,10 +78,10 @@ export default observer(() => {
         panThreshold={0.08}
         panOpenMask={0.2}
         styles={{ drawer: { backgroundColor: '#1C1C1C' } }}
-        disabled={!authStore.isLoggedIn}
-        acceptPan={authStore.isLoggedIn}
+        disabled={menuDisabled}
+        acceptPan={!menuDisabled}
       >
-        <View style={{ backgroundColor: '#F2F2F2', flex: 1 }}>
+        <View style={{ backgroundColor: BACKGROUND_COLOR, flex: 1 }}>
           <Stack ref={ref => appStore.setNavigationRef(ref, 'outer')} />
         </View>
       </Drawer>

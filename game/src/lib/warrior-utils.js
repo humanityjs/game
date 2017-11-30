@@ -136,11 +136,40 @@ export function updateFeature(warrior: WarriorType, initData: InitDataType) {
   feature.hp += feature.health * warriorConfig.coefficient.hp;
   feature.capacity += feature.strength * warriorConfig.coefficient.capacity;
 
+  // Abilities
+  getDressedThings(warrior).forEach((warriorThing) => {
+    const thing = getThing(things, warriorThing.thing);
+    const { type } = thing;
+    if (!isArm(type, true)) return;
+
+    const map = {
+      [THING_TYPES.SWORD]: 'swords',
+      [THING_TYPES.AXE]: 'axes',
+      [THING_TYPES.CLUBS]: 'clubs',
+      [THING_TYPES.KNIVE]: 'knive',
+    };
+
+    if (isArm(type)) {
+      feature.damageMin += feature[map[type]] * warriorConfig.coefficient.arms;
+      feature.damageMax += feature[map[type]] * warriorConfig.coefficient.arms;
+    } else {
+      [
+        'protectionHead',
+        'protectionBreast',
+        'protectionBelly',
+        'protectionGroin',
+        'protectionLegs',
+      ].forEach((item) => {
+        feature[item] += feature[item] * warriorConfig.coefficient.arms;
+      });
+    }
+  });
+
   // Hp
   feature.hp = {
     current: hp.current,
     max: feature.hp,
-    time: hp.time,
+    time: feature.hp === hp.max ? hp.time : new Date().getTime(),
   };
 
   // Capacity
@@ -175,7 +204,6 @@ export function init(warrior: WarriorType) {
     experience: 0,
 
     money: warriorConfig.default.money,
-    moneyArt: warriorConfig.default.moneyArt,
 
     numberOfWins: 0,
     numberOfLosses: 0,
@@ -224,7 +252,7 @@ export function thingCanBeDressed(warrior: WarriorType, thing: ThingType): boole
 export function getFeatureParam(orig: number, feature: number): string {
   let output = feature;
   if (orig === feature) {
-    return output;
+    return `${output}`;
   }
 
   output += ` (${orig}`;
@@ -301,7 +329,7 @@ export function getThingsByType(
   type: string,
   warrior: WarriorType,
   things: Array<ThingType>,
-): Array<{ warriorThing: WarrionThingType, thing: ThingType }> {
+): Array<{ warriorThing: WarriorThingType, thing: ThingType }> {
   const result = [];
 
   getDressedThings(warrior).forEach((item) => {

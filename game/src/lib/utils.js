@@ -163,3 +163,7 @@ export function isArm(type: string, shieldInclude: boolean): boolean {
     (shieldInclude && type === THING_TYPES.SHIELD)
   );
 }
+
+export function getBots(warriors: Array<WarriorType>): Array<WarriorType> {
+  return warriors.filter(warrior => warrior.isBot);
+}

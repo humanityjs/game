@@ -80,7 +80,6 @@ function renderHeroesInfo() {
 }
 
 @observer
-@autobind
 export default class IslandScreen extends Component {
   @observable moveTime = 0;
   moveInterval = null;
@@ -88,6 +87,7 @@ export default class IslandScreen extends Component {
     const { coordinateX, coordinateY } = heroStore.hero.location;
     islandStore.updateBots(coordinateX, coordinateY);
   }
+  @autobind
   onMove(x, y) {
     const island = getIsland(appStore.initData.islands, heroStore.hero.location.island);
     if (arrayContains(island.disabledCoordinates, [x, y])) return;
@@ -108,6 +108,7 @@ export default class IslandScreen extends Component {
       }
     }, 1000);
   }
+  @autobind
   onCancelMove() {
     clearInterval(this.moveInterval);
     this.moveTime = 0;
@@ -196,6 +197,7 @@ export default class IslandScreen extends Component {
               position: 'absolute',
               top: coordinateY * SQUARE_WIDTH - mapOffset.top - 8,
               left: coordinateX * SQUARE_WIDTH - mapOffset.left - 2,
+              backgroundColor: 'transparent',
             }}
           />
         </View>

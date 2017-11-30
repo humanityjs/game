@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import Picker from 'react-native-picker';
+import autobind from 'autobind-decorator';
 
 import Icon from './Icon';
 import Text from './Text';
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@autobind
 export default class extends Component {
   static propTypes = {
     data: PropTypes.arrayOf(PropTypes.shape()),
@@ -39,9 +41,6 @@ export default class extends Component {
 
   constructor(props) {
     super();
-
-    this.showPicker = this.showPicker.bind(this);
-    this.onPickerConfirm = this.onPickerConfirm.bind(this);
 
     this.state = {
       value: props.value ? props.value : null,
@@ -69,6 +68,10 @@ export default class extends Component {
       onPickerConfirm: this.onPickerConfirm,
     });
     Picker.show();
+  }
+  // eslint-disable-next-line
+  hidePicker() {
+    Picker.hide();
   }
 
   render() {

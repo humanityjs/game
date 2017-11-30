@@ -1,6 +1,6 @@
 // @flow
 
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, toJS } from 'mobx';
 import { AsyncStorage } from 'react-native';
 
 import { loginAndFetchData, logout } from '../lib/api-calls';
@@ -43,7 +43,7 @@ class Auth {
 
   async prepare() {
     await appStore.fetchInitData();
-    await heroStore.fetch(this.user);
+    await heroStore.fetch(toJS(this.user));
   }
 }
 

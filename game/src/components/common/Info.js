@@ -87,7 +87,7 @@ class SkillsInfo extends Component {
   }
 }
 
-export function ParametersInfo({ warrior, noActions }) {
+export const ParametersInfo = observer(({ warrior, noActions }) => {
   const canIncrease = Boolean(!noActions && warrior.numberOfParameters);
   return (
     <View style={[styles.infoBlock, { height: 170 }]}>
@@ -95,9 +95,7 @@ export function ParametersInfo({ warrior, noActions }) {
       {['strength', 'dexterity', 'intuition', 'health'].map(item => (
         <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
           <Text style={{ width: 75 }}>{capitalize(item)}</Text>
-          <Text>
-            {getFeatureParam(warrior[item], warrior.feature[item])}
-          </Text>
+          <Text>{getFeatureParam(warrior[item], warrior.feature[item])}</Text>
           {canIncrease ? (
             <IconButton
               onPress={() => heroStore.increaseParameter(item)}
@@ -116,15 +114,16 @@ export function ParametersInfo({ warrior, noActions }) {
       )}
     </View>
   );
-}
+});
 
 ParametersInfo.propTypes = {
   warrior: PropTypes.shape({}),
   noActions: PropTypes.bool,
 };
 
-export function GeneralInfo({ warrior }) {
-  const tableExperienceItem = appStore.initData.tableExperience.find(item => item.level > warrior.level);
+export const GeneralInfo = observer(({ warrior }) => {
+  const tableExperienceItem = appStore.initData
+    .tableExperience.find(item => item.level > warrior.level);
 
   return (
     <View style={[styles.infoBlock, { height: 145 }]}>
@@ -143,27 +142,48 @@ export function GeneralInfo({ warrior }) {
       </View>
     </View>
   );
-}
+});
 
 GeneralInfo.propTypes = {
   warrior: PropTypes.shape({}),
 };
 
-export function ModifiersInfo({ warrior }) {
-  return (
-    <View style={[styles.infoBlock, { height: 160 }]}>
-      <Text style={styles.title}>Modifiers</Text>
-      {['dodge', 'accuracy', 'devastate', 'block break', 'armor break'].map(item => (
-        <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-          <Text style={{ width: 95 }}>{capitalize(item)}</Text>
-          <Text>{warrior.feature[camelCase(item)]}%</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
+export const ModifiersInfo = observer(({ warrior }) => (
+  <View style={[styles.infoBlock, { height: 160 }]}>
+    <Text style={styles.title}>Modifiers</Text>
+    {['dodge', 'accuracy', 'devastate', 'block break', 'armor break'].map(item => (
+      <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
+        <Text style={{ width: 95 }}>{capitalize(item)}</Text>
+        <Text>{warrior.feature[camelCase(item)]}%</Text>
+      </View>
+    ))}
+  </View>
+));
 
 ModifiersInfo.propTypes = {
+  warrior: PropTypes.shape({}),
+};
+
+export const DamageProtectionInfo = observer(({ warrior }) => (
+  <View style={[styles.infoBlock, { marginTop: 20, height: 205 }]}>
+    <Text style={styles.title}>Damage & Protection</Text>
+    <View style={{ flexDirection: 'row', marginTop: 2 }}>
+      <Text style={{ width: 75 }}>Damage</Text>
+      <Text>
+        {warrior.feature.damageMin} - {warrior.feature.damageMax}
+      </Text>
+    </View>
+    <Text style={{ fontWeight: '400', marginTop: 5 }}>Protection</Text>
+    {['head', 'breast', 'belly', 'groin', 'legs'].map(item => (
+      <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
+        <Text style={{ width: 75 }}>{capitalize(item)}</Text>
+        <Text>{warrior.feature[`protection${capitalize(item)}`]}</Text>
+      </View>
+    ))}
+  </View>
+));
+
+DamageProtectionInfo.propTypes = {
   warrior: PropTypes.shape({}),
 };
 
@@ -180,22 +200,7 @@ export default observer(() => {
       </View>
       <View style={{ marginLeft: 20 }}>
         <ModifiersInfo warrior={hero} />
-        <View style={[styles.infoBlock, { marginTop: 20, height: 205 }]}>
-          <Text style={styles.title}>Damage & Protection</Text>
-          <View style={{ flexDirection: 'row', marginTop: 2 }}>
-            <Text style={{ width: 75 }}>Damage</Text>
-            <Text>
-              {hero.feature.damageMin} - {hero.feature.damageMax}
-            </Text>
-          </View>
-          <Text style={{ fontWeight: '400', marginTop: 5 }}>Protection</Text>
-          {['head', 'breast', 'belly', 'groin', 'legs'].map(item => (
-            <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
-              <Text style={{ width: 75 }}>{capitalize(item)}</Text>
-              <Text>{hero.feature[`protection${capitalize(item)}`]}</Text>
-            </View>
-          ))}
-        </View>
+        <DamageProtectionInfo warrior={hero} />
       </View>
       <View style={{ marginLeft: 20 }}>
         <SkillsInfo hero={hero} />
@@ -205,7 +210,7 @@ export default observer(() => {
             <View key={`${item}`} style={{ flexDirection: 'row', marginTop: 2 }}>
               <Text style={{ width: 75 }}>{capitalize(item)}</Text>
               <Text>{hero[item]}</Text>
-              {hero.numberOfAbilities && (
+              {Boolean(hero.numberOfAbilities) && (
                 <IconButton
                   onPress={() => heroStore.increaseAbility(item)}
                   style={{ marginTop: 2, marginLeft: 8 }}
@@ -215,7 +220,7 @@ export default observer(() => {
               )}
             </View>
           ))}
-          {hero.numberOfAbilities && (
+          {Boolean(hero.numberOfAbilities) && (
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text>To increase</Text>
               <Text style={{ marginLeft: 10 }}>{hero.numberOfAbilities}</Text>
