@@ -33,21 +33,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAEAEA',
     width: 218,
     position: 'absolute',
-    right: 2,
+    right: 0,
     padding: 10,
   },
 });
 
-const SQUARE_WIDTH = 20;
+const SQUARE_WIDTH = 32;
 
 const ISLAND_DIMENSIONS = {
-  width: 1980 / SQUARE_WIDTH,
-  height: 1280 / SQUARE_WIDTH,
+  width: 1216 / SQUARE_WIDTH,
+  height: 1216 / SQUARE_WIDTH,
 };
 
 const MAP_DIMENSIONS = {
-  width: 980 / SQUARE_WIDTH, // 1024 // 984
-  height: 680 / SQUARE_WIDTH, // 698 // 678
+  width: 992 / SQUARE_WIDTH, // 1024 // 984
+  height: 672 / SQUARE_WIDTH, // 698 // 678
 };
 
 async function onCombat(id) {
@@ -83,30 +83,38 @@ function renderHeroesInfo() {
 export default class IslandScreen extends Component {
   @observable moveTime = 0;
   moveInterval = null;
+  @observable test = [];
   componentDidMount() {
     const { coordinateX, coordinateY } = heroStore.hero.location;
     islandStore.updateBots(coordinateX, coordinateY);
   }
   @autobind
   onMove(x, y) {
+    const index = arrayContains(this.test, [x, y]);
+    if (index !== -1) {
+      this.test.splice(index, 1);
+    } else {
+      this.test.push([x, y]);
+    }
+    console.log(JSON.stringify(this.test));
     const island = getIsland(appStore.initData.islands, heroStore.hero.location.island);
-    if (arrayContains(island.disabledCoordinates, [x, y])) return;
+    // if (arrayContains(island.disabledCoordinates, [x, y])) return;
 
-    let counter = config.islandMoveTime;
+    const counter = config.islandMoveTime;
 
     this.moveTime = counter;
 
-    this.moveInterval = setInterval(() => {
-      counter -= 1;
+    // this.moveInterval = setInterval(() => {
+    //   counter -= 1;
 
-      this.moveTime = counter;
+    //   this.moveTime = counter;
 
-      if (counter === 0) {
-        clearInterval(this.moveInterval);
-        heroStore.moveOnIsland(x, y);
-        islandStore.updateBots(x, y);
-      }
-    }, 1000);
+    // if (counter === 0) {
+    // clearInterval(this.moveInterval);
+    heroStore.moveOnIsland(x, y);
+    // islandStore.updateBots(x, y);
+    // }
+    // }, 1000);
   }
   @autobind
   onCancelMove() {
@@ -148,16 +156,23 @@ export default class IslandScreen extends Component {
     /* eslint-disable no-continue */
     const lineX = coordinateX - 1 + 3;
     const lineY = coordinateY - 1 + 3;
-    for (let x = coordinateX - 1; x < lineX; x += 1) {
-      if (x < 0 || x > ISLAND_DIMENSIONS.width) continue;
-      for (let y = coordinateY - 1; y < lineY; y += 1) {
-        if (y < 0 || y > ISLAND_DIMENSIONS.height) continue;
-        if (x === coordinateX && y === coordinateY) continue;
+    let k = false;
+    for (let x = 0; x < ISLAND_DIMENSIONS.width; x += 1) {
+      if (x < 0 || x > ISLAND_DIMENSIONS.width) {
+        k = true;
+      }
+      for (let y = 0; y < ISLAND_DIMENSIONS.height; y += 1) {
+        if (y < 0 || y > ISLAND_DIMENSIONS.height) {
+          k = true;
+        }
+        if (x === coordinateX && y === coordinateY) {
+          k = true;
+        }
 
         squares.push(<TouchableOpacity
           key={`${x}-${y}`}
           style={{
-              backgroundColor: 'white',
+              backgroundColor: arrayContains(island.disabledCoordinates, [x, y]) !== -1 ? 'red' : undefined,
               opacity: 0.2,
               position: 'absolute',
               top: y * SQUARE_WIDTH - mapOffset.top,
@@ -179,7 +194,7 @@ export default class IslandScreen extends Component {
             height: MAP_DIMENSIONS.height * SQUARE_WIDTH,
             width: MAP_DIMENSIONS.width * SQUARE_WIDTH,
             overflow: 'hidden',
-            marginLeft: 2,
+            marginLeft: 0,
           }}
         >
           <Image
@@ -191,7 +206,7 @@ export default class IslandScreen extends Component {
           />
           {squares}
           <Icon
-            size={24}
+            size={32}
             name="person"
             style={{
               position: 'absolute',

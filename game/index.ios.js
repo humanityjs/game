@@ -1,5 +1,4 @@
 // Next steps
-// 1.
 // 2. data
 // - skills
 // - island

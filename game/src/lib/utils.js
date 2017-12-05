@@ -44,8 +44,8 @@ export function thingImageRequire(name: string) {
 
 export function islandImageRequire(name: string) {
   switch (name) {
-    case '1.png':
-      return require('../assets/islands/1.png');
+    case 'dragon-island.png':
+      return require('../assets/islands/dragon-island.png');
     default:
       return null;
   }
@@ -57,10 +57,10 @@ export function arrayContains(haystack: Array<Array<number>>, needle: Array<numb
       const current = haystack[i];
       let j;
       for (j = 0; j < needle.length && needle[j] === current[j]; j += 1);
-      if (j === needle.length) return true;
+      if (j === needle.length) return i;
     }
   }
-  return false;
+  return -1;
 }
 
 export function getMapMargin(

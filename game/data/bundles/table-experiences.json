@@ -4,39 +4,159 @@
     "level": 0,
     "experience": 0,
     "coefficient": 1,
-    "numberOfParameters": 1,
+    "numberOfParameters": 2,
     "numberOfAbilities": 1,
     "numberOfSkills": 1,
-    "money": 10.0
+    "money": 0.0
   },
   {
     "id": 1,
     "level": 1,
-    "experience": 200,
-    "coefficient": 1,
-    "numberOfParameters": 1,
+    "experience": 100,
+    "coefficient": 1.2,
+    "numberOfParameters": 4,
     "numberOfAbilities": 1,
-    "numberOfSkills": 1,
-    "money": 20.0
+    "numberOfSkills": 2,
+    "money": 20
   },
   {
     "id": 2,
     "level": 2,
-    "experience": 400,
-    "coefficient": 1,
-    "numberOfParameters": 1,
-    "numberOfAbilities": 1,
-    "numberOfSkills": 1,
-    "money": 40.0
+    "experience": 200,
+    "coefficient": 1.4,
+    "numberOfParameters": 6,
+    "numberOfAbilities": 2,
+    "numberOfSkills": 3,
+    "money": 40
   },
   {
     "id": 3,
     "level": 3,
-    "experience": 100000,
-    "coefficient": 1,
-    "numberOfParameters": 1,
-    "numberOfAbilities": 1,
-    "numberOfSkills": 1,
-    "money": 40.0
+    "experience": 400,
+    "coefficient": 1.6,
+    "numberOfParameters": 8,
+    "numberOfAbilities": 2,
+    "numberOfSkills": 4,
+    "money": 80
+  },
+  {
+    "id": 4,
+    "level": 4,
+    "experience": 800,
+    "coefficient": 1.8,
+    "numberOfParameters": 10,
+    "numberOfAbilities": 3,
+    "numberOfSkills": 5,
+    "money": 160
+  },
+  {
+    "id": 5,
+    "level": 5,
+    "experience": 1600,
+    "coefficient": 2,
+    "numberOfParameters": 12,
+    "numberOfAbilities": 3,
+    "numberOfSkills": 6,
+    "money": 320
+  },
+  {
+    "id": 6,
+    "level": 6,
+    "experience": 3200,
+    "coefficient": 2.2,
+    "numberOfParameters": 14,
+    "numberOfAbilities": 4,
+    "numberOfSkills": 7,
+    "money": 640
+  },
+  {
+    "id": 7,
+    "level": 7,
+    "experience": 6400,
+    "coefficient": 2.4,
+    "numberOfParameters": 16,
+    "numberOfAbilities": 4,
+    "numberOfSkills": 8,
+    "money": 1280
+  },
+  {
+    "id": 8,
+    "level": 8,
+    "experience": 12800,
+    "coefficient": 2.6,
+    "numberOfParameters": 18,
+    "numberOfAbilities": 5,
+    "numberOfSkills": 9,
+    "money": 2560
+  },
+  {
+    "id": 9,
+    "level": 9,
+    "experience": 25600,
+    "coefficient": 2.8,
+    "numberOfParameters": 20,
+    "numberOfAbilities": 5,
+    "numberOfSkills": 10,
+    "money": 5120
+  },
+  {
+    "id": 10,
+    "level": 10,
+    "experience": 51200,
+    "coefficient": 3,
+    "numberOfParameters": 22,
+    "numberOfAbilities": 6,
+    "numberOfSkills": 11,
+    "money": 10240
+  },
+  {
+    "id": 11,
+    "level": 11,
+    "experience": 102400,
+    "coefficient": 3.2,
+    "numberOfParameters": 24,
+    "numberOfAbilities": 6,
+    "numberOfSkills": 12,
+    "money": 20480
+  },
+  {
+    "id": 12,
+    "level": 12,
+    "experience": 204800,
+    "coefficient": 3.4,
+    "numberOfParameters": 26,
+    "numberOfAbilities": 7,
+    "numberOfSkills": 13,
+    "money": 40960
+  },
+  {
+    "id": 13,
+    "level": 13,
+    "experience": 409600,
+    "coefficient": 3.6,
+    "numberOfParameters": 28,
+    "numberOfAbilities": 7,
+    "numberOfSkills": 14,
+    "money": 81920
+  },
+  {
+    "id": 14,
+    "level": 14,
+    "experience": 819200,
+    "coefficient": 3.8,
+    "numberOfParameters": 30,
+    "numberOfAbilities": 8,
+    "numberOfSkills": 15,
+    "money": 163840
+  },
+  {
+    "id": 15,
+    "level": 15,
+    "experience": 1638400,
+    "coefficient": 4,
+    "numberOfParameters": 32,
+    "numberOfAbilities": 8,
+    "numberOfSkills": 16,
+    "money": 327680
   }
 ]
